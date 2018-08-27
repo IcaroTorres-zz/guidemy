@@ -32,11 +32,23 @@ export const state = () => ({
       project: 'p1',
       creator: 'u1',
       assigned: 'u1',
+      title: 'Dummy task title',
+      description: 'task description',
       start: new Date(),
       end: new Date(),
       finished: null,
       comments: [],
       status: 0
+    }
+  },
+  comments: {
+    'c1': {
+      id: 'c1',
+      by: 'u1',
+      at: 't1',
+      date: new Date(),
+      text: 'dummy test comment sample',
+      likes: []
     }
   },
   dailyMeetings: {
@@ -88,5 +100,7 @@ export const getters = {
   userProjects (state) {
     return username => state.users[username]
       .projects.map(pId => state.projects[pId])
-  }
+  },
+  task: state => taskId => state.tasks[taskId],
+  taskComments: state => task => task.comments.map(c => state.comments[c.id])
 }

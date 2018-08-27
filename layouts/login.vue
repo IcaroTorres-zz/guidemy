@@ -1,18 +1,18 @@
 <template>
   <v-app dark>
-    <v-toolbar class="primary">
+    <v-toolbar light flat class="transparent">
       <v-layout row justify-center align-center>
         <v-flex xs12 sm10 md8>
           <v-layout row justify-space-between align-center>
             <v-layout row align-center>
-              <nuxt-link to="/" class="flat-link"><img src="../assets/logo2-alpha.png" alt="Guideme" height="50"></nuxt-link>
-              <nuxt-link to="/" class="title white--text flat-link">{{title}}</nuxt-link>
+              <nuxt-link to="/" class="flat-link"><img src="../assets/logo1-alpha.png" alt="Guideme" height="50"></nuxt-link>
+              <nuxt-link to="/" class="title flat-link">{{title}}</nuxt-link>
             </v-layout>
             <div class="text-xs-right">
-                <nuxt-link to="/" class="subheading white--text px-2 flat-link">Why Guideme?</nuxt-link>
-                <nuxt-link to="/" class="subheading white--text px-2 flat-link">Examples</nuxt-link>
-                <nuxt-link to="/" class="subheading white--text px-2 flat-link">About Us</nuxt-link>
-                <nuxt-link to="/" class="subheading white--text px-2 flat-link">Find Projects</nuxt-link>
+              <nuxt-link to="/" class="subheading px-2 flat-link">Why Guideme?</nuxt-link>
+              <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
+              <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
+              <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
             </div>
           </v-layout>
         </v-flex>
@@ -21,7 +21,7 @@
 
     <v-content>
       <section>
-        <v-parallax :src="require('@/assets/hero.jpeg')" style="height: auto">
+        <v-parallax :src="require('@/assets/hero.jpeg')" style="height: auto" class="pt-5">
           <v-layout
             row
             wrap
@@ -222,5 +222,40 @@ export default {
 <style scoped>
  .flat-link {
    text-decoration: none !important;
+   position: relative;
+   padding-top: 5px;
+   padding-bottom: 5px;
  }
+ .flat-link::before, .flat-link::after {
+   content: ' ';
+   transition: all .33s ease-in;
+   position: absolute;
+   left: 0%;
+   width: 100%;
+   height: 100%;
+   transform: scaleX(0);
+ }
+.flat-link::before{
+   border-top: 2px solid #ff6f00;
+   border-left: 2px solid #ff6f00;
+   top: 0px;
+   transform-origin: top left;
+}
+.flat-link::after{
+   border-bottom: 2px solid #ff6f00;
+   border-right: 2px solid #ff6f00;
+   bottom: 0px;
+   transform-origin: bottom right;
+}
+
+ .v-toolbar {
+   z-index: 99;
+ }
+ .v-content {
+   margin-top: -64px;
+
+ }
+.flat-link:hover::before, .flat-link:hover::after{
+   transform: scaleX(1);
+}
 </style>
