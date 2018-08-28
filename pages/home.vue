@@ -13,7 +13,8 @@
               <div class="caption">start: <span class="success--text">{{new Date().toLocaleDateString()}}</span></div>
               <div class="caption">due date: <span class="red--text">{{new Date('09-18-2018').toLocaleDateString()}}</span></div>
             </v-flex>
-            <v-flex xs12 sm5 class="align-end">
+            <v-spacer></v-spacer>
+            <v-flex class="justify-end">
               <v-card-media
                 src="https://images.pexels.com/photos/450035/pexels-photo-450035.jpeg?auto=compress&cs=tinysrgb&h=350"
                 height="120px"
@@ -38,41 +39,21 @@
       </v-flex>
     </v-layout>
 
-    <v-layout row justify-center align-content-start>
+    <v-layout row justify-center align-content-start style="overflow-x: auto">
 
-      <v-flex sm3 class="mx-2">
-        <v-layout column justify-start align-center>
-          <v-toolbar class="yellow mb-2" dark dense flat>
-            <v-toolbar-title v-html="'To-do'"/>
+      <v-flex sm3 :class="'project-block project-block__' + block.color" v-for="(block, i) in blocks" :key="i">
+        <v-layout column justify-start align-content-start style="position: relative;">
+          <v-toolbar :class="block.color + ' mb-2'"
+            dense raised style="position: sticky; top: -8px; z-index:2">
+            <v-toolbar-title v-html="block.text"/>
+            <v-spacer/>
+            <v-toolnar-items>
+              <v-btn small icon >
+                <v-icon small>edit</v-icon>
+              </v-btn>
+            </v-toolnar-items>
           </v-toolbar>
-          <cardsample v-for="n in Math.floor(Math.random() * 9)" :key="n" :taskId="'t1'" :user="user"/>
-        </v-layout>
-      </v-flex>
-
-      <v-flex sm3 class="mx-2">
-        <v-layout column justify-start align-center>
-          <v-toolbar class="light-blue lighten-2 mb-2" dark dense flat>
-            <v-toolbar-title v-html="'Doing'"/>
-          </v-toolbar>
-          <cardsample v-for="n in Math.floor(Math.random() * 9)" :key="n" :taskId="'t2'" :user="user"/>
-        </v-layout>
-      </v-flex>
-
-      <v-flex sm3 class="mx-2">
-        <v-layout column justify-start align-center>
-          <v-toolbar class="info mb-2" dark dense flat>
-            <v-toolbar-title v-html="'To-check'"/>
-          </v-toolbar>
-          <cardsample v-for="n in Math.floor(Math.random() * 9)" :key="n" :taskId="'t3'" :user="user"/>
-        </v-layout>
-      </v-flex>
-
-      <v-flex sm3 class="mx-2">
-        <v-layout column justify-start align-center>
-          <v-toolbar class="light-green lighten-1 mb-2" dark dense flat>
-            <v-toolbar-title v-html="'Done'"/>
-          </v-toolbar>
-          <cardsample v-for="n in Math.floor(Math.random() * 9)" :key="n" :taskId="'t4'" :user="user"/>
+          <cardsample v-for="(t, tidx) in block.tasks" :key="tidx" :taskId="t" :user="user"/>
         </v-layout>
       </v-flex>
 
@@ -93,7 +74,18 @@ export default {
       return this.$store.getters.userByName('icarotorres') || {}
     },
     userProjects () {
-      return this.$store.getters.userProjects(this.user.username)
+      return this.$store.getters.userProjects(this.user.id)
+    },
+    blocks () {
+      const bs = this.$store.getters.userProjects(this.user.id)[0].blocks
+      console.log(bs)
+      return bs
+    }
+  },
+  methods: {
+    toggleBlockEdit (block, value) {
+      block.button = value
+      console.log(block)
     }
   }
 }

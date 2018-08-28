@@ -18,6 +18,12 @@ export const state = () => ({
       id: 'p1',
       creator: 'u1',
       coworkers: [],
+      blocks: [
+        { text: 'To-do', color: 'warning', tasks: ['t1', 't0', 't0', 't0', 't1', 't1'] },
+        { text: 'Doing', color: 'info', tasks: ['t1', 't2', 't0', 't2', 't0', 't2', 't2', 't2'] },
+        { text: 'To-check', color: 'accent', tasks: ['t3', 't3', 't3', 't3', 't3'] },
+        { text: 'Done', color: 'success', tasks: ['t4', 't4', 't4', 't4', 't4'] }
+      ],
       tasks: ['t1'],
       dailyMeetings: ['d1'],
       start: new Date(),
@@ -27,6 +33,19 @@ export const state = () => ({
     }
   },
   tasks: {
+    't0': {
+      id: 't0',
+      project: 'p1',
+      creator: 'u1',
+      assigned: 'u1',
+      title: 'Dummy task title',
+      description: 'task description',
+      start: new Date(),
+      end: new Date(),
+      finished: null,
+      comments: [],
+      status: 4
+    },
     't1': {
       id: 't1',
       project: 'p1',
@@ -134,13 +153,13 @@ export const mutations = {
 
 export const getters = {
   user (state) {
-    return userId => state.users[userId]
+    return uid => state.users[uid]
   },
   userByName (state) {
     return username => Object.values(state.users).find(user => user.username === username)
   },
   userProjects (state) {
-    return username => state.users[username]
+    return uid => state.users[uid]
       .projects.map(pId => state.projects[pId])
   },
   task (state) {
