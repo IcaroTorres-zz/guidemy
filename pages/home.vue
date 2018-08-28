@@ -6,12 +6,12 @@
         <v-card >
           <v-card-title class="pa-2" style="background-color: rgba(0,0,0,.5)">
             <v-flex xs12 sm7>
-              <div class="title primary--text">LateX writing</div>
-              <div class="caption">manager: <span class="body-2 info--text">@icarotorres</span></div>
+              <div class="title primary--text">Ferramenta Reativa para GEstão Ágil de Projetos Acadêmicos</div>
+              <div class="caption">manager: <span class="body-2 info--text">@giltonsilva</span></div>
               <div class="caption">team: <span class="body-2 success--text">@icarotorres</span></div>
               <v-divider dark></v-divider>
               <div class="caption">start: <span class="success--text">{{new Date().toLocaleDateString()}}</span></div>
-              <div class="caption">due date: <span class="red--text">{{new Date().toLocaleDateString()}}</span></div>
+              <div class="caption">due date: <span class="red--text">{{new Date('09-18-2018').toLocaleDateString()}}</span></div>
             </v-flex>
             <v-flex xs12 sm5 class="align-end">
               <v-card-media
@@ -22,7 +22,7 @@
             </v-flex>
           </v-card-title>
           <v-card-actions class="py-2 px-4">
-            Rate task results
+            Rate Project
             <v-spacer></v-spacer>
             <v-icon>star</v-icon>
             <v-icon>star</v-icon>
