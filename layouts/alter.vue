@@ -101,7 +101,7 @@
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container fluid fill-height align-center>
+      <v-container align-center>
         <nuxt/>
       </v-container>
     </v-content>
@@ -222,7 +222,7 @@
     }),
     computed: {
       user () {
-        return this.$store.getters.user('icarotorres')
+        return this.$store.getters.userByName('icarotorres')
       }
     },
     props: {

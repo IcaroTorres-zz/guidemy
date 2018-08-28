@@ -1,7 +1,7 @@
 export const state = () => ({
   sidebar: false,
   users: {
-    'icarotorres': {
+    'u1': {
       username: 'icarotorres',
       id: 'u1',
       email: 'icaro.stuart@gmail.com',
@@ -39,6 +39,45 @@ export const state = () => ({
       finished: null,
       comments: [],
       status: 0
+    },
+    't2': {
+      id: 't2',
+      project: 'p1',
+      creator: 'u1',
+      assigned: 'u1',
+      title: 'Dummy task title',
+      description: 'task description',
+      start: new Date(),
+      end: new Date(),
+      finished: null,
+      comments: [],
+      status: 1
+    },
+    't3': {
+      id: 't3',
+      project: 'p1',
+      creator: 'u1',
+      assigned: 'u1',
+      title: 'Dummy task title',
+      description: 'task description',
+      start: new Date(),
+      end: new Date(),
+      finished: null,
+      comments: [],
+      status: 2
+    },
+    't4': {
+      id: 't4',
+      project: 'p1',
+      creator: 'u1',
+      assigned: 'u1',
+      title: 'Dummy task title',
+      description: 'task description',
+      start: new Date(),
+      end: new Date(),
+      finished: null,
+      comments: [],
+      status: 3
     }
   },
   comments: {
@@ -95,12 +134,17 @@ export const mutations = {
 
 export const getters = {
   user (state) {
-    return username => state.users[username]
+    return userId => state.users[userId]
+  },
+  userByName (state) {
+    return username => Object.values(state.users).find(user => user.username === username)
   },
   userProjects (state) {
     return username => state.users[username]
       .projects.map(pId => state.projects[pId])
   },
-  task: state => taskId => state.tasks[taskId],
-  taskComments: state => task => task.comments.map(c => state.comments[c.id])
+  task (state) {
+    return taskId => state.tasks[taskId]
+  },
+  taskComments (state) { return task => task.comments.map(c => state.comments[c.id]) }
 }
