@@ -1,20 +1,37 @@
 <template>
-  <v-expansion-panel popout class="mb-1">
-    <v-expansion-panel-content :class="`elevation-10 ${status}`" hide-actions>
+  <v-expansion-panel>
+    <v-expansion-panel-content :class="`elevation-0 ${status}`" hide-actions expand>
       <v-flex xs12 slot="header" class="px-0">
-        <v-layout align-center :dark="closed" :light="!closed" class="transparent d--wrapper">
-          <span :class="{'caption mx-1': true, 'secondary--text':!closed}">{{mainText}}</span>
+        <v-layout align-center light class="transparent">
+          <span class="body-2 mx-1 secondary--text">{{mainText}}</span>
           <v-spacer/>
-          <span :class="{'d--vertical': true, 'secondary':!closed}"></span>
-          <v-spacer/>
-          <v-btn small icon flat class="ma-0"><v-icon small>bookmarks</v-icon></v-btn>
-          <v-btn small icon flat class="ma-0" v-if="status !== 'error'"><v-icon small>done_outline</v-icon></v-btn>
+          <v-btn small icon flat light class="ma-0"><v-icon small>delete</v-icon></v-btn>
+          <v-btn small icon flat light class="ma-0"><v-icon small>done_outline</v-icon></v-btn>
         </v-layout>
       </v-flex>
       <v-card flat light>
         <v-card-text class="px-2 pt-2 pb-0">
           <div class="body-1 grey--text mb-1">{{subText}}</div>
-          <div class="body-2 mb-1">{{mainText}}</div>
+
+            <div class="layout row align-center justify-content-end px-3" v-if="task.status !== 0 && task.status !== 3">
+              {{new Date(task.start).toLocaleDateString('pt-BR')}}
+
+              <v-range-slider
+                class="px-3"
+                hide-details
+                v-model="sliderange"
+                :max="slidemax"
+                :min="0"
+                readonly
+                :track-color="status"
+                step="1"
+                ticks
+                tick-size="4"
+                :thumb-size="20"
+              ></v-range-slider>
+
+              {{new Date(task.end).toLocaleDateString('pt-BR')}}
+            </div>
           <hr class="grey lighten-3 my-0">
         </v-card-text>
         <v-card-actions>
@@ -31,10 +48,10 @@
             <v-btn icon small>
               <v-icon color="grey lighten-2" class="mr-1">question_answer</v-icon>
             </v-btn>
-            <span class="d--vertical"></span>
+            <!-- <span class="d-vertical"></span>
             <v-btn icon small>
               <v-icon color="yellow darken-1" class="ml-1">{{favIcon}}</v-icon>
-            </v-btn>
+            </v-btn> -->
           </div>
         </v-card-actions>
       </v-card>
@@ -50,16 +67,19 @@ export default {
     taskId: [String, Number],
     user: Object
   },
+  data () {
+    return {
+      // sliderange: [new Date(this.task.end).getMilliseconds(), new Date(this.task.start).getMilliseconds()]
+    }
+  },
   computed: {
     task () { return this.$store.getters.task(this.taskId) },
     assigned () { return this.$store.getters.user(this.task.assigned) },
     avatar () { return this.assigned.profilePicture || dummyavatar },
-    name () { return this.assigned.username || 'Dummy user name' },
+    name () { return this.assigned.username || 'Dummyusername' },
     commentCount () { return this.task.comments.length || Math.floor(Math.random() * 100) },
     mainText () { return this.task.title || 'Texto principal de card exemplo para exibição' },
     subText () { return this.task.description || 'Subtítulo como classificador' },
-    likeIcon () { return 'favorite_outline' },
-    favIcon () { return 'star_outline' },
     closed () {
       return this.task.status >= 3
     },
@@ -68,20 +88,32 @@ export default {
         '1': 'info',
         '2': 'accent',
         '3': 'success',
-        '4': 'error'
+        '4': 'warning'
       }
 
       return parseInt(this.task.status) > 0
         ? helper[this.task.status]
-        : (() => {
-          let d1 = new Date(this.task.end)
-          let d2 = new Date()
-          return this.closed ? 'error' : d1.getTime() < d2.getTime() ? 'warning' : 'success'
-        })()
+        : (() => new Date(this.task.end).getTime() < new Date().getTime() ? 'error' : 'primary')()
+    },
+    slidevalue () {
+      // return [0, this.daysBetween(new Date(this.task.start), new Date(this.task.end))]
+    },
+    sliderange () {
+      return [0, this.daysBetween(new Date(this.task.start), new Date())]
+    },
+    slidemin () {
+      return new Date(this.task.start).getTime()
+    },
+    slidemax () {
+      return this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      // return new Date(this.task.end).getTime()
     },
     displayedDate () {
-      return new Date(this.task.end).toLocaleDateString()
+      return new Date(this.task.start).toLocaleDateString('pt-BR')
     }
+  },
+  methods: {
+    daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24))
   }
 }
 </script>

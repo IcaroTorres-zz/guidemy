@@ -10,91 +10,168 @@
   background: #ddd;
 }
 .project-block {
-  margin: 0 8px;
-  max-height: 500px;
+  margin: 0 auto;
+  max-height: 450px;
   overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 300px;
+}
+
+.block-toolbar {
+  position: sticky;
+  top: 0px;
+  z-index:2;
+  margin: 0 0 8px 0;
+  border-radius: 20px 20px 0 0 !important;
+}
+.block-footer {
+  position: sticky;
+  bottom: 0px;
+  z-index:2;
+  margin: 8px 0 0 0 !important;
+  border-radius: 0 0 20px 20px !important;
+  background: #626262 !important;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+.scroller {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroller-horiz {
+  overflow-y: hidden;
+  overflow-x: auto;
 }
   /* width */
-.project-block::-webkit-scrollbar {
+.scroller-horiz::-webkit-scrollbar {
+  height: 4px;
+}
+
+  /* width */
+.scroller::-webkit-scrollbar {
   width: 4px;
 }
 
 /* Track */
-.project-block::-webkit-scrollbar-track {
-  background: rgba(0,0,0,0.2); 
+.scroller::-webkit-scrollbar-track, .scroller-horiz::-webkit-scrollbar-track, {
+  background: rgba(50,50,50,0.4);
 }
 
 /* Handle */
-.project-block::-webkit-scrollbar-thumb {
-  background: #ec9b05; 
+.scroller::-webkit-scrollbar-thumb, .scroller-horiz::-webkit-scrollbar-thumb {
+  background: #607d8b;
 }
 
 /* Handle on hover */
-.project-block::-webkit-scrollbar-thumb:hover {
-  background: #ec6d05; 
+.scroller::-webkit-scrollbar-thumb:hover, .scroller-horiz::-webkit-scrollbar-thumb:hover {
+  background: #000; 
 }
 
 
 
 /* Track */
-.project-block.project-block__warning::-webkit-scrollbar-track {
+.scroller__primary::-webkit-scrollbar-track {
+  background: #607d8b
+}
+
+/* Handle */
+.scroller__primary::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__primary::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__warning::-webkit-scrollbar-track {
   background: #deb51f
 }
 
 /* Handle */
-.project-block.project-block__warning::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.2);
+.scroller__warning::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
 }
 
 /* Handle on hover */
-.project-block.project-block__warning::-webkit-scrollbar-thumb:hover {
+.scroller__warning::-webkit-scrollbar-thumb:hover {
   background: #000; 
 }
 
 
 /* Track */
-.project-block.project-block__info::-webkit-scrollbar-track {
+.scroller__info::-webkit-scrollbar-track {
   background: #03a9f4
 }
 
 /* Handle */
-.project-block.project-block__info::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.2);
+.scroller__info::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
 }
 
 /* Handle on hover */
-.project-block.project-block__info::-webkit-scrollbar-thumb:hover {
+.scroller__info::-webkit-scrollbar-thumb:hover {
   background: #000; 
 }
 
 
 /* Track */
-.project-block.project-block__accent::-webkit-scrollbar-track {
+.scroller__accent::-webkit-scrollbar-track {
   background: #2ce6d5
 }
 
 /* Handle */
-.project-block.project-block__accent::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.2);
+.scroller__accent::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
 }
 
 /* Handle on hover */
-.project-block.project-block__accent::-webkit-scrollbar-thumb:hover {
+.scroller__accent::-webkit-scrollbar-thumb:hover {
   background: #000; 
 }
 
 
 /* Track */
-.project-block.project-block__success::-webkit-scrollbar-track {
+.scroller__success::-webkit-scrollbar-track {
   background: #5bce60
 }
 
 /* Handle */
-.project-block.project-block__success::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.2);
+.scroller__success::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
 }
 
 /* Handle on hover */
-.project-block.project-block__success::-webkit-scrollbar-thumb:hover {
+.scroller__success::-webkit-scrollbar-thumb:hover {
   background: #000; 
+}
+
+
+/* Track */
+.scroller__error::-webkit-scrollbar-track {
+  background: #af1613
+}
+
+/* Handle */
+.scroller__error::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__error::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+/* .highcharts-background, .highcharts-background rect, rect {
+ 
+  fill: #303030 !important; 
+} */
+
+.highcharts-background {
+	fill: #303030;
 }

@@ -11,7 +11,10 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "highcharts": "^6.1.1",
+    "highcharts-vue": "^1.1.0",
     "nuxt": "^1.0.0",
+    "vue-chartkick": "^0.5.0",
     "vuetify": "^1.0.0"
   },
   "devDependencies": {
