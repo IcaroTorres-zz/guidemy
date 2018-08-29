@@ -1,12 +1,12 @@
 const increaseDays = (date, daysCount) => {
   let [ increased, daysInMilliseconds ] = [ new Date(date), daysCount * 24 * 60 * 60 * 1000 ]
   increased.setTime(increased.getTime() + daysInMilliseconds)
-  console.log(increased)
   return increased
 }
 
 export const state = () => ({
   sidebar: false,
+  loggedUser: 'u1',
   users: {
     'u1': {
       username: 'icarotorres',
@@ -48,9 +48,9 @@ export const state = () => ({
         { text: 'Done', color: 'success', tasks: ['t4', 't4', 't4', 't4'] }
       ],
       dailyMeetings: ['d1'],
-      start: new Date(),
+      start: new Date('07/14/2018'),
       end: null,
-      finished: null,
+      finishedAt: null,
       notes: '',
       status: 0
     },
@@ -67,10 +67,10 @@ export const state = () => ({
         { text: 'Doing', color: 'info', tasks: ['t1', 't2', 't2', 't2', 't2'] },
         { text: 'Done', color: 'success', tasks: ['t4', 't4', 't4', 't4'] }
       ],
-      dailyMeetings: ['d1'],
-      start: new Date(),
+      dailyMeetings: ['d2'],
+      start: new Date('08/02/2018'),
       end: null,
-      finished: null,
+      finishedAt: null,
       notes: '',
       status: 0
     }
@@ -85,9 +85,9 @@ export const state = () => ({
       description: 'task description',
       start: new Date('08/18/2018'),
       end: increaseDays(new Date('08/18/2018'), 15),
-      finished: null,
+      finishedAt: null,
       comments: [],
-      status: 4
+      status: 0
     },
     't1': {
       id: 't1',
@@ -98,8 +98,8 @@ export const state = () => ({
       description: 'task description',
       start: new Date('08/22/2018'),
       end: increaseDays(new Date('08/22/2018'), 11),
-      finished: null,
-      comments: [],
+      finishedAt: null,
+      comments: ['c1', 'c2', 'c3', 'c4', 'c5'],
       status: 0
     },
     't2': {
@@ -111,9 +111,9 @@ export const state = () => ({
       description: 'task description',
       start: new Date('08/25/2018'),
       end: increaseDays(new Date('08/25/2018'), 21),
-      finished: null,
+      finishedAt: null,
       comments: [],
-      status: 1
+      status: 0
     },
     't3': {
       id: 't3',
@@ -124,9 +124,9 @@ export const state = () => ({
       description: 'task description',
       start: new Date('08/18/2018'),
       end: increaseDays(new Date('08/18/2018'), 8),
-      finished: null,
+      finishedAt: null,
       comments: [],
-      status: 2
+      status: 0
     },
     't4': {
       id: 't4',
@@ -135,11 +135,11 @@ export const state = () => ({
       assigned: 'u1',
       title: 'Dummy task title',
       description: 'task description',
-      start: new Date('08/31/2018'),
-      end: increaseDays(new Date('08/31/2018'), 13),
-      finished: null,
+      start: new Date('08/22/2018'),
+      end: increaseDays(new Date('08/22/2018'), 13),
+      finishedAt: new Date('08/29/2018'),
       comments: [],
-      status: 3
+      status: 1
     }
   },
   comments: {
@@ -147,29 +147,71 @@ export const state = () => ({
       id: 'c1',
       by: 'u1',
       at: 't1',
-      date: new Date(),
-      text: 'dummy test comment sample',
-      likes: []
+      date: new Date('08/18/2018'),
+      text: 'iqbwib bdiqwn qwdb oquwhdbqowudbqowudbqouwdnoq qwdq',
+      likes: ['u1', 'u2']
+    },
+    'c2': {
+      id: 'c2',
+      by: 'u1',
+      at: 't1',
+      date: new Date('08/19/2018'),
+      text: 'uidyqwudbquidbnqi uyqbnwi https://material.io/tools/icons/?style=baseline qwdqwdqw',
+      likes: ['u1', 'u2']
+    },
+    'c3': {
+      id: 'c3',
+      by: 'u1',
+      at: 't1',
+      date: new Date('08/22/2018'),
+      text: 'dummy test https://drive.google.com/drive/folders/1nz4rLyca0IlFph7DlRtSQkjVCWDgtb83 sample https://bit.ly/2Mq79KV',
+      likes: ['u1']
+    },
+    'c4': {
+      id: 'c4',
+      by: 'u1',
+      at: 't1',
+      date: new Date('08/23/2018'),
+      text: 'https://bit.ly/2Mq79KV',
+      likes: ['u1']
+    },
+    'c5': {
+      id: 'c5',
+      by: 'u2',
+      at: 't1',
+      date: new Date('08/25/2018'),
+      text: '@giltonsilva @icarotorres https://bit.ly/2Mq79KV',
+      likes: ['u1']
     }
   },
   dailyMeetings: {
     'd1': {
       id: 'd1',
-      manager: 'u1',
+      manager: 'u2',
       assigned: 'u1',
       r1: '',
       r2: '',
       r3: '',
       start: new Date(),
       end: null, // 24hr after
-      finished: null
+      finishedAt: null
+    },
+    'd2': {
+      id: 'd2',
+      manager: 'u2',
+      assigned: 'u1',
+      r1: '',
+      r2: '',
+      r3: '',
+      start: new Date(),
+      end: null, // 24hr after
+      finishedAt: null
     }
   },
   status: {
     0: 'active',
     1: 'done',
-    2: 'delayed',
-    3: 'closed'
+    2: 'closed'
   },
   notifications: {
     'n1': {
@@ -234,6 +276,12 @@ export const mutations = {
 }
 
 export const getters = {
+  loggedUser (state) {
+    return state.loggedUser
+  },
+  loggedUserObject (state) {
+    return state.users[state.loggedUser]
+  },
   users (state) {
     return state.users
   },
@@ -246,6 +294,9 @@ export const getters = {
   userByName (state) {
     return username => Object.values(state.users).find(user => user.username === username)
   },
+  project (state) {
+    return pid => state.projects[pid]
+  },
   userProjects (state) {
     return uid => state.users[uid]
       .projects.map(pId => state.projects[pId])
@@ -257,5 +308,5 @@ export const getters = {
   task (state) {
     return taskId => state.tasks[taskId]
   },
-  taskComments (state) { return task => task.comments.map(c => state.comments[c.id]) }
+  taskComments (state) { return task => task.comments.map(c => state.comments[c]) }
 }

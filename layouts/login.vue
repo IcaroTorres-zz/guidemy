@@ -5,11 +5,11 @@
         <v-flex xs12 sm10 md8>
           <v-layout row justify-space-between align-center>
             <v-layout row align-center>
-              <nuxt-link to="/" class="flat-link"><img src="../assets/logo1-alpha.png" alt="Guideme" height="50"></nuxt-link>
-              <nuxt-link to="/" class="title flat-link">{{title}}</nuxt-link>
+              <!-- <nuxt-link to="/" class="flat-link"><img src="../assets/logo1-alpha.png" alt="Guideme" height="50"></nuxt-link> -->
+              <nuxt-link to="/" class="title flat-link">{{apptitle}}</nuxt-link>
             </v-layout>
             <div class="text-xs-right">
-              <nuxt-link to="/" class="subheading px-2 flat-link">Why Guideme?</nuxt-link>
+              <nuxt-link to="/" class="subheading px-2 flat-link">Why {{apptitle}}?</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
@@ -31,8 +31,8 @@
           >
             <div class="text-xs-center">
               <img src="../assets/logo1-alpha.png" alt="Guideme">
-              <h1 class=" display-3 primary--text">Guideme</h1>
-              <div class="title secondary--text">Micro-teams helper</div>
+              <h1 class=" display-3 primary--text">{{apptitle}}</h1>
+              <div class="title secondary--text">Lorem, ipsum dolor.</div>
             </div>
             <v-flex xs12 sm7 md5 lg4 offset-xs1 style="opacity: .8">
               <nuxt />
@@ -210,52 +210,3 @@
     </v-content>
   </v-app>  
 </template>
-<script>
-export default {
-  data () {
-    return {
-      title: 'uideme'
-    }
-  }
-}
-</script>
-<style scoped>
- .flat-link {
-   text-decoration: none !important;
-   position: relative;
-   padding-top: 5px;
-   padding-bottom: 5px;
- }
- .flat-link::before, .flat-link::after {
-   content: ' ';
-   transition: all .33s ease-in;
-   position: absolute;
-   left: 0%;
-   width: 100%;
-   height: 100%;
-   transform: scaleX(0);
- }
-.flat-link::before{
-   border-top: 2px solid #ff6f00;
-   border-left: 2px solid #ff6f00;
-   top: 0px;
-   transform-origin: top left;
-}
-.flat-link::after{
-   border-bottom: 2px solid #ff6f00;
-   border-right: 2px solid #ff6f00;
-   bottom: 0px;
-   transform-origin: bottom right;
-}
-
- .v-toolbar {
-   z-index: 99;
- }
- .v-content {
-   margin-top: -64px;
-
- }
-.flat-link:hover::before, .flat-link:hover::after{
-   transform: scaleX(1);
-}
-</style>

@@ -175,3 +175,42 @@
 .highcharts-background {
 	fill: #303030;
 }
+
+.flat-link {
+  text-decoration: none !important;
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+/* .flat-link::before, .flat-link::after {
+  content: ' ';
+  transition: all .33s ease-in;
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+}
+.flat-link::before{
+  border-top: 2px solid #607d8b;
+  border-left: 2px solid #607d8b;
+  top: 0px;
+  transform-origin: top left;
+}
+.flat-link::after{
+  border-bottom: 2px solid #607d8b;
+  border-right: 2px solid #607d8b;
+  bottom: 0px;
+  transform-origin: bottom right;
+} */
+
+.v-toolbar {
+  z-index: 99;
+}
+.v-content {
+  margin-top: -64px;
+
+}
+.flat-link:hover::before, .flat-link:hover::after{
+  transform: scaleX(1);
+}

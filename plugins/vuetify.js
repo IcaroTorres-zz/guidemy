@@ -62,6 +62,9 @@ Vue.mixin({
     }
   },
   methods: {
+    getUser (uid) {
+      return this.$store.getters.user(uid)
+    },
     getUsername (uid) {
       return this.$store.getters.user(uid).username
     }

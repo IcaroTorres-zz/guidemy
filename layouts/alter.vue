@@ -72,9 +72,9 @@
       app
       fixed
     >
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+      <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">{{apptitle}}</span>
+        <nuxt-link dark nuxt to="/" class="white--text flat-link hidden-sm-and-down" v-text="apptitle"/>
       </v-toolbar-title>
       <v-text-field
         flat
@@ -130,16 +130,6 @@
         {
           icon: 'keyboard_arrow_up',
           'icon-alt': 'keyboard_arrow_down',
-          text: 'Tasks',
-          model: true,
-          children: [
-            { icon: 'add', text: 'Create task' },
-            { icon: 'view_week', text: 'View all' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
           text: 'Projects',
           model: false,
           children: [
@@ -147,6 +137,16 @@
             { icon: 'vertical_split', text: 'View all' },
             { icon: 'group', text: 'View Teams' },
             { text: 'Export' }
+          ]
+        },
+        {
+          icon: 'keyboard_arrow_up',
+          'icon-alt': 'keyboard_arrow_down',
+          text: 'Tasks',
+          model: false,
+          children: [
+            { icon: 'add', text: 'Create task' },
+            { icon: 'view_week', text: 'View all' }
           ]
         },
         { icon: 'settings', text: 'Settings' },

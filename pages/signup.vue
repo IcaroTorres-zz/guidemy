@@ -1,10 +1,10 @@
 <template>
   <v-card class="elevation-10">
     <v-card-title class="layout justify-center">
-      <div class="display-3 amber--text text--darken-4">Welcome to Guideme</div>
+      <div class="display-3 amber--text text--darken-4">Welcome to {{apptitle}}</div>
     </v-card-title>
     <v-card-text class="caption text-xs-center">
-      <b>Sign Up</b> below and try guideme on your new projects.
+      <b>Sign Up</b> below and try {{apptitle}} on your new projects.
       <hr class="amber darken-4 my-1">
     </v-card-text>
       <v-form>
@@ -57,7 +57,7 @@
       <hr class="amber darken-4 my-1">
     </v-card-text>
     <v-card-actions>
-      <em>Already using Guideme?</em>
+      <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
       <v-btn color="success" flat nuxt to="/inspire">Sign in</v-btn>
     </v-card-actions>
