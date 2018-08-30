@@ -3,10 +3,23 @@
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
+      :mini-variant.sync="mini"
       fixed
       app
     >
       <v-list dense>
+        <v-layout row>
+          <v-list>
+            <v-list-tile>
+              <v-list-tile-action>
+                <v-btn icon @click.stop="mini = !mini">
+                  <v-icon>{{miniIcon}}</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-content>{{miniText}}</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-layout>
         <template v-for="item in items">
           <v-layout
             v-if="item.heading"
@@ -42,14 +55,42 @@
               :key="i"
               @click=""
             >
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ child.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
+              <template v-if="child.component">
+                <dialogproject :edition="false" v-if="child.component === 'project'">
+                  <v-layout row :slot="child.slot">
+                    <v-list-tile-action v-if="child.icon">
+                      <v-icon>{{ child.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        {{ child.text }}
+                      </v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-layout>
+                </dialogproject>
+                <dialogtask v-else-if="child.component === 'task'">
+                  <v-layout row :slot="child.slot">
+                    <v-list-tile-action v-if="child.icon">
+                      <v-icon>{{ child.icon }}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                      <v-list-tile-title>
+                        {{ child.text }}
+                      </v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-layout>
+                </dialogtask>
+              </template>
+              <template v-else>
+                <v-list-tile-action v-if="child.icon">
+                  <v-icon>{{ child.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{ child.text }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </template>
             </v-list-tile>
           </v-list-group>
           <v-list-tile v-else :key="item.text" @click="">
@@ -121,31 +162,32 @@
 
 <script>
   import dialogproject from '../components/dialog-project.vue'
+  import dialogtask from '../components/dialog-task.vue'
   export default {
-    components: {dialogproject},
+    components: {dialogproject, dialogtask},
     data: () => ({
-      dialog: false,
-      drawer: null,
+      mini: true,
+      drawer: true,
       items: [
+        { icon: 'update', text: 'Dailies' },
         {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
+          icon: 'table_chart',
+          'icon-alt': 'view_carousel',
           text: 'Projects',
           model: false,
           children: [
-            { icon: 'add', text: 'Create Project' },
-            { icon: 'vertical_split', text: 'View all' },
-            { icon: 'group', text: 'View Teams' },
-            { text: 'Export' }
+            { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'project' },
+            { icon: 'view_stream', text: 'View all' },
+            { icon: 'group', text: 'View Teams' }
           ]
         },
         {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
+          icon: 'view_week',
+          'icon-alt': 'view_column',
           text: 'Tasks',
           model: false,
           children: [
-            { icon: 'add', text: 'Create task' },
+            { icon: 'add', text: 'Create task', slot: 'customactivator', component: 'task' },
             { icon: 'view_week', text: 'View all' }
           ]
         },
@@ -155,6 +197,8 @@
       ]
     }),
     computed: {
+      miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
+      miniText () { return this.mini ? '' : 'Shrink navigation' },
       user () {
         return this.$store.getters.userByName('icarotorres')
       },

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+
 Vue.mixin({
   data () {
     return {
@@ -7,8 +8,9 @@ Vue.mixin({
     }
   },
   methods: {
-    getUsername (uid) {
-      return this.$store.getters.user(uid).username
-    }
+    getUser (uid) { return this.$store.getters.user(uid) },
+    getAvatar (uid) { return this.$store.getters.user(uid).profilePicture || this.dummyavatar },
+    getUsername (uid) { return this.$store.getters.user(uid).username },
+    daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24))
   }
 })

@@ -30,7 +30,7 @@
   z-index:2;
   margin: 8px 0 0 0 !important;
   border-radius: 0 0 20px 20px !important;
-  background: #626262 !important;
+  /* background: #626262 !important; */
 }
 
 .overflow-hidden {
@@ -175,6 +175,9 @@
 .highcharts-background {
 	fill: #303030;
 }
+g.highcharts-data-labels {
+  margin: 0 auto !important;
+}
 
 .flat-link {
   text-decoration: none !important;
@@ -204,13 +207,17 @@
   transform-origin: bottom right;
 } */
 
-.v-toolbar {
-  z-index: 99;
-}
-.v-content {
-  margin-top: -64px;
-
-}
 .flat-link:hover::before, .flat-link:hover::after{
   transform: scaleX(1);
+}
+
+.chart--total {
+  color: white;
+  font-size: 18px;
+  background: transparent;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  position: absolute;
+  z-index: 2
 }

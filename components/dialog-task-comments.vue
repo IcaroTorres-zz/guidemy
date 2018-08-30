@@ -1,78 +1,60 @@
 <template>
-      <v-dialog v-model="dialog" width="800px">
+      <v-dialog v-model="dialog" width="800px" scrollable>
       <template slot="activator">
         <slot name="customactivator"  @click.stop="dialog = !dialog" >
            <!-- <v-btn fab bottom right color="primary" slot="customactivator" dark fixed @click.stop="dialog = !dialog"><v-icon>add</v-icon></v-btn> -->
         </slot>
       </template>
       <v-card>
-        <v-card-title class="py-2 display-1 primary">
+        <v-card-title class="py-3 display-1 primary">
           {{task.title}}
         </v-card-title>
-        <v-card-text>
-          <div class="primary--text">{{task.description}}</div>
-          <v-divider></v-divider>
-        </v-card-text>
-        <v-container grid-list-md>
-          <v-layout row wrap>
-            <v-flex xs12 class="layout row align-center justify-space-between">
-              <v-avatar
-                size="48px"
-                color="grey lighten-4"
-              >
-                <img :src="user.profilePicture" alt="avatar">
-              </v-avatar>
-              <v-text-field
-                class="px-2"
-                placeholder="your comment"
-                v-model="commentText"
-              ></v-text-field>
-            </v-flex>
-
-            <v-flex xs12>
-              <v-list two-line>
-                <template v-for="comment in comments">
-                  <v-list-tile
-                    :key="comment.id"
-                    avatar
-                  >
-                    <v-list-tile-avatar>
-                      <img :src="getUser(comment.by).profilePicture" alt="avatar">
-                    </v-list-tile-avatar>
-
-                    <v-list-tile-content>
-                      <v-list-tile-title class="primary--text" v-html="getUsername(comment.by)"></v-list-tile-title>
-                      <v-layout row>
-                        <v-flex class="caption">
-                          {{comment.text}}
-                        </v-flex>
+        <div class="px-3 py-2">
+          Description: 
+          <div class="grey--text text-xs-justify">{{task.description}} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga voluptas sit eveniet doloremque ea enim quaerat quibusdam nihil obcaecati. Maxime quasi explicabo earum in necessitatibus beatae hic. Dolores, fugiat dignissimos.</div>
+        </div>
+        <v-divider></v-divider>
+        <v-card-text height="800">
+          <v-container grid-list-xl class="py-0">
+            <v-layout row wrap>
+              <v-flex xs12>
+                <template v-for="(comment, cidx) in comments">
+                  <v-layout row justify-center align-content-start :key="comment.id">
+                    <v-avatar  size="48px" color="grey lighten-4" >
+                      <img :src="getAvatar(comment.by)" alt="avatar">
+                    </v-avatar>
+                    <v-flex>
+                      <v-layout column align-start class="px-2">
+                        <a class="primary--text subheading">{{getUsername(comment.by)}}</a>
+                        <p class="grey--text text-xs-justify">{{comment.text}}</p>
                       </v-layout>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                  <v-divider
-                    inset
-                    :key="comment.id"
-                  ></v-divider>
+                    </v-flex>
+                    <v-btn icon small class="error--text" v-if="canRemove(comment, user.id)">
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </v-layout>
+                  <v-divider :key="cidx"  class="ml-5 mb-3"/>
                 </template>
-              </v-list>
+              </v-flex>
 
-              <!-- <v-avatar
-                size="48px"
-                color="grey lighten-4"
-              >
-                <img :src="getUser(comment.by).profilePicture" alt="avatar">
-              </v-avatar>
-              <v-card class="transparent body-1 px-2" flat dark>
-                {{comment.text}}
-                <v-card-actions>
-                  <v-icon>{{setIcon(comment, user.id)}}</v-icon>
-                </v-card-actions>
-              </v-card> -->
-            </v-flex>
-
-          </v-layout>
-        </v-container>
-        <v-card-actions>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions class="pl-4">
+          <v-flex xs12 class="layout row align-center justify-space-between">
+            <v-avatar
+              size="48px"
+              color="grey lighten-4"
+            >
+              <img :src="user.profilePicture" alt="avatar">
+            </v-avatar>
+            <v-text-field
+              class="px-2"
+              placeholder="your comment"
+              v-model="commentText"
+              append-icon="send"
+            ></v-text-field>
+          </v-flex>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="dialog = false">Back</v-btn>
         </v-card-actions>
@@ -97,9 +79,8 @@ export default {
     user () { return this.$store.getters.loggedUserObject },
     users () { return this.$store.getters.usernames },
     comments () {
-      let ccs = this.$store.getters.taskComments(this.task)
-      console.log(ccs)
-      return ccs
+      return this.$store.getters.taskComments(this.task)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     }
   },
   methods: {
@@ -112,7 +93,9 @@ export default {
   }
 }
 </script>
-
 <style scoped>
-
+  .v-expansion-panel__header {
+    padding-left: 0 !important ;
+    padding-right: 0 !important; 
+  }
 </style>

@@ -210,3 +210,13 @@
     </v-content>
   </v-app>  
 </template>
+<style scoped>
+
+.v-toolbar {
+  z-index: 99;
+}
+.v-content {
+  margin-top: -64px;
+
+}
+</style>
