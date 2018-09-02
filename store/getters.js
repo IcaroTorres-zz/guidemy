@@ -1,4 +1,7 @@
 export const getters = {
+  lightOut (state) {
+    return state.lightOut
+  },
   loggedUser (state) {
     return state.loggedUser
   },
@@ -30,6 +33,14 @@ export const getters = {
   },
   task (state) {
     return taskId => state.tasks[taskId]
+  },
+  projectBlocks (state) {
+    return pid => state.projects[pid].blocks.map(bid => state.blocks[bid])
+  },
+  projectTasks (state) {
+    return pid => state.projects[pid].blocks
+      .reduce((fullList, b) => fullList.concat(state.blocks[b].tasks), [])
+      .map(t => state.tasks[t])
   },
   taskComments (state) { return task => task.comments.map(c => state.comments[c]) }
 }

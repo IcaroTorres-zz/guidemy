@@ -1,9 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" width="400px">
-    <template slot="activator">
-      <slot name="customactivator"  @click.stop="dialog = !dialog" />
+  <v-dialog v-model="dialog" width="400px" >
+    <template slot="activator" @click.stop="dialog = !dialog" >
+      <slot name="customactivator" />
     </template>
-    <v-card>
+    <v-card :dark="lightOut">
       <v-card-title class="py-4 title success">
         Confirm task as completed?
       </v-card-title>
@@ -28,6 +28,9 @@ export default {
   },
   data: () => ({
     dialog: false
-  })
+  }),
+  computed: {
+    lightOut () { return this.$store.getters.lightOut }
+  }
 }
 </script>

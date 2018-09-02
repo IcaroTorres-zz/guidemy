@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="600px">
+  <v-dialog v-model="dialog" width="600px" scrollable :dark="lightOut">
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" />
     </template>
@@ -7,12 +7,11 @@
       <v-card-title class="py-4 title primary">
         Search users to invite to this project
       </v-card-title>
-      <v-card-text>
+      <v-card-text height="600">
         <div class="subheading primary--text">{{project.title}}</div>
         <hr>
         <div class="captin grey--text">{{project.description}}</div>
-      </v-card-text>
-      <v-container grid-list-xs class="py-0">
+      <v-container grid-list-xs class="pa-0">
         <v-layout row wrap>
           <v-flex xs12>
             <v-autocomplete
@@ -45,11 +44,11 @@
               outline
               label="invitation message"
               v-model="message"
-              readonly
             ></v-textarea>
           </v-flex>
         </v-layout>
       </v-container>
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
@@ -76,7 +75,8 @@ export default {
   },
   computed: {
     includedUsers () { return this.project.coworkers },
-    searchableUsers () { return Object.values(this.$store.getters.users).filter(u => this.includedUsers.indexOf(u.id) === -1) }
+    searchableUsers () { return Object.values(this.$store.getters.users).filter(u => this.includedUsers.indexOf(u.id) === -1) },
+    lightOut () { return this.$store.getters.lightOut }
   }
 }
 </script>

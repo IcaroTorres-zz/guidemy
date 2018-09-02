@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app :dark="lightOut">
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
@@ -7,20 +7,20 @@
       fixed
       app
     >
-      <v-list dense>
-        <v-layout row>
-          <v-list>
-            <v-list-tile>
-              <v-list-tile-action>
-                <v-btn icon @click.stop="mini = !mini">
-                  <v-icon>{{miniIcon}}</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-content>{{miniText}}</v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-layout>
-        <template v-for="item in items">
+      <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}">
+        <v-list-tile @click.stop="mini = !mini">
+          <v-list-tile-action>
+            <v-icon>{{miniIcon}}</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{miniText}}
+            </v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-list dense class="pa-0">
+        <template v-for="(item, j) in items">
           <v-layout
             v-if="item.heading"
             :key="item.heading"
@@ -36,10 +36,11 @@
               <a href="#!" class="body-2">EDIT</a>
             </v-flex>
           </v-layout>
+
           <v-list-group
             v-else-if="item.children"
             v-model="item.model"
-            :key="item.text"
+            :key="j"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             append-icon=""
           >
@@ -50,14 +51,9 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile
-              v-for="(child, i) in item.children"
-              :key="i"
-              @click=""
-            >
-              <template v-if="child.component">
-                <dialogproject :edition="false" v-if="child.component === 'project'">
-                  <v-layout row :slot="child.slot">
+            <template v-for="(child, i) in item.children">
+              <dialogproject :edition="false" :key="child.component" v-if="child.component && child.component === 'project'">
+                <v-list-tile :slot="child.slot">
                     <v-list-tile-action v-if="child.icon">
                       <v-icon>{{ child.icon }}</v-icon>
                     </v-list-tile-action>
@@ -66,10 +62,10 @@
                         {{ child.text }}
                       </v-list-tile-title>
                     </v-list-tile-content>
-                  </v-layout>
-                </dialogproject>
-                <dialogtask v-else-if="child.component === 'task'">
-                  <v-layout row :slot="child.slot">
+                </v-list-tile>
+              </dialogproject>
+              <dialogtask v-else-if="child.component && child.component === 'task'" :key="child.component">
+                <v-list-tile :slot="child.slot">
                     <v-list-tile-action v-if="child.icon">
                       <v-icon>{{ child.icon }}</v-icon>
                     </v-list-tile-action>
@@ -78,10 +74,9 @@
                         {{ child.text }}
                       </v-list-tile-title>
                     </v-list-tile-content>
-                  </v-layout>
-                </dialogtask>
-              </template>
-              <template v-else>
+                </v-list-tile>
+              </dialogtask>
+              <v-list-tile v-else :key="i">
                 <v-list-tile-action v-if="child.icon">
                   <v-icon>{{ child.icon }}</v-icon>
                 </v-list-tile-action>
@@ -90,8 +85,8 @@
                     {{ child.text }}
                   </v-list-tile-title>
                 </v-list-tile-content>
-              </template>
-            </v-list-tile>
+              </v-list-tile>
+            </template>
           </v-list-group>
           <v-list-tile v-else :key="item.text" @click="">
             <v-list-tile-action>
@@ -107,15 +102,12 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="primary"
-      dark
-      app
-      fixed
+      :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" app fixed :style="{ 'z-index': '5' }"
     >
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <nuxt-link dark nuxt to="/" class="white--text flat-link hidden-sm-and-down" v-text="apptitle"/>
+        <router-link to="/" v-html="apptitle"
+          :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
       <v-text-field
         flat
@@ -127,13 +119,16 @@
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn flat>
-          <v-icon>apps</v-icon>
+        <v-btn flat small @click.stop="toggleLight">
+          <v-icon small>invert_colors</v-icon>
+        </v-btn>
+        <v-btn flat small nuxt :to="{ name: 'home' }">
+          <v-icon>dashboard</v-icon>Dashboard
         </v-btn>
       </v-toolbar-items>
       <v-tooltip bottom>
         <v-badge slot="activator" color="red" overlap left>
-          <span slot="badge" dark>{{notifications.filter(n => n.status === 0).length}}</span>
+          <span slot="badge">{{notifications.filter(n => n.status === 0).length}}</span>
           <v-btn icon>
             <v-icon large>notifications</v-icon>
           </v-btn>
@@ -142,20 +137,17 @@
       </v-tooltip>
       <v-btn icon large>
         <v-avatar size="46px">
-          <img
-            :src="user.profilePicture"
-            :alt="user.username"
-          >
+          <img :src="user.profilePicture" :alt="user.username">
         </v-avatar>
       </v-btn>
     </v-toolbar>
     <v-content>
-      <v-container align-center>
+      <v-container fluid align-center>
         <nuxt/>
       </v-container>
     </v-content>
-    <dialogproject :edition="false">
-       <v-btn fab bottom right color="primary" slot="customactivator" dark fixed><v-icon>add</v-icon></v-btn>
+    <dialogproject>
+       <v-btn fab bottom right color="primary" slot="customactivator" :dark="lightOut" :light="!lightOut" fixed><v-icon>add</v-icon></v-btn>
     </dialogproject>
   </v-app>
 </template>
@@ -197,6 +189,7 @@
       ]
     }),
     computed: {
+      lightOut () { return this.$store.getters.lightOut },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       user () {

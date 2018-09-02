@@ -1,0 +1,233 @@
+.d--wrapper{
+  position: relative;
+}
+.d--vertical{
+  content: ' ';
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 1px;
+  background: #ddd;
+}
+.project-block {
+  margin: 0 auto;
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.project-block-container {
+  min-width: 300px;
+}
+
+.block-toolbar {
+  position: sticky;
+  top: 0px;
+  z-index:2;
+  margin: 0 0 8px 0;
+  /* border-radius: 20px 20px 0 0 !important; */
+}
+.block-footer {
+  position: sticky;
+  bottom: 0px;
+  z-index:2;
+  margin: 8px 0 0 0 !important;
+  /* border-radius: 0 0 20px 20px !important; */
+  -webkit-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.2) !important;
+  -moz-box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.2) !important;
+  box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.2) !important;
+  /* background: #626262 !important; */
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+.scroller {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scroller-horiz {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+  /* width */
+*::-webkit-scrollbar {
+  height: 4px;
+}
+
+  /* width */
+*::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+*::-webkit-scrollbar-track { /*, *::-webkit-scrollbar-track, {*/
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle */
+*::-webkit-scrollbar-thumb { /*,*::-webkit-scrollbar-thumb { */
+  background: #607d8b;
+}
+
+/* Handle on hover */
+*::-webkit-scrollbar-thumb:hover { /*,, *::-webkit-scrollbar-thumb:hover { */
+  background: #000; 
+}
+
+
+
+/* Track */
+.scroller__primary::-webkit-scrollbar-track {
+  background: #607d8b
+}
+
+/* Handle */
+.scroller__primary::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__primary::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__warning::-webkit-scrollbar-track {
+  background: #deb51f
+}
+
+/* Handle */
+.scroller__warning::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__warning::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__info::-webkit-scrollbar-track {
+  background: #03a9f4
+}
+
+/* Handle */
+.scroller__info::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__info::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__accent::-webkit-scrollbar-track {
+  background: #2ce6d5
+}
+
+/* Handle */
+.scroller__accent::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__accent::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__success::-webkit-scrollbar-track {
+  background: #5bce60
+}
+
+/* Handle */
+.scroller__success::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__success::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+
+/* Track */
+.scroller__error::-webkit-scrollbar-track {
+  background: #af1613
+}
+
+/* Handle */
+.scroller__error::-webkit-scrollbar-thumb {
+  background: rgba(50,50,50,0.4);
+}
+
+/* Handle on hover */
+.scroller__error::-webkit-scrollbar-thumb:hover {
+  background: #000; 
+}
+
+/* .highcharts-background, .highcharts-background rect, rect {
+ 
+  fill: #303030 !important; 
+} */
+
+.highcharts-background {
+	fill: #303030;
+}
+g.highcharts-data-labels {
+  margin: 0 auto !important;
+}
+
+.flat-link {
+  text-decoration: none !important;
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+/* .flat-link::before, .flat-link::after {
+  content: ' ';
+  transition: all .33s ease-in;
+  position: absolute;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  transform: scaleX(0);
+}
+.flat-link::before{
+  border-top: 2px solid #607d8b;
+  border-left: 2px solid #607d8b;
+  top: 0px;
+  transform-origin: top left;
+}
+.flat-link::after{
+  border-bottom: 2px solid #607d8b;
+  border-right: 2px solid #607d8b;
+  bottom: 0px;
+  transform-origin: bottom right;
+} */
+
+.flat-link:hover::before, .flat-link:hover::after{
+  transform: scaleX(1);
+}
+
+.chart--total {
+  color: white;
+  /* font-size: 18px; */
+  background: transparent;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  position: absolute;
+  z-index: 2
+}
+
+.project--toolbar > .v-toolbar__content {
+  padding: 8px;
+  margin: 0;
+}

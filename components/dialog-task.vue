@@ -1,5 +1,5 @@
 <template>
-      <v-dialog v-model="dialog" width="600px">
+    <v-dialog v-model="dialog" width="600px" :dark="lightOut">
       <template slot="activator">
         <slot name="customactivator"  @click.stop="dialog = !dialog" />
       </template>
@@ -64,7 +64,7 @@
               <v-autocomplete
                 prepend-icon="view_carousel"
                 label="block"
-                :items="project.blocks"
+                :items="blocks"
                 v-model="block"  
                 item-text="text"
                 :item-value="item => item"
@@ -101,7 +101,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.reduce((str, t) => `${str} #${t}`, '')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join('- ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -119,7 +119,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-          <v-btn round color="success" @click="dialog = false">create</v-btn>
+          <v-btn round color="success" @click="addTask">create</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -140,22 +140,54 @@ export default {
       description: '',
       end: null,
       assigned: this.$store.getters.loggedUserObject,
-      project: this.suggestedProject ? this.suggestedProject : {},
-      block: this.suggestedBlock ? this.suggestedBlock : {}
+      project: this.suggestedProject || {},
+      block: this.suggestedBlock || {}
     }
   },
   computed: {
     users () { return this.project.id ? this.project.coworkers.map(w => this.$store.getters.user(w)) : [] },
     projects () { return this.$store.getters.userProjects(this.$store.getters.loggedUser) },
-    assignable () { return this.users.filter(u => u.id !== this.project.manager) },
-    computedDate () { return this.formatDate(this.end) }
+    blocks () { return this.project.id ? this.$store.getters.projectBlocks(this.project.id) : [] },
+    assignable () {
+      return this.users.filter(u => u.id !== this.project.manager || u.id === this.$store.getters.loggedUser)
+    },
+    computedDate () { return this.stringToDateddmmYYYY(this.end) },
+    lightOut () { return this.$store.getters.lightOut }
+  },
+  watch: {
+    dialog (val) {
+      // if (!val) this.close()
+    }
   },
   methods: {
-    formatDate (date) {
-      if (!date) return null
-
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+    close () {
+      this.datemenu = null
+      this.title = ''
+      this.description = ''
+      this.end = null
+      this.block = {}
+    },
+    addTask () {
+      const dataSent = {
+        id: 't' + Date.now().toString(),
+        project: this.project.id,
+        creator: this.$store.getters.loggedUser,
+        block: this.block.id,
+        assigned: this.assigned.id,
+        title: this.title,
+        description: this.description,
+        start: new Date(),
+        end: new Date(this.end),
+        finishedAt: null,
+        comments: [],
+        status: 0
+      }
+      this.$store.dispatch('addTask', dataSent)
+        .then(() => {
+          console.log(`success applying data: ${dataSent}`)
+          this.$emit('task-created')
+          this.dialog = false
+        })
     }
   }
 }

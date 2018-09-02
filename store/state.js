@@ -1,5 +1,6 @@
 import { increaseDays } from '../helpers'
 export default () => ({
+  lightOut: true,
   error: null,
   loading: false,
   sidebar: false,
@@ -10,18 +11,29 @@ export default () => ({
       id: 'u1',
       email: 'icaro.stuart@gmail.com',
       profilePicture: 'https://icarotorres.github.io/images/perfil1.jpg',
-      tasks: ['t1'],
-      projects: ['p1', 'p2'],
-      teams: ['tm1'],
+      tasks: ['t2', 't4'],
+      projects: ['p1', 'p2', 'p3'],
+      teams: ['tm1', 'tm2'],
       dailyMeetings: ['d1'],
       notifications: ['n1', 'n2', 'n3', 'n4']
+    },
+    'u3': {
+      username: 'outro',
+      id: 'u3',
+      email: 'outro@gmail.com',
+      profilePicture: '',
+      tasks: [],
+      projects: ['p3'],
+      teams: ['tm2'],
+      dailyMeetings: [],
+      notifications: []
     },
     'u2': {
       username: 'giltonsilva',
       id: 'u2',
       email: 'gilton.ferreira@dcomp.ufs.br',
       profilePicture: '',
-      tasks: [],
+      tasks: ['t1', 't3', 't0'],
       projects: ['p1', 'p2'],
       teams: ['tm1'],
       dailyMeetings: ['d1'],
@@ -31,19 +43,13 @@ export default () => ({
   projects: {
     'p1': {
       id: 'p1',
-      creator: 'u2',
-      manager: 'u2',
+      creator: 'u1',
+      manager: 'u1',
       coworkers: ['u1', 'u2'],
       title: 'Ferramenta Reativa para Gestão Ágil de Projetos Acadêmicos',
       description: 'Find process problems, co-workers dificulties and get the best returns from your teams engagement',
       company: 'UFS - Universidade Federal de Sergipe',
-      blocks: [
-        { text: 'To-do', color: 'primary', tasks: ['t1', 't1', 't1'] },
-        { text: 'Doing', color: 'info', tasks: ['t1', 't2', 't2', 't2', 't2'] },
-        { text: 'To-check', color: 'accent', tasks: ['t3', 't3', 't3', 't3', 't3'] },
-        { text: 'To-fix', color: 'warning', tasks: ['t0', 't0', 't0'] },
-        { text: 'Done', color: 'success', tasks: ['t4', 't4', 't4', 't4'] }
-      ],
+      blocks: ['b1', 'b2', 'b3', 'b4', 'b5'],
       dailyMeetings: ['d1'],
       start: new Date('07/14/2018'),
       end: null,
@@ -59,25 +65,48 @@ export default () => ({
       title: 'Dummy Title',
       description: 'Dummy description',
       company: 'UFS - Universidade Federal de Sergipe',
-      blocks: [
-        { text: 'To-do', color: 'primary', tasks: ['t1', 't1', 't1'] },
-        { text: 'Doing', color: 'info', tasks: ['t1', 't2', 't2', 't2', 't2'] },
-        { text: 'Done', color: 'success', tasks: ['t4', 't4', 't4', 't4'] }
-      ],
+      blocks: ['b6', 'b7', 'b8'],
       dailyMeetings: ['d2'],
       start: new Date('08/02/2018'),
       end: null,
       finishedAt: null,
       notes: '',
       status: 0
+    },
+    'p3': {
+      id: 'p3',
+      creator: 'u1',
+      manager: 'u1',
+      coworkers: ['u1', 'u3'],
+      title: 'Project without blocks',
+      description: 'A brand new project before fill with blocks to test behaviors',
+      company: '',
+      blocks: [],
+      dailyMeetings: [],
+      start: new Date('08/30/2018'),
+      end: null,
+      finishedAt: null,
+      notes: '',
+      status: 0
     }
+  },
+  blocks: {
+    'b1': { id: 'b1', project: 'p1', text: 'To-do', color: 'primary', tasks: [] },
+    'b2': { id: 'b2', project: 'p1', text: 'Doing', color: 'info', tasks: ['t2'] },
+    'b3': { id: 'b3', project: 'p1', text: 'To-check', color: 'accent', tasks: ['t3'] },
+    'b4': { id: 'b4', project: 'p1', text: 'To-fix', color: 'warning', tasks: ['t1', 't0'] },
+    'b5': { id: 'b5', project: 'p1', text: 'Done', color: 'success', tasks: [] },
+    'b6': { id: 'b6', project: 'p2', text: 'To-do', color: 'primary', tasks: [] },
+    'b7': { id: 'b7', project: 'p2', text: 'Doing', color: 'info', tasks: ['t4'] },
+    'b8': { id: 'b8', project: 'p2', text: 'Done', color: 'success', tasks: [] }
   },
   tasks: {
     't0': {
       id: 't0',
       creator: 'u1',
       project: 'p1',
-      assigned: 'u1',
+      block: 'b4',
+      assigned: 'u2',
       title: 'Dummy task title',
       description: 'task description',
       start: new Date('08/18/2018'),
@@ -90,7 +119,8 @@ export default () => ({
       id: 't1',
       project: 'p1',
       creator: 'u1',
-      assigned: 'u1',
+      block: 'b4',
+      assigned: 'u2',
       title: 'Dummy task title',
       description: 'task description',
       start: new Date('08/22/2018'),
@@ -103,6 +133,7 @@ export default () => ({
       id: 't2',
       project: 'p1',
       creator: 'u1',
+      block: 'b2',
       assigned: 'u1',
       title: 'Dummy task title',
       description: 'task description',
@@ -116,7 +147,8 @@ export default () => ({
       id: 't3',
       project: 'p1',
       creator: 'u1',
-      assigned: 'u1',
+      block: 'b3',
+      assigned: 'u2',
       title: 'Dummy task title',
       description: 'task description',
       start: new Date('08/18/2018'),
@@ -190,8 +222,9 @@ export default () => ({
       r2: '',
       r3: '',
       start: new Date(),
-      end: null, // 24hr after
-      finishedAt: null
+      end: increaseDays(new Date(), 1), // 24hr after
+      finishedAt: null,
+      status: 0
     },
     'd2': {
       id: 'd2',
@@ -201,8 +234,9 @@ export default () => ({
       r2: '',
       r3: '',
       start: new Date(),
-      end: null, // 24hr after
-      finishedAt: null
+      end: increaseDays(new Date(), 1), // 24hr after
+      finishedAt: null,
+      status: 0
     }
   },
   status: {

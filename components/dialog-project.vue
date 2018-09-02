@@ -1,13 +1,13 @@
 <template>
-  <v-dialog v-model="dialog" width="800px" scrollable>
+  <v-dialog v-model="dialog" width="800px" scrollable :dark="lightOut">
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" >
           <!-- <v-btn fab bottom right color="primary" slot="customactivator" dark fixed @click.stop="dialog = !dialog"><v-icon>add</v-icon></v-btn> -->
       </slot>
     </template>
     <v-card>
-      <v-card-title class="py-4 title primary">
-        {{edition ? 'Edit' : 'Create'}} Project
+      <v-card-title :class="{ 'py-4': true, 'title': true, 'primary': !project, 'warning grey--text text--darken-3': project }">
+        {{project ? 'Edit' : 'Create'}} Project
       </v-card-title>
       <v-card-text class="pa-0" height="800">
         <v-container grid-list-sm class="pa-4">
@@ -51,7 +51,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.reduce((str, t) => `${str} #${t}`, '')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join('- ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -107,22 +107,37 @@
 export default {
   name: 'dialogproject',
   props: {
-    edition: Boolean,
     project: Object
   },
   data () {
     return {
       dialog: false,
-      title: this.edition ? this.project.title : '',
-      description: this.edition ? this.project.description : '',
-      manager: this.edition ? this.getUser(this.project.manager) : {},
-      team: this.edition ? this.project.coworkers.map(cid => this.$store.getters.user(cid)) : [],
-      company: this.edition ? this.project.company : '',
-      notes: this.edition ? this.project.notes : ''
+      title: this.project ? this.project.title : '',
+      description: this.project ? this.project.description : '',
+      manager: this.project ? this.getUser(this.project.manager) : {},
+      team: this.project ? this.project.coworkers.map(cid => this.$store.getters.user(cid)) : [],
+      company: this.project ? this.project.company : '',
+      notes: this.project ? this.project.notes : ''
     }
   },
   computed: {
-    users () { return Object.values(this.$store.getters.users) }
+    users () { return Object.values(this.$store.getters.users) },
+    lightOut () { return this.$store.getters.lightOut }
+  },
+  watch: {
+    dialog (val) {
+      if (!val) this.close()
+    }
+  },
+  methods: {
+    close () {
+      this.title = null
+      this.description = null
+      this.manager = null
+      this.team = null
+      this.compan = null
+      this.notes = null
+    }
   }
 }
 </script>

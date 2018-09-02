@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="400px">
+  <v-dialog v-model="dialog" width="400px" :dark="lightOut">
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" />
     </template>
@@ -28,6 +28,9 @@ export default {
   },
   data: () => ({
     dialog: false
-  })
+  }),
+  computed: {
+    lightOut () { return this.$store.getters.lightOut }
+  }
 }
 </script>

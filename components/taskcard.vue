@@ -1,54 +1,96 @@
 <template>
-    <v-expansion-panel-content hide-actions >
-      <v-flex xs12 slot="header" class="pl-0">
-        <v-layout align-center>
-          <v-icon color="primary" small>drag_indicator</v-icon>
-          <span @click.stop="">{{task.title}}</span>
-          <v-spacer/>
-          <dialogtaskdel :task="task">
-            <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator">
-              <v-icon small>delete</v-icon>
-            </v-btn>
-          </dialogtaskdel>
-          <dialogdone :task="task">
-            <v-btn small icon flat class="ma-0" color="light-green accent-2" v-if="task.status !== 1" slot="customactivator">
-              <v-icon small>done_outline</v-icon>
-            </v-btn>
-          </dialogdone>
+    <v-expansion-panel-content  hide-actions :class="{'red-bordered': delayed}">
+      <v-flex xs12 slot="header" :class="{'pl-0': true}">
+        <v-layout row wrap align-center>
+          <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
+          <v-flex class="pa-0">
+            <span class="subheading">{{task.title}}</span>
+            <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">finished at: {{finished}}</div>
+          </v-flex>
+          <v-spacer></v-spacer>
+          <v-flex xs1 class="pa-0 text-xs-right">
+            <v-layout column>
+              <dialogdone :task="task" v-if="task.status !== 1" >
+                <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator">
+                  <v-icon small>done_outline</v-icon>
+                </v-btn>
+              </dialogdone>
+              <dialogtaskdel :task="task">
+                <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator">
+                  <v-icon small>delete</v-icon>
+                </v-btn>
+              </dialogtaskdel>
+            </v-layout>
+          </v-flex>
         </v-layout>
       </v-flex>
-      <v-card flat light>
+      <v-card tile flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
         <v-card-text class="px-2 pt-2 pb-0">
-          <div class="body-1 grey--text mb-1">{{task.description}}</div>
-
-            <div class="layout row align-center justify-content-end px-3" v-if="task.status === 0">
-              {{startDate}}
-
+          <div class="body-1 grey--text">
+            {{task.description}}
+            <v-divider></v-divider>
+          </div>
+          <div class="layout row wrap align-center justify-content-end px-2">
+            <v-flex xs12 class="py-0 mb-1">
               <v-range-slider
-                class="px-3"
                 hide-details
                 v-model="sliderange"
                 :max="slidemax"
                 :min="0"
                 readonly
-                :track-color="color"
-                step="1"
-                ticks
-                tick-size="4"
-                :thumb-size="20"
+                :color="ratecolor"
               ></v-range-slider>
-
-              {{endDate}}
-            </div>
-          <hr class="grey lighten-3 my-0">
+            </v-flex>
+            <v-flex xs12>
+              <v-layout class="px-1">
+                <span class="info--text pr-2">starts</span> {{startDate}} <v-spacer/> {{endDate}} <span class="error--text pl-2">ends</span>
+              </v-layout>
+            </v-flex>
+            <v-flex xs12 class="py-0 px-1">
+              <v-divider/>
+            </v-flex>
+            <v-flex xs12>
+              <div class="text-xs-center">
+              <div class="grey--text text-lighten--2">days spent X remaining</div>
+              <v-rating
+                dense
+                v-model="rating"
+                :length="slidemax"
+                :background-color="lightOut ? 'secondary' : 'grey ligten-3'"
+                empty-icon="panorama_fish_eye"
+                full-icon="lens"
+                readonly
+                :color="ratecolor"
+              ></v-rating>
+              </div>
+            </v-flex>
+            <v-flex xs12 class="py-0 px-1" v-if="overdue">
+              <v-divider/>
+            </v-flex>
+            <v-flex xs12 v-if="overdue">
+              <div class="text-xs-center">
+              <v-rating
+                dense
+                v-model="overdue"
+                :length="overdue"
+                full-icon="brightness_1"
+                half-increments
+                readonly
+                color="red"
+              ></v-rating>
+              <div class="grey--text text-lighten--2">overdue days</div>
+              </div>
+            </v-flex>
+          </div>
+          <v-divider></v-divider>
         </v-card-text>
         <v-card-actions>
-          <v-avatar size="36px" class="mr-1">
+          <v-avatar size="46px" class="mr-1">
             <img :src="avatar">
           </v-avatar>
           <div>
             <div class="body-1">{{assigned.username}}</div>
-            <div class="caption grey--text">{{startDate}}</div>
+            <div class="caption grey--text">#{{assigned.teams.join('- ')}}</div>
           </div>
           <v-spacer/>
           <div class="d--wrapper">
@@ -76,7 +118,11 @@ export default {
     taskId: [String, Number],
     block: Object
   },
+  data: () => ({
+    sliderange: [0, 0]
+  }),
   computed: {
+    lightOut () { return this.$store.getters.lightOut },
     task () { return this.$store.getters.task(this.taskId) },
     assigned () { return this.$store.getters.user(this.task.assigned) },
     avatar () { return this.assigned.profilePicture || this.dummyavatar },
@@ -87,8 +133,37 @@ export default {
         ? 'error'
         : this.block.color
     },
-    sliderange () {
-      return [0, this.daysBetween(new Date(this.task.start), new Date())]
+    delayed () { return this.isTaskDelayed(this.task) },
+    rating () {
+      let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      this.sliderangeUpdate()
+      return this.task.status === 0
+        ? Math.min(this.daysBetween(new Date(this.task.start), new Date()), max)
+        : Math.min(this.daysBetween(new Date(this.task.start), new Date(this.task.finishedAt)), max)
+    },
+    overdue () {
+      let today = new Date()
+      let end = new Date(this.task.end)
+      let finished = new Date(this.task.finishedAt)
+      return this.task.status === 1
+        ? finished.getTime() > end.getTime()
+          ? Math.abs(this.daysBetween(finished, end))
+          : undefined
+        : today.getTime() > end.getTime()
+          ? Math.abs(this.daysBetween(today, end))
+          : undefined
+    },
+    ratecolor () {
+      let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      return this.task.status === 1
+        ? 'success'
+        : this.rating <= (1 * max / 4)
+          ? 'accent'
+          : this.rating <= (2 * max / 4)
+            ? 'info'
+            : this.rating <= (3 * max / 4)
+              ? 'warning'
+              : 'deep-orange'
     },
     slidemax () {
       return this.daysBetween(new Date(this.task.start), new Date(this.task.end))
@@ -99,11 +174,27 @@ export default {
     endDate () {
       return new Date(this.task.end).toLocaleDateString('pt-BR')
     },
+    finished () {
+      return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString('pt-BR') : undefined
+    },
     canRemove () {
       let loggedUserId = this.$store.getters.loggedUser
       return this.task.creator === loggedUserId || this.$store.getters.project(this.task.project).manager === loggedUserId
     }
+  },
+  methods: {
+    sliderangeUpdate () {
+      this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
+      return this.sliderange
+    }
   }
 }
 </script>
+<style scoped>
+.red-bordered {
+  border-top: 3px solid #f72719 !important;
+  background-color: rgba(255, 0, 0, 0.3) !important;
+}
+</style>
+
 

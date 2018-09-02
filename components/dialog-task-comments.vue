@@ -1,5 +1,5 @@
 <template>
-      <v-dialog v-model="dialog" width="800px" scrollable>
+      <v-dialog v-model="dialog" width="800px" scrollable :dark="lightOut">
       <template slot="activator">
         <slot name="customactivator"  @click.stop="dialog = !dialog" >
            <!-- <v-btn fab bottom right color="primary" slot="customactivator" dark fixed @click.stop="dialog = !dialog"><v-icon>add</v-icon></v-btn> -->
@@ -81,7 +81,8 @@ export default {
     comments () {
       return this.$store.getters.taskComments(this.task)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    }
+    },
+    lightOut () { return this.$store.getters.lightOut }
   },
   methods: {
     setIcon (comment, uid) {
