@@ -2,8 +2,11 @@ export const actions = {
   clearError ({commit}) {
     commit('clearError')
   },
-  error ({commit}, payload) {
+  setError ({commit}, payload) {
     commit('error', payload)
+  },
+  setLoading ({commit}, payload = false) {
+    commit('setLoading', payload)
   },
   sliceToLoad ({commit}, payload = 6) {
     commit('sliceToLoad', payload)
@@ -11,10 +14,13 @@ export const actions = {
   toggleLight ({ commit }) {
     commit('toggleLight')
   },
-  addBlock ({ commit }, payload) {
-    commit('addBlock', payload)
+  saveProject ({ commit }, payload) {
+    commit('saveProject', payload)
   },
-  addTask ({ commit }, payload) {
-    commit('addTask', payload)
+  saveBlock ({ commit }, payload) {
+    commit('saveBlock', payload)
+  },
+  saveTask ({ commit }, payload) {
+    commit('saveTask', payload)
   }
 }

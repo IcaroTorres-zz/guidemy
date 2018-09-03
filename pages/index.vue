@@ -12,8 +12,8 @@
         <v-flex xs10 md5>
           <v-text-field class="my-0"
             label="User Name"
-            name="username"
-            model="username"
+            name="loginusername"
+            model="loginusername"
             type="text"
           >
           </v-text-field>
@@ -48,7 +48,7 @@
     </v-form>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn round color="success" nuxt to="/home">Sign up</v-btn>
+      <v-btn round color="success" nuxt to="/dashboard">Sign up</v-btn>
     </v-card-actions>
     <hr class="primary my-1">
     <v-card-actions>
@@ -63,7 +63,7 @@ export default {
   layout: 'login',
   data () {
     return {
-      username: '',
+      loginusername: '',
       password: '',
       corfirmPassword: ''
     }

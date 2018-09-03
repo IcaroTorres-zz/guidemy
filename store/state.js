@@ -1,8 +1,9 @@
 import { increaseDays } from '../helpers'
 export default () => ({
+  mini: true,
   lightOut: true,
-  error: null,
-  loading: false,
+  appError: null,
+  appLoading: false,
   sidebar: false,
   loggedUser: 'u1',
   users: {

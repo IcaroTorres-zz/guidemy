@@ -2,7 +2,9 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import VueChartkick from 'vue-chartkick'
 import Highcharts from 'highcharts'
-import './mixins'
+import {globalMixin} from '../mixins'
+
+Vue.mixin(globalMixin)
 
 Vue.use(VueChartkick, { adapter: Highcharts })
 

@@ -12,8 +12,8 @@
           <v-flex xs10 md5>
             <v-text-field
               label="User Name"
-              name="username"
-              model="username"
+              name="loginusername"
+              model="loginusername"
               type="text"
             >
             </v-text-field>
@@ -68,7 +68,7 @@ export default {
   layout: 'login',
   data () {
     return {
-      username: '',
+      loginusername: '',
       password: '',
       corfirmPassword: ''
     }

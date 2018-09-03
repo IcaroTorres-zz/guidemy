@@ -23,7 +23,7 @@
           type="password"
         >
         </v-text-field>
-        <v-btn color="success" block round nuxt to="/home">Sign in</v-btn>
+        <v-btn color="success" block round nuxt to="/dashboard">Sign in</v-btn>
       </v-form>
     </v-layout>
     <hr class="primary my-1">
