@@ -1,4 +1,6 @@
-import { increaseDays } from '../helpers'
+import { increaseDays, generateDailies } from '../helpers'
+const generatedDailes = {}
+let p1Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u2', 'u1')
 export default () => ({
   mini: true,
   lightOut: true,
@@ -41,6 +43,16 @@ export default () => ({
       notifications: ['n1']
     }
   },
+  teams: {
+    'tm1': {
+      name: 'FREGAPA',
+      members: ['u1', 'u2']
+    },
+    'tm2': {
+      name: 'OUTRO TIME',
+      members: ['u3']
+    }
+  },
   projects: {
     'p1': {
       id: 'p1',
@@ -51,7 +63,7 @@ export default () => ({
       description: 'Find process problems, co-workers dificulties and get the best returns from your teams engagement',
       company: 'UFS - Universidade Federal de Sergipe',
       blocks: ['b1', 'b2', 'b3', 'b4', 'b5'],
-      dailyMeetings: ['d1'],
+      dailyMeetings: p1Generated,
       start: new Date('07/14/2018'),
       end: null,
       finishedAt: null,
@@ -67,7 +79,7 @@ export default () => ({
       description: 'Dummy description',
       company: 'UFS - Universidade Federal de Sergipe',
       blocks: ['b6', 'b7', 'b8'],
-      dailyMeetings: ['d2'],
+      dailyMeetings: [],
       start: new Date('08/02/2018'),
       end: null,
       finishedAt: null,
@@ -214,32 +226,34 @@ export default () => ({
       likes: ['u1']
     }
   },
-  dailyMeetings: {
-    'd1': {
-      id: 'd1',
-      manager: 'u2',
-      assigned: 'u1',
-      r1: '',
-      r2: '',
-      r3: '',
-      start: new Date(),
-      end: increaseDays(new Date(), 1), // 24hr after
-      finishedAt: null,
-      status: 0
-    },
-    'd2': {
-      id: 'd2',
-      manager: 'u2',
-      assigned: 'u1',
-      r1: '',
-      r2: '',
-      r3: '',
-      start: new Date(),
-      end: increaseDays(new Date(), 1), // 24hr after
-      finishedAt: null,
-      status: 0
-    }
-  },
+  dailyMeetings: generatedDailes,
+  // {
+  // 'd1': {
+  //  project: 'p1',
+  //   id: 'd1',
+  //   manager: 'u2',
+  //   assigned: 'u1',
+  //   r1: '',
+  //   r2: '',
+  //   r3: '',
+  //   start: new Date(),
+  //   end: increaseDays(new Date(), 1), // 24hr after
+  //   finishedAt: null,
+  //   status: 0
+  // },
+  // 'd2': {
+  //   id: 'd2',
+  //   manager: 'u2',
+  //   assigned: 'u1',
+  //   r1: '',
+  //   r2: '',
+  //   r3: '',
+  //   start: new Date(),
+  //   end: increaseDays(new Date(), 1), // 24hr after
+  //   finishedAt: null,
+  //   status: 0
+  // }
+  // },
   status: {
     0: 'active',
     1: 'done',

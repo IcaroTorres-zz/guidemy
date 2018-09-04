@@ -38,6 +38,8 @@
                 label="manager"
                 :items="Object.values(users)"
                 v-model="editing.manager" 
+                clearable
+                dense
                 item-text="username"
                 item-value="id"
               >
@@ -62,11 +64,13 @@
               <v-autocomplete
                 prepend-icon="group"
                 label="team coworkers"
-                :items="users"
+                :items="team"
                 v-model="editing.coworkers"
+                clearable
+                dense
                 item-text="username"
                 multiple
-                item-value="id"
+                :item-value="item => item.id"
               >
                 <!-- :item-value="item => item" -->
                 <template slot="item" slot-scope="data"  class="pa-0">
@@ -79,7 +83,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.reduce((str, t) => `${str} #${t}`, '')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join(' - ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -98,8 +102,8 @@
       <v-card-actions>
         <v-btn flat color="primary"><v-icon>info</v-icon> More</v-btn>
         <v-spacer></v-spacer>
-        <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-        <v-btn round color="success" @click="saveProject">Save</v-btn>
+        <v-btn flat color="primary" @click.stop="dialog = false">Cancel</v-btn>
+        <v-btn round color="success" @click.stop="saveProject">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -115,11 +119,24 @@ export default {
   data () {
     return {
       dialog: false,
-      editing: new Project(this.project || {creator: this.loggedUser})
+      editing: new Project(this.project || {
+        creator: this.$store.getters.loggedUser
+      })
     }
   },
+  watcher: {
+    editing (val, newval) {
+      console.log('watched val', val, newval)
+    },
+    deep: true
+  },
   computed: {
-    team () { return this.project ? this.project.coworkers.map(cid => this.user(cid)) : [] }
+    team () {
+      return this.project
+        ? this.project.coworkers.map(cid => this.user(cid))
+        : this.loggedUserObj.teams.reduce((coworkers, tm) => coworkers.concat(this.teams[tm].members), [])
+          .map(uid => this.user(uid))
+    }
   },
   methods: {
     saveProject () {
@@ -138,6 +155,7 @@ export default {
       //   notes: this.notes,
       //   status: 0
       // }
+      console.dir(this.editing)
       this.$store.dispatch('saveProject', this.editing)
         .then(() => {
           console.log('success applying data:')

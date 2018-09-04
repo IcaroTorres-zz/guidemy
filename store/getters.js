@@ -3,7 +3,8 @@ export const getters = {
   // ui states
   // lightOut: state => state.lightOut,
   // user states
-  // loggedUser: state => state.loggedUser,
+  loggedUser: state => state.loggedUser,
+  JSONState: state => JSON.stringify(state),
   loggedUserObj: state => state.users[state.loggedUser],
   appUser: state => uid => state.users[uid],
   appUsername: state => uid => state.users[uid].username,
@@ -19,5 +20,6 @@ export const getters = {
   projectBlocks: state => pid => state.projects[pid].blocks.map(bid => state.blocks[bid]),
   task: state => taskId => state.tasks[taskId],
   projectTasks: state => pid => state.projects[pid].blocks.reduce((fullList, b) => fullList.concat(state.blocks[b].tasks), []).map(t => state.tasks[t]),
+  projectDailies: state => pid => state.projects[pid].dailyMeetings.map(d => state.dailyMeetings[d]),
   taskComments: state => task => task.comments.map(c => state.comments[c])
 }

@@ -7,6 +7,9 @@
       <v-btn small color="accent" @click="toggleAll">
         <v-icon>{{expandAll ? 'unfold_less' : 'unfold_more'}}</v-icon>{{expandAll ? 'collapse all' : 'expand all'}}
       </v-btn>
+      <v-btn small flat @click="printJSONState">
+        <v-icon>print</v-icon>log json state
+      </v-btn>
       <!-- <v-spacer></v-spacer>
       <span class="display-1 pr-3">/dashboard</span> -->
     </div>
@@ -39,12 +42,16 @@
                 </v-btn>
               </dinvite>
               <v-spacer/>
-              <v-btn flat :icon="!lgAndUp" class="ma-0" color="info" slot="" ><span class="hidden-md-and-down">view dailes</span><v-icon >update</v-icon></v-btn>
+              <ddailies :project="project">
+                <v-btn flat :icon="!lgAndUp" class="ma-0" color="info" slot="customactivator">
+                  <span class="hidden-md-and-down">view dailes</span><v-icon >update</v-icon>
+                </v-btn>
+              </ddailies>
               <v-btn flat :icon="!lgAndUp" class="ma-0" color="accent" slot="" ><span class="hidden-md-and-down">contributions</span><v-icon >supervised_user_circle</v-icon></v-btn>
               <v-btn flat :icon="!lgAndUp" class="ma-0" color="success" ><span class="hidden-md-and-down">results</span><v-icon >poll</v-icon></v-btn>
             </v-toolbar>
             <v-layout row wrap justify-space-between align-content-start class="py-0 px-1">
-              <v-flex sm7 md9 class="pb-0">
+              <v-flex sm7 md8 class="pb-0">
                 <a class="title">{{project.title}}</a>
                 <div>Manager: <a class="info--text">@{{username(project.manager)}}</a></div>
                 <div>Team: <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a></div>
@@ -62,7 +69,7 @@
                 </div>
                 <p class="caption text-xs-justify primary--text">{{project.description}}</p>
               </v-flex>
-              <v-flex sm5 md3 class="pb-0">
+              <v-flex sm5 md4 class="pb-0">
                 <div class="text-xs-center" style="position: relative">
                   <v-layout row justify-center
                     :class="{
@@ -71,12 +78,12 @@
                     'caption': !lgAndUp,
                     'secondary--text': !lightOut,
                     'grey--text text--lighten-3': lightOut }">
-                    
-                    <v-flex xs3 class="px-0 error--text text-xs-right">{{taskMap[project.id].delayed}} <small>delayed</small></v-flex>
+                    <v-spacer></v-spacer>
+                    <v-flex class="px-0 error--text text-xs-right">{{taskMap[project.id].delayed}} <small>delayed</small></v-flex>
                     <v-flex xs1 class="px-0">|</v-flex>
-                    <v-flex xs4 class="px-0 text-xs-center">{{taskMap[project.id].taskCount}} <small>tasks</small></v-flex>
+                    <v-flex class="px-0 text-xs-center">{{taskMap[project.id].taskCount}} <small>tasks</small></v-flex>
                     <v-flex xs1 class="px-0">|</v-flex>
-                    <v-flex xs3 class="px-0 success--text text-xs-left">{{taskMap[project.id].complete}} <small>completed</small></v-flex>
+                    <v-flex class="px-0 success--text text-xs-left">{{taskMap[project.id].complete}} <small>completed</small></v-flex>
                     
                   </v-layout>
                   <div :id="`${project.id}-piechart`" :ref="`${project.id}-piechart`"></div>
@@ -136,7 +143,7 @@
   </div>
 </template>
 <script>
-import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel } from '../components/dialog'
+import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '../components/dialog'
 import taskcard from '../components/taskcard'
 import Highcharts from 'highcharts'
 import { colors } from '../helpers'
@@ -145,7 +152,7 @@ const pieColors = (blocks) => blocks.map(b => colors[b.color])
 const pieSeries = (blocks) => blocks.map(b => Object.assign({}, { name: b.text, y: b.tasks.length }))
 
 export default {
-  components: {taskcard, dproject, dtask, dinvite, dfinish, dprojectdel, dblock},
+  components: {taskcard, dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies},
   data () {
     return {
       expandAll: false,
@@ -167,7 +174,7 @@ export default {
     const map = this.userProjects.reduce((m, p) => {
       m.blockMap[p.id] = getters.projectBlocks(p.id) || []
       m.taskMap[p.id] = {
-        delayed: getters.projectTasks(p.id).filter(t => this.isTaskDelayed(t)).length,
+        delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
         complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
         taskCount: this.projectTaskCount(p)
       }
@@ -190,6 +197,10 @@ export default {
 
   },
   methods: {
+    printJSONState () {
+      console.log(this.$store.getters.JSONState)
+      console.log(JSON.parse(this.$store.getters.JSONState))
+    },
     sortProjects (a, b) {
       return this.descending
         ? new Date(b.start).getTime() - new Date(a.start).getTime()
@@ -216,7 +227,7 @@ export default {
     },
     updateTaskMap (p, getters) {
       this.taskMap[p.id] = {
-        delayed: getters.projectTasks(p.id).filter(t => this.isTaskDelayed(t)).length,
+        delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
         complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
         taskCount: this.projectTaskCount(p)
       }

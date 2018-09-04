@@ -13,15 +13,16 @@
               <v-text-field
                 class="mx-2"
                 label="Block text"
-                v-model="text"
+                v-model="editing.text"
               ></v-text-field>
             </v-flex>
             <v-flex xs12 md5>
               <v-autocomplete
+                dense
                 class="mx-2"
                 append-icon="brush"
                 label="color"
-                v-model="color"
+                v-model="editing.color"
                 :items="colors"
               >
                 <template slot="item" slot-scope="data" >
@@ -35,52 +36,49 @@
         </v-container>
         <v-card-actions class="px-4">
           <v-spacer></v-spacer>
-          <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
-          <v-btn small color="success" @click="saveBlock">create</v-btn>
+          <v-btn flat small color="primary" @click.stop="dialog = false">Cancel</v-btn>
+          <v-btn small color="success" @click.stop="saveBlock">create</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 </template>
 
 <script>
+import {Block} from '../../models'
 import {colors} from '../../helpers'
 export default {
   name: 'dialogblock',
   props: {
-    project: Object,
+    project: {
+      type: Object,
+      required: true
+    },
     block: Object
   },
   data () {
     return {
       dialog: false,
-      text: this.block ? this.block.text : '',
-      tasks: this.block ? this.block.tasks : [],
-      color: this.block ? this.block.color : 'primary'
+      editing: new Block(this.block || {project: this.project.id})
     }
   },
   computed: {
     dialogtitle () { return this.block ? `Editing ${this.block.text}` : 'New Block' },
     colors () { return Object.keys(colors) }
   },
-  watch: {
-    dialog (val) {
-      if (!val) this.close()
-    }
-  },
   methods: {
     close () {
     },
     saveBlock () {
-      const dataSent = {
-        id: 'b' + Date.now().toString(),
-        color: this.color,
-        tasks: this.tasks,
-        text: this.text,
-        project: this.project.id
-      }
-      this.$store.dispatch('saveBlock', dataSent)
+      // const dataSent = {
+      //   id: 'b' + Date.now().toString(),
+      //   color: this.color,
+      //   tasks: this.tasks,
+      //   text: this.text,
+      //   project: this.project.id
+      // }
+      this.$store.dispatch('saveBlock', this.editing)
         .then((data) => {
-          console.log(`success applying data: ${dataSent}`)
+          console.log(`success applying data: ${JSON.stringify(this.editing)}`)
           this.$emit('block-created')
           this.dialog = false
         })

@@ -1,29 +1,40 @@
 <template>
-    <v-expansion-panel-content  hide-actions :class="{'red-bordered': delayed}">
-      <v-flex xs12 slot="header" :class="{'pl-0': true}">
-        <v-layout row wrap align-center>
-          <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
-          <v-flex class="pa-0">
-            <span class="subheading">{{task.title}}</span>
-            <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">finished at: {{finished}}</div>
-          </v-flex>
-          <v-spacer></v-spacer>
-          <v-flex xs1 class="pa-0 text-xs-right">
-            <v-layout column>
-              <dtaskdone :task="task" v-if="task.status !== 1" >
-                <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator">
-                  <v-icon small>done_outline</v-icon>
-                </v-btn>
-              </dtaskdone>
-              <dtaskdel :task="task">
-                <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator">
-                  <v-icon small>delete</v-icon>
-                </v-btn>
-              </dtaskdel>
-            </v-layout>
-          </v-flex>
-        </v-layout>
-      </v-flex>
+    <v-expansion-panel-content  hide-actions :class="{'task-delayed': delayed}">
+      <template slot="header" row>
+          <v-progress-linear
+            style="left: 0; right:0; top: 0;position: absolute; transform: translateY(-14px)"
+            background-color="transparent"
+            :color="ratecolor"
+            height="4"
+            :value="rating * (100 / slidemax)"
+          ></v-progress-linear>
+
+        <v-flex xs12:class="{'pl-0': true}">
+          <v-layout row wrap align-center>
+            <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
+            <v-flex class="pa-0">
+              <span class="subheading">{{task.title}}</span>
+              <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">finished at: {{finished}}</div>
+            </v-flex>
+            <v-spacer></v-spacer>
+            <v-flex xs1 class="pa-0 text-xs-right">
+              <v-layout column>
+                <dtaskdone :task="task" v-if="task.status !== 1" >
+                  <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator">
+                    <v-icon small>done_outline</v-icon>
+                  </v-btn>
+                </dtaskdone>
+                <dtaskdel :task="task">
+                  <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator">
+                    <v-icon small>delete</v-icon>
+                  </v-btn>
+                </dtaskdel>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-flex>
+
+      </template>
       <v-card tile flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
         <v-card-text class="px-2 pt-2 pb-0">
           <div class="body-1 grey--text">
@@ -31,7 +42,7 @@
             <v-divider></v-divider>
           </div>
           <div class="layout row wrap align-center justify-content-end px-2">
-            <v-flex xs12 class="py-0 mb-1">
+            <!-- <v-flex xs12 class="py-0 mb-1">
               <v-range-slider
                 hide-details
                 v-model="sliderange"
@@ -40,9 +51,9 @@
                 readonly
                 :color="ratecolor"
               ></v-range-slider>
-            </v-flex>
+            </v-flex> -->
             <v-flex xs12>
-              <v-layout class="px-1">
+              <v-layout class="pa-1">
                 <span class="info--text pr-2">starts</span> {{startDate}} <v-spacer/> {{endDate}} <span class="error--text pl-2">ends</span>
               </v-layout>
             </v-flex>
@@ -51,7 +62,7 @@
             </v-flex>
             <v-flex xs12>
               <div class="text-xs-center">
-              <div class="grey--text text-lighten--2">days spent X remaining</div>
+              <div class="grey--text text-lighten--2">spent credits</div>
               <v-rating
                 dense
                 v-model="rating"
@@ -78,7 +89,7 @@
                 readonly
                 color="red"
               ></v-rating>
-              <div class="grey--text text-lighten--2">overdue days</div>
+              <div class="grey--text text-lighten--2">lost credits</div>
               </div>
             </v-flex>
           </div>
@@ -129,7 +140,7 @@ export default {
         ? 'error'
         : this.block.color
     },
-    delayed () { return this.isTaskDelayed(this.task) },
+    delayed () { return this.isDelayed(this.task) },
     rating () {
       let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
       this.sliderangeUpdate()
@@ -186,8 +197,8 @@ export default {
 }
 </script>
 <style scoped>
-.red-bordered {
-  border-top: 3px solid #f72719 !important;
+.task-delayed {
+  /* border-top: 3px solid #f72719 !important; */
   background-color: rgba(255, 0, 0, 0.3) !important;
 }
 </style>

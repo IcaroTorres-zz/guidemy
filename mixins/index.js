@@ -20,7 +20,8 @@ export const globalMixin = {
       'lightOut',
       'loggedUser',
       'appLoading',
-      'appError'
+      'appError',
+      'teams'
     ]),
     ...mapGetters([
       'myProjects',
@@ -42,13 +43,14 @@ export const globalMixin = {
     user (uid) { return this.$store.getters.appUser(uid) },
     useravatar (uid) { return this.$store.getters.appUseravatar(uid) }, // || this.dummyavatar },
     username (uid) { return this.$store.getters.appUsername(uid) },
+    getProject (pid) { return this.$store.getters.project(pid) },
     daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)),
     stringToDateddmmYYYY (date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
       return `${day}/${month}/${year}`
     },
-    isTaskDelayed (t) {
+    isDelayed (t) {
       return (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
       (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime())
     }

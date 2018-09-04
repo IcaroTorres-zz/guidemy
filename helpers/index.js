@@ -5,11 +5,41 @@ export const snack = (commit, callback, timeout = 2000) => {
   (() => callback)()
   setTimeout(() => commit('snack', {active: false}), timeout)
 }
-
 export const increaseDays = (date, daysCount) => {
   let [ increased, daysInMilliseconds ] = [ new Date(date), daysCount * 24 * 60 * 60 * 1000 ]
   increased.setTime(increased.getTime() + daysInMilliseconds)
   return increased
+}
+
+export const daysBetween = (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24))
+
+export const isDelayed = t => (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
+  (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime())
+
+export const randomStatus = () => {
+  let rand = Math.random()
+  return rand <= 0.25 ? -1 : rand <= 0.4 ? 0 : 1
+}
+
+export const generateDailies = (target, { startDate, endDate = new Date() }, p, a, m) => {
+  return Array.from(Array(daysBetween(startDate, endDate)).keys()).map(i => {
+    let status = randomStatus()
+    let newDaily = {
+      id: 'dl' + Date.now().toString() + 'dif' + (Math.random() * 200).toString(),
+      project: p,
+      manager: m,
+      assigned: a,
+      r1: status === 1 ? 'aaaaaa' : '',
+      r2: status === 1 ? 'aaaaaa' : '',
+      r3: status === 1 ? 'aaaaaa' : '',
+      start: increaseDays(startDate, i),
+      end: increaseDays(startDate, i + 1), // 24hr after
+      finishedAt: status === 1 ? increaseDays(startDate, i) : null,
+      status: status
+    }
+    target[newDaily.id] = newDaily
+    return newDaily.id
+  })
 }
 
 export const colors = {

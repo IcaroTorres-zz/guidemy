@@ -39,7 +39,7 @@ export class Block {
   constructor (payload) {
     console.log(`creating instance of ${this.constructor.name} with value`)
     console.dir(payload)
-    this.id = payload.id || 'b' + Date.now.toString()
+    this.id = payload.id || 'b' + Date.now().toString()
     this.project = payload.project || ''
     this.text = payload.text || ''
     this.color = payload.color || ''
@@ -51,11 +51,11 @@ export class Task {
   constructor (payload) {
     console.log(`creating instance of ${this.constructor.name} with value`)
     console.dir(payload)
-    this.id = payload.id || 't' + Date.now.toString()
+    this.id = payload.id || 't' + Date.now().toString()
     this.creator = payload.creator
     this.project = payload.project || ''
     this.block = payload.block || ''
-    this.assigned = payload.assigned || ''
+    this.assigned = payload.assigned || payload.creator
     this.title = payload.title || ''
     this.description = payload.description || ''
     this.start = payload.start || new Date()

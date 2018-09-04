@@ -54,14 +54,14 @@
             <template v-for="(child, i) in item.children">
               <dproject :edition="false" :key="child.component" v-if="child.component && child.component === 'dproject'">
                 <v-list-tile :slot="child.slot">
-                    <v-list-tile-action v-if="child.icon">
-                      <v-icon>{{ child.icon }}</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content>
-                      <v-list-tile-title>
-                        {{ child.text }}
-                      </v-list-tile-title>
-                    </v-list-tile-content>
+                  <v-list-tile-action v-if="child.icon">
+                    <v-icon>{{ child.icon }}</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title>
+                      {{ child.text }}
+                    </v-list-tile-title>
+                  </v-list-tile-content>
                 </v-list-tile>
               </dproject>
               <dtask v-else-if="child.component && child.component === 'task'" :key="child.component">
@@ -89,7 +89,7 @@
             </template>
           </v-list-group>
           <v-list-tile v-else :key="item.text" @click="">
-            <v-list-tile-action>
+            <v-list-tile-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
