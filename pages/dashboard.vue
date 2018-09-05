@@ -274,8 +274,8 @@ export default {
               cursor: 'pointer',
               colors: pieColors(this.blockMap[p.id]),
               dataLabels: {
-                enabled: true,
-                format: '{point.name} {point.y}'
+                enabled: false
+                // format: '{point.name} {point.y}'
               },
               width: '100%',
               innerSize: '60%',
@@ -284,7 +284,7 @@ export default {
           },
           series: [{
             type: 'pie',
-            name: 'Task by Status',
+            name: 'Tasks per block',
             data: pieSeries(this.blockMap[p.id])
           }]
         })
@@ -312,7 +312,7 @@ export default {
 <style scoped>
 .control-buttons{
   position: sticky;
-  top: 70px;
+  top: 48px;
   width: 100%;
   /* text-align: right; */
   z-index: 3;

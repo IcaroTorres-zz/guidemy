@@ -20,6 +20,11 @@ export const getters = {
   projectBlocks: state => pid => state.projects[pid].blocks.map(bid => state.blocks[bid]),
   task: state => taskId => state.tasks[taskId],
   projectTasks: state => pid => state.projects[pid].blocks.reduce((fullList, b) => fullList.concat(state.blocks[b].tasks), []).map(t => state.tasks[t]),
-  projectDailies: state => pid => state.projects[pid].dailyMeetings.map(d => state.dailyMeetings[d]),
+  projectDailies: state => pid => Object.keys(state.projects[pid].dailyMeetings)
+    .reduce((dailyMap, uid) => Object.assign(
+      dailyMap, {
+        ...dailyMap,
+        [uid]: state.projects[pid].dailyMeetings[uid].map(daily => state.dailyMeetings[daily])
+      }), {}),
   taskComments: state => task => task.comments.map(c => state.comments[c])
 }

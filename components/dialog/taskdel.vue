@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="error" @click="dialog = false">confirm!</v-btn>
+        <v-btn round small color="error" @click="deleteTask(task.id)">confirm!</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,12 +24,10 @@
 export default {
   name: 'dialogtaskdel',
   props: {
-    task: Object
+    task: { type: Object, required: true }
   },
   data: () => ({
     dialog: false
-  }),
-  computed: {
-  }
+  })
 }
 </script>

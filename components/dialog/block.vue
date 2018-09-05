@@ -58,7 +58,7 @@ export default {
   data () {
     return {
       dialog: false,
-      editing: new Block(this.block || {project: this.project.id})
+      editing: new Block({...this.block, project: this.project.id})
     }
   },
   computed: {
@@ -66,20 +66,13 @@ export default {
     colors () { return Object.keys(colors) }
   },
   methods: {
-    close () {
-    },
     saveBlock () {
-      // const dataSent = {
-      //   id: 'b' + Date.now().toString(),
-      //   color: this.color,
-      //   tasks: this.tasks,
-      //   text: this.text,
-      //   project: this.project.id
-      // }
       this.$store.dispatch('saveBlock', this.editing)
         .then((data) => {
-          console.log(`success applying data: ${JSON.stringify(this.editing)}`)
+          console.log('success applying data: ')
+          console.dir(this.editing)
           this.$emit('block-created')
+          this.editing = new Block({project: this.project.id})
           this.dialog = false
         })
     }

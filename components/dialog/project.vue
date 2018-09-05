@@ -119,16 +119,11 @@ export default {
   data () {
     return {
       dialog: false,
-      editing: new Project(this.project || {
-        creator: this.$store.getters.loggedUser
-      })
+      editing: new Project()
     }
   },
-  watcher: {
-    editing (val, newval) {
-      console.log('watched val', val, newval)
-    },
-    deep: true
+  created () {
+    this.editing = new Project({...this.project, creator: this.$store.getters.loggedUserObj.id})
   },
   computed: {
     team () {
@@ -140,27 +135,12 @@ export default {
   },
   methods: {
     saveProject () {
-      // const dataSent = {
-      //   title: this.title,
-      //   description: this.description,
-      //   creator: this.loggedUser,
-      //   manager: this.manager.id,
-      //   coworkers: this.team,
-      //   company: this.company,
-      //   blocks: [],
-      //   dailyMeetings: [],
-      //   start: new Date(),
-      //   end: new Date(this.end),
-      //   finishedAt: null,
-      //   notes: this.notes,
-      //   status: 0
-      // }
-      console.dir(this.editing)
       this.$store.dispatch('saveProject', this.editing)
         .then(() => {
           console.log('success applying data:')
           console.dir(this.editing)
           this.$emit('task-created')
+          this.editing = new Project({creator: this.$store.getters.loggedUserObj.id})
           this.dialog = false
         })
     }

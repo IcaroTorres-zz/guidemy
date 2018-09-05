@@ -101,37 +101,32 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      :clipped-left="lgAndUp" color="primary" app fixed :style="{ 'z-index': '5' }"
+    <v-toolbar color="primary"
+      :clipped-left="lgAndUp" app fixed dense flat :style="{ 'z-index': '5' }"
     >
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.stop="toggleSidebar"></v-toolbar-side-icon>
         <router-link to="/" v-html="apptitle"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
-      <v-text-field
-        flat
-        solo-inverted
+      <v-text-field     
         hide-details
+        solo-inverted
         prepend-inner-icon="search"
         label="Search"
         class="hidden-sm-and-down"
       ></v-text-field>
       <v-spacer></v-spacer>
+      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-toolbar-items>
-        <v-btn flat small @click.stop="toggleLight">
-          <v-icon small>invert_colors</v-icon>
-        </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
-          <v-icon>dashboard</v-icon>Dashboard
+          <v-icon >dashboard</v-icon>Dashboard
         </v-btn>
       </v-toolbar-items>
       <v-tooltip bottom>
-        <v-badge slot="activator" color="red" overlap left>
+        <v-badge slot="activator" color="red" overlap>
           <span slot="badge">{{notifications.filter(n => n.status === 0).length}}</span>
-          <v-btn icon>
-            <v-icon large>notifications</v-icon>
-          </v-btn>
+          <v-icon class="pa-1">notifications</v-icon>
         </v-badge>
         <span>Unreaded notifications</span>
       </v-tooltip>
@@ -189,7 +184,7 @@
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
-        return this.$store.getters.userNotifications(this.loggedUser)
+        return this.$store.getters.userNotifications(this.loggedUserObj.id)
       }
     }
   }

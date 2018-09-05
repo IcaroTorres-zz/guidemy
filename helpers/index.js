@@ -22,8 +22,8 @@ export const randomStatus = () => {
 }
 
 export const generateDailies = (target, { startDate, endDate = new Date() }, p, a, m) => {
-  return Array.from(Array(daysBetween(startDate, endDate)).keys()).map(i => {
-    let status = randomStatus()
+  return Array.from(Array(daysBetween(startDate, endDate)).keys()).map((i, idx, arr) => {
+    let status = i === arr.length - 1 ? 0 : randomStatus()
     let newDaily = {
       id: 'dl' + Date.now().toString() + 'dif' + (Math.random() * 200).toString(),
       project: p,
@@ -39,8 +39,15 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
     }
     target[newDaily.id] = newDaily
     return newDaily.id
-  })
+  }).reverse()
 }
+
+export const spliceInManyStates = (multiModelArr, toRemove, state) => multiModelArr.forEach(model => {
+  console.log('before splice', model)
+  model.tasks.splice(model.tasks.findIndex(t => t.id === toRemove.id), 1)
+  console.log('after splice', model)
+  state[(model.constructor.name + 's').toLowerCase()][model.id] = { ...model }
+})
 
 export const colors = {
   'primary': '#607d8b',

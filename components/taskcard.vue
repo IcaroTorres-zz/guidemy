@@ -16,18 +16,18 @@
               <span class="subheading">{{task.title}}</span>
               <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">finished at: {{finished}}</div>
             </v-flex>
-            <v-spacer></v-spacer>
-            <v-flex xs1 class="pa-0 text-xs-right">
+            <v-spacer/>
+            <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
                 <dtaskdone :task="task" v-if="task.status !== 1" >
-                  <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator">
-                    <v-icon small>done_outline</v-icon>
-                  </v-btn>
+                  <!-- <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator"> -->
+                  <v-icon small color="success" slot="customactivator">done_outline</v-icon>
+                  <!-- </v-btn> -->
                 </dtaskdone>
                 <dtaskdel :task="task">
-                  <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator">
-                    <v-icon small>delete</v-icon>
-                  </v-btn>
+                  <!-- <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator"> -->
+                  <v-icon small color="error" v-if="canRemove" slot="customactivator">delete</v-icon>
+                  <!-- </v-btn> -->
                 </dtaskdel>
               </v-layout>
             </v-flex>
@@ -68,9 +68,10 @@
                 v-model="rating"
                 :length="slidemax"
                 :background-color="lightOut ? 'secondary' : 'grey ligten-3'"
-                empty-icon="panorama_fish_eye"
-                full-icon="lens"
+                empty-icon="star"
+                full-icon="star"
                 readonly
+                small
                 :color="ratecolor"
               ></v-rating>
               </div>
@@ -80,16 +81,17 @@
             </v-flex>
             <v-flex xs12 v-if="overdue">
               <div class="text-xs-center">
-              <v-rating
-                dense
-                v-model="overdue"
-                :length="overdue"
-                full-icon="brightness_1"
-                half-increments
-                readonly
-                color="red"
-              ></v-rating>
-              <div class="grey--text text-lighten--2">lost credits</div>
+                <v-rating
+                  dense
+                  v-model="overdue"
+                  :length="overdue"
+                  full-icon="star_border"
+                  half-increments
+                  readonly
+                  small
+                  color="red"
+                ></v-rating>
+                <div class="grey--text text-lighten--2">lost credits</div>
               </div>
             </v-flex>
           </div>
@@ -107,9 +109,9 @@
           <div class="d--wrapper">
             <span class="caption grey--text mr-2">{{commentCount}}</span>
             <dtaskcomments :task="task">
-              <v-btn icon small slot="customactivator">
-                <v-icon color="grey lighten-2" class="mr-1">question_answer</v-icon>
-              </v-btn>
+              <!-- <v-btn icon small slot="customactivator"> -->
+              <v-icon slot="customactivator" color="grey lighten-2" class="mr-1">question_answer</v-icon>
+              <!-- </v-btn> -->
             </dtaskcomments>
           </div>
         </v-card-actions>
@@ -162,13 +164,13 @@ export default {
     },
     ratecolor () {
       let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
-      return this.task.status === 1
+      return this.rating <= (1 * max / 5)
         ? 'success'
-        : this.rating <= (1 * max / 4)
+        : this.rating <= (2 * max / 5)
           ? 'accent'
-          : this.rating <= (2 * max / 4)
+          : this.rating <= (3 * max / 5)
             ? 'info'
-            : this.rating <= (3 * max / 4)
+            : this.rating <= (4 * max / 5)
               ? 'warning'
               : 'deep-orange'
     },
@@ -185,7 +187,7 @@ export default {
       return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString('pt-BR') : undefined
     },
     canRemove () {
-      return this.task.creator === this.loggedUser || this.$store.getters.project(this.task.project).manager === this.loggedUser
+      return this.task.creator === this.loggedUserObj.id || this.$store.getters.project(this.task.project).manager === this.loggedUserObj.id
     }
   },
   methods: {

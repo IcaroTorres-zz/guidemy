@@ -1,7 +1,7 @@
 export class User {
-  constructor (payload) {
-    console.log(`creating instance of ${this.constructor.name} with value`)
-    console.dir(payload)
+  constructor (payload = {}) {
+    // console.log(`creating instance of ${this.constructor.name} with value`)
+    // console.dir(payload)
     this.id = payload.id || 'u' + Date.now().toString()
     this.username = payload.username || ''
     this.email = payload.email || ''
@@ -15,9 +15,9 @@ export class User {
 }
 
 export class Project {
-  constructor (payload) {
-    console.log(`creating instance of ${this.constructor.name} with value`)
-    console.dir(payload)
+  constructor (payload = {}) {
+    // console.log(`creating instance of ${this.constructor.name} with value`)
+    // console.dir(payload)
     this.id = payload.id || 'p' + Date.now().toString()
     this.creator = payload.creator
     this.manager = payload.description || ''
@@ -36,9 +36,9 @@ export class Project {
 }
 
 export class Block {
-  constructor (payload) {
-    console.log(`creating instance of ${this.constructor.name} with value`)
-    console.dir(payload)
+  constructor (payload = {}) {
+    // console.log(`creating instance of ${this.constructor.name} with value`)
+    // console.dir(payload)
     this.id = payload.id || 'b' + Date.now().toString()
     this.project = payload.project || ''
     this.text = payload.text || ''
@@ -48,9 +48,9 @@ export class Block {
 }
 
 export class Task {
-  constructor (payload) {
-    console.log(`creating instance of ${this.constructor.name} with value`)
-    console.dir(payload)
+  constructor (payload = {}) {
+    // console.log(`creating instance of ${this.constructor.name} with value`)
+    // console.dir(payload)
     this.id = payload.id || 't' + Date.now().toString()
     this.creator = payload.creator
     this.project = payload.project || ''

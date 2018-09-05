@@ -1,9 +1,9 @@
 <template>
-    <v-dialog v-model="dialog" width="600px" :dark="lightOut">
+    <v-dialog v-model="dialog" width="600px">
       <template slot="activator">
         <slot name="customactivator"  @click.stop="dialog = !dialog" />
       </template>
-      <v-card>
+      <v-card :dark="lightOut">
         <v-card-title class="py-4 title primary">
           Task
         </v-card-title>
@@ -141,12 +141,15 @@ export default {
     return {
       datemenu: false,
       dialog: false,
-      editing: new Task(this.task || {
-        creator: this.loggedUser,
-        project: (this.suggestedProject || {}).id,
-        block: (this.suggestedBlock || {}).id
-      })
+      editing: new Task()
     }
+  },
+  created () {
+    this.editing = new Task({...this.task,
+      creator: this.loggedUserObj.id,
+      project: (this.suggestedProject || {}).id,
+      block: (this.suggestedBlock || {}).id
+    })
   },
   computed: {
     users () { return this.editing.project ? this.getProject(this.editing.project).coworkers.map(w => this.user(w)) : [] },
@@ -155,7 +158,7 @@ export default {
       return this.editing.projec
         ? this.users.filter(
           u => u.id !== this.getProject(this.editing.project).manager ||
-           u.id === this.loggedUser
+           u.id === this.loggedUserObj.id
         )
         : [this.loggedUserObj]
     },
@@ -165,18 +168,16 @@ export default {
     close () {
     },
     saveTask () {
-      // const dataSent = {
-      //   ...this.editing,
-      //   project: this.project.id,
-      //   block: this.block.id,
-      //   assigned: this.editing.assigned.id
-      // title: this.title,
-      // description: this.description
-      // }
       this.$store.dispatch('saveTask', this.editing)
         .then(() => {
-          console.log(`success applying data: ${JSON.stringify(this.editing)}`)
+          console.log('success applying data: ')
+          console.dir(this.editing)
           this.$emit('task-created')
+          this.editing = new Task({
+            creator: this.loggedUserObj.id,
+            project: (this.suggestedProject || {}).id,
+            block: (this.suggestedBlock || {}).id
+          })
           this.dialog = false
         })
     }

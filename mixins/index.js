@@ -18,9 +18,9 @@ export const globalMixin = {
       'sidebar',
       'mini',
       'lightOut',
-      'loggedUser',
       'appLoading',
       'appError',
+      'loggedUser',
       'teams'
     ]),
     ...mapGetters([
@@ -32,14 +32,17 @@ export const globalMixin = {
     lgAndUp () { return this.$vuetify.breakpoint.lgAndUp }
   },
   methods: {
-    ...mapMutations([
-      'toggleSidebar',
-      'toggleMini',
-      'toggleLight',
-      'clearError',
-      'setError',
-      'setLoading'
-    ]),
+    ...mapMutations({
+      finishTask (commit, payload) { commit('finishTask', payload) },
+      deleteTask (commit, payload) { commit('deleteTask', payload) },
+      judgeDaily (commit, payload) { commit('judgeDaily', payload) },
+      answerDaily (commit, payload) { commit('answerDaily', payload) },
+      toggleSidebar (commit) { commit('toggleSidebar') },
+      toggleMini (commit) { commit('toggleMini') },
+      toggleLight (commit) { commit('toggleLight') },
+      clearError (commit) { commit('clearError') },
+      setLoading (commit) { commit('setLoading') }
+    }),
     user (uid) { return this.$store.getters.appUser(uid) },
     useravatar (uid) { return this.$store.getters.appUseravatar(uid) }, // || this.dummyavatar },
     username (uid) { return this.$store.getters.appUsername(uid) },

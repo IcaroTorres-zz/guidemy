@@ -1,6 +1,12 @@
 import { increaseDays, generateDailies } from '../helpers'
 const generatedDailes = {}
-let p1Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u2', 'u1')
+
+let p1u2Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u2', 'u1')
+let p1u1Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u1', 'u1')
+let p2u1Generated = generateDailies(generatedDailes, { startDate: new Date('08/18/2018') }, 'p2', 'u1', 'u1')
+let p2u2Generated = generateDailies(generatedDailes, { startDate: new Date('08/18/2018') }, 'p2', 'u2', 'u1')
+let p3u1Generated = generateDailies(generatedDailes, { startDate: new Date('08/30/2018') }, 'p3', 'u1', 'u3')
+
 export default () => ({
   mini: true,
   lightOut: true,
@@ -17,7 +23,10 @@ export default () => ({
       tasks: ['t2', 't4'],
       projects: ['p1', 'p2', 'p3'],
       teams: ['tm1', 'tm2'],
-      dailyMeetings: ['d1'],
+      dailyMeetings: {
+        p1: p1u1Generated,
+        p2: p2u1Generated
+      },
       notifications: ['n1', 'n2', 'n3', 'n4']
     },
     'u3': {
@@ -39,7 +48,10 @@ export default () => ({
       tasks: ['t1', 't3', 't0'],
       projects: ['p1', 'p2'],
       teams: ['tm1'],
-      dailyMeetings: ['d1'],
+      dailyMeetings: {
+        p1: p1u2Generated,
+        p2: p2u2Generated
+      },
       notifications: ['n1']
     }
   },
@@ -63,7 +75,10 @@ export default () => ({
       description: 'Find process problems, co-workers dificulties and get the best returns from your teams engagement',
       company: 'UFS - Universidade Federal de Sergipe',
       blocks: ['b1', 'b2', 'b3', 'b4', 'b5'],
-      dailyMeetings: p1Generated,
+      dailyMeetings: {
+        u1: p1u1Generated,
+        u2: p1u2Generated
+      },
       start: new Date('07/14/2018'),
       end: null,
       finishedAt: null,
@@ -79,8 +94,11 @@ export default () => ({
       description: 'Dummy description',
       company: 'UFS - Universidade Federal de Sergipe',
       blocks: ['b6', 'b7', 'b8'],
-      dailyMeetings: [],
-      start: new Date('08/02/2018'),
+      dailyMeetings: {
+        u1: p2u1Generated,
+        u2: p2u2Generated
+      },
+      start: new Date('08/18/2018'),
       end: null,
       finishedAt: null,
       notes: '',
@@ -89,13 +107,15 @@ export default () => ({
     'p3': {
       id: 'p3',
       creator: 'u1',
-      manager: 'u1',
+      manager: 'u3',
       coworkers: ['u1', 'u3'],
       title: 'Project without blocks',
       description: 'A brand new project before fill with blocks to test behaviors',
       company: '',
       blocks: [],
-      dailyMeetings: [],
+      dailyMeetings: {
+        u1: p3u1Generated
+      },
       start: new Date('08/30/2018'),
       end: null,
       finishedAt: null,
