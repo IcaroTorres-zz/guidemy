@@ -150,8 +150,8 @@ export default () => ({
     },
     't1': {
       id: 't1',
-      project: 'p1',
       creator: 'u1',
+      project: 'p1',
       block: 'b4',
       assigned: 'u2',
       title: 'Dummy task title',
@@ -164,8 +164,8 @@ export default () => ({
     },
     't2': {
       id: 't2',
-      project: 'p1',
       creator: 'u1',
+      project: 'p1',
       block: 'b2',
       assigned: 'u1',
       title: 'Dummy task title',
@@ -178,8 +178,8 @@ export default () => ({
     },
     't3': {
       id: 't3',
-      project: 'p1',
       creator: 'u1',
+      project: 'p1',
       block: 'b3',
       assigned: 'u2',
       title: 'Dummy task title',
@@ -192,8 +192,8 @@ export default () => ({
     },
     't4': {
       id: 't4',
-      project: 'p1',
       creator: 'u1',
+      project: 'p1',
       assigned: 'u1',
       title: 'Dummy task title',
       description: 'task description',

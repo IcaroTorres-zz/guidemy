@@ -54,7 +54,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join('- ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -83,7 +83,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join(' - ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -123,7 +123,7 @@ export default {
     }
   },
   created () {
-    this.editing = new Project({...this.project, creator: this.$store.getters.loggedUserObj.id})
+    this.editing = new Project({...this.project, creator: this.$store.getters.loggedUser})
   },
   computed: {
     team () {
@@ -139,8 +139,8 @@ export default {
         .then(() => {
           console.log('success applying data:')
           console.dir(this.editing)
-          this.$emit('task-created')
-          this.editing = new Project({creator: this.$store.getters.loggedUserObj.id})
+          this.$emit('project-created')
+          this.editing = new Project({creator: this.$store.getters.loggedUser})
           this.dialog = false
         })
     }

@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import { User } from '../../models'
 export default {
   name: 'taskcomments',
   props: {
@@ -71,9 +72,12 @@ export default {
   data () {
     return {
       dialog: false,
-      creator: this.user(this.task.creator),
+      creator: new User(),
       commentText: ''
     }
+  },
+  created () {
+    this.creator = new User({ ...this.user(this.task.creator) })
   },
   computed: {
     comments () {

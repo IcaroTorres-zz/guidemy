@@ -4,7 +4,7 @@
       :clipped="lgAndUp"
       :value="sidebar"
       :mini-variant.sync="mini"
-      fixed
+      fixed floating
       app
     >
       <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}">
@@ -88,7 +88,7 @@
               </v-list-tile>
             </template>
           </v-list-group>
-          <v-list-tile v-else :key="item.text" @click="">
+          <v-list-tile v-else :key="item.text">
             <v-list-tile-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -184,7 +184,7 @@
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
-        return this.$store.getters.userNotifications(this.loggedUserObj.id)
+        return this.$store.getters.userNotifications(this.loggedUser)
       }
     }
   }

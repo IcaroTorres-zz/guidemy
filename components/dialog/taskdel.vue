@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="error" @click="deleteTask(task.id)">confirm!</v-btn>
+        <v-btn round small color="error" @click="onTaskDeleted">confirm!</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,6 +28,13 @@ export default {
   },
   data: () => ({
     dialog: false
-  })
+  }),
+  methods: {
+    onTaskDeleted () {
+      this.deleteTask(this.task.id)
+      this.dialog = false
+      setTimeout(() => this.$emit('task-deleted'), 250)
+    }
+  }
 }
 </script>

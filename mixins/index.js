@@ -21,13 +21,19 @@ export const globalMixin = {
       'appLoading',
       'appError',
       'loggedUser',
-      'teams'
+      'teams',
+      'projects',
+      'blocks',
+      'tasks'
     ]),
     ...mapGetters([
       'myProjects',
       'loggedUserObj',
       'users',
-      'usernames'
+      'usernames',
+      'user',
+      'username',
+      'useravatar'
     ]),
     lgAndUp () { return this.$vuetify.breakpoint.lgAndUp }
   },
@@ -43,10 +49,6 @@ export const globalMixin = {
       clearError (commit) { commit('clearError') },
       setLoading (commit) { commit('setLoading') }
     }),
-    user (uid) { return this.$store.getters.appUser(uid) },
-    useravatar (uid) { return this.$store.getters.appUseravatar(uid) }, // || this.dummyavatar },
-    username (uid) { return this.$store.getters.appUsername(uid) },
-    getProject (pid) { return this.$store.getters.project(pid) },
     daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)),
     stringToDateddmmYYYY (date) {
       if (!date) return null

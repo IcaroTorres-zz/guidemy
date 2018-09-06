@@ -33,7 +33,7 @@
                   </v-list-tile-avatar>
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.username"/>
-                    <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.reduce((str, t) => `${str} #${t}`, '')"/>
+                    <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"/>
                   </v-list-tile-content>
                 </template>
               </template>
@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     includedUsers () { return this.project.coworkers },
-    searchableUsers () { return Object.values(this.$store.getters.users).filter(u => this.includedUsers.indexOf(u.id) === -1) }
+    searchableUsers () { return Object.values(this.users).filter(u => this.includedUsers.indexOf(u.id) === -1) }
   }
 }
 </script>

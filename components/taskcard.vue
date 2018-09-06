@@ -19,12 +19,12 @@
             <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
-                <dtaskdone :task="task" v-if="task.status !== 1" >
+                <dtaskdone :task="task" v-if="task.status !== 1" @task-finished="onTaskFinished">
                   <!-- <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator"> -->
                   <v-icon small color="success" slot="customactivator">done_outline</v-icon>
                   <!-- </v-btn> -->
                 </dtaskdone>
-                <dtaskdel :task="task">
+                <dtaskdel :task="task" @task-deleted="onTaskDeleted">
                   <!-- <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator"> -->
                   <v-icon small color="error" v-if="canRemove" slot="customactivator">delete</v-icon>
                   <!-- </v-btn> -->
@@ -103,7 +103,7 @@
           </v-avatar>
           <div>
             <div class="body-1">{{assigned.username}}</div>
-            <div class="caption grey--text">#{{assigned.teams.join('- ')}}</div>
+            <div class="caption grey--text">#{{assigned.teams.map(t => teams[t].name).join(' - ')}}</div>
           </div>
           <v-spacer/>
           <div class="d--wrapper">
@@ -191,6 +191,12 @@ export default {
     }
   },
   methods: {
+    onTaskDeleted () {
+      this.$emit('task-deleted')
+    },
+    onTaskFinished () {
+      this.$emit('task-finished')
+    },
     sliderangeUpdate () {
       this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
       return this.sliderange

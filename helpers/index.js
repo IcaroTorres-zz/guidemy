@@ -42,11 +42,11 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
   }).reverse()
 }
 
-export const spliceInManyStates = (multiModelArr, toRemove, state) => multiModelArr.forEach(model => {
-  console.log('before splice', model)
-  model.tasks.splice(model.tasks.findIndex(t => t.id === toRemove.id), 1)
-  console.log('after splice', model)
-  state[(model.constructor.name + 's').toLowerCase()][model.id] = { ...model }
+export const spliceInManyStates = (modelPairs, toRemove, state) => modelPairs.forEach(pair => {
+  console.log('before splice', pair)
+  pair[0].tasks.splice(pair[0].tasks.findIndex(t => t.id === toRemove.id), 1)
+  console.log('after splice', pair)
+  state[pair[1]][pair.id] = { ...pair }
 })
 
 export const colors = {

@@ -11,6 +11,7 @@ export const mutations = {
     state.lightOut = !state.lightOut
   },
   saveProject (state, payload) {
+    console.dir(payload)
     state.projects[payload.id] = { ...payload }
     payload.coworkers.forEach(uid => {
       if (state.users[uid].projects.indexOf(payload.id) === -1) {
@@ -40,12 +41,14 @@ export const mutations = {
   },
   deleteTask (state, payload) {
     let task = new Task(state.tasks[payload])
-    // needs objects with custom constructors
-    // to walk through satte properties
+    /* needs pairs of model and constructor name
+     * to walk through satte properties
+     * fixed cause minification modify original constructors names
+     */
     spliceInManyStates(
       [
-        new User(state.users[task.creator]),
-        new Block(state.blocks[task.block])
+        [new User(state.users[task.creator]), 'users'],
+        [new Block(state.blocks[task.block]), 'blocks']
       ], task, state)
 
     delete state.tasks[payload]

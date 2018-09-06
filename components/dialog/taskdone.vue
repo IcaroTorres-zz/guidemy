@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="success" @click="finishTask(task.id)">confirm</v-btn>
+        <v-btn round small color="success" @click="onTaskFinished">confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,6 +28,13 @@ export default {
   },
   data: () => ({
     dialog: false
-  })
+  }),
+  methods: {
+    onTaskFinished () {
+      this.finishTask(this.task.id)
+      this.dialog = false
+      setTimeout(() => this.$emit('task-finished'), 250)
+    }
+  }
 }
 </script>

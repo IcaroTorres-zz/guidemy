@@ -104,7 +104,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.join('- ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -152,13 +152,14 @@ export default {
     })
   },
   computed: {
-    users () { return this.editing.project ? this.getProject(this.editing.project).coworkers.map(w => this.user(w)) : [] },
+    coworkers () { return this.editing.project ? this.projects[this.editing.project].coworkers.map(w => this.user(w)) : [] },
+    // coworkers () { return this.editing.project ? this.getProject(this.editing.project).coworkers.map(w => this.user(w)) : [] },
     blocks () { return this.editing.project ? this.$store.getters.projectBlocks(this.editing.project) : [] },
     assignable () {
       return this.editing.projec
-        ? this.users.filter(
-          u => u.id !== this.getProject(this.editing.project).manager ||
-           u.id === this.loggedUserObj.id
+        ? this.coworkers.filter(
+          u => u.id !== this.projects[this.editing.project].manager ||
+           u.id === this.loggedUser
         )
         : [this.loggedUserObj]
     },
