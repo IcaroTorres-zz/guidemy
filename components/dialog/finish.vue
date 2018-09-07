@@ -24,7 +24,7 @@
 export default {
   name: 'dialogfinish',
   props: {
-    project: Object
+    project: { type: Object, required: true }
   },
   data: () => ({
     dialog: false

@@ -10,8 +10,6 @@
       <v-btn small flat @click="printJSONState">
         <v-icon>print</v-icon>log json state
       </v-btn>
-      <!-- <v-spacer></v-spacer>
-      <span class="display-1 pr-3">/dashboard</span> -->
     </div>
     <v-container grid-list-xl v-for="(project, pidx) in userProjects" :key="project.id" class="pt-1">
       
@@ -21,37 +19,62 @@
           <v-card class="transparent" flat>
             <v-divider v-if="pidx !== 0" class="py-2"></v-divider>
             <v-toolbar dense flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut, 'project--toolbar': true}">
-              <dfinish :project="project">
-                <v-btn flat :icon="!lgAndUp" class="ma-0" color="success" slot="customactivator">
+            
+              <template v-if="project.manager === loggedUser">
+                <dfinish :project="project">
+                  <v-btn small flat :icon="!lgAndUp" class="ma-0" color="success" slot="customactivator" :disabled="project.manager !== loggedUser">
+                    <v-icon>done_all</v-icon><span class="hidden-md-and-down">finish</span>
+                  </v-btn>
+                </dfinish>
+                <v-divider vertical></v-divider>
+                <dproject :edition="true" :project="project">
+                  <v-btn small flat :icon="!lgAndUp" class="ma-0" color="warning" slot="customactivator"  :disabled="project.manager !== loggedUser">
+                    <v-icon >edit</v-icon><span class="hidden-md-and-down">edit</span>
+                  </v-btn>
+                </dproject>
+                <v-divider vertical></v-divider>
+                <dprojectdel :project="project">
+                  <v-btn small flat :icon="!lgAndUp" class="ma-0" color="error" slot="customactivator"  :disabled="project.manager !== loggedUser">
+                    <v-icon >delete</v-icon><span class="hidden-md-and-down">remove</span>
+                  </v-btn>
+                </dprojectdel>
+                <v-divider vertical></v-divider>
+                <dinvite :project="project" class="pa-0">
+                  <v-btn small icon slot="customactivator" class="pa-0" :disabled="project.manager !== loggedUser">
+                    <v-icon>person_add</v-icon>
+                  </v-btn>
+                </dinvite>                
+              </template>
+              <template v-else>
+                <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon>done_all</v-icon><span class="hidden-md-and-down">finish</span>
                 </v-btn>
-              </dfinish>
-              <dproject :edition="true" :project="project">
-                <v-btn flat :icon="!lgAndUp" class="ma-0" color="warning" slot="customactivator" >
+              <v-divider vertical></v-divider>
+                <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon >edit</v-icon><span class="hidden-md-and-down">edit</span>
                 </v-btn>
-              </dproject>
-              <dprojectdel :project="project">
-                <v-btn flat :icon="!lgAndUp" class="ma-0" color="error" slot="customactivator" >
+              <v-divider vertical></v-divider>
+                <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon >delete</v-icon><span class="hidden-md-and-down">remove</span>
                 </v-btn>
-              </dprojectdel>
-              <dinvite :project="project" class="pa-0">
-                <v-btn small icon slot="customactivator" class="pa-0">
+              <v-divider vertical></v-divider>
+                <v-btn small icon class="pa-0" disabled>
                   <v-icon>person_add</v-icon>
                 </v-btn>
-              </dinvite>
+              </template>
               <v-spacer/>
               <ddailies :project="project">
-                <v-btn flat :icon="!lgAndUp" class="ma-0" color="info" slot="customactivator">
+                <v-btn small flat :icon="!lgAndUp" class="ma-0" color="info" slot="customactivator">
                   <span class="hidden-md-and-down">view dailes</span><v-icon >update</v-icon>
                 </v-btn>
               </ddailies>
-              <v-btn flat :icon="!lgAndUp" class="ma-0" color="accent" slot="" ><span class="hidden-md-and-down">contributions</span><v-icon >supervised_user_circle</v-icon></v-btn>
-              <v-btn flat :icon="!lgAndUp" class="ma-0" color="success" ><span class="hidden-md-and-down">results</span><v-icon >poll</v-icon></v-btn>
+              <v-divider vertical></v-divider>
+              <v-btn small flat :icon="!lgAndUp" class="ma-0" color="accent" slot="" ><span class="hidden-md-and-down">contributions</span><v-icon >supervised_user_circle</v-icon></v-btn>
+              <v-divider vertical></v-divider>
+              <v-btn small flat :icon="!lgAndUp" class="ma-0" color="success" ><span class="hidden-md-and-down">results</span><v-icon >poll</v-icon></v-btn>
             </v-toolbar>
-            <v-layout row wrap justify-space-between align-content-start class="py-0 px-1">
-              <v-flex sm7 md8 class="pb-0">
+            <v-layout row justify-space-between class="py-0 px-1">
+              <v-flex sm7 md8 >
                 <a class="title">{{project.title}}</a>
                 <div>Manager: <a class="info--text">@{{username(project.manager)}}</a></div>
                 <div>Team: <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a></div>
@@ -69,22 +92,19 @@
                 </div>
                 <p class="caption text-xs-justify primary--text">{{project.description}}</p>
               </v-flex>
-              <v-flex sm5 md4 class="pb-0">
+              <v-divider vertical></v-divider>
+              <v-flex sm5 md4>
                 <div class="text-xs-center" style="position: relative">
-                  <v-layout row justify-center
+                  <v-layout row justify-space-around
                     :class="{
-                    'chart--total': false,
                     'body-2': lgAndUp,
                     'caption': !lgAndUp,
                     'secondary--text': !lightOut,
                     'grey--text text--lighten-3': lightOut }">
-                    <!-- <v-spacer></v-spacer> -->
 
-                    <v-flex class="px-0 error--text text-xs-right">{{taskMap[project.id] ? taskMap[project.id].delayed : 0}} <small>delayed</small></v-flex>
-                    <v-flex xs1 class="px-0">|</v-flex>
-                    <v-flex class="px-0 text-xs-center">{{taskMap[project.id] ? taskMap[project.id].taskCount : 0}} <small>tasks</small></v-flex>
-                    <v-flex xs1 class="px-0">|</v-flex>
-                    <v-flex class="px-0 success--text text-xs-left">{{taskMap[project.id] ? taskMap[project.id].complete : 0}} <small>completed</small></v-flex>
+                    <div class="pa-3"><span class="title error--text">{{delayedTasks(project).length}}</span><br> <small>delayed</small></div>
+                    <div class="pa-3"><span class="title">{{projectTasks(project).length}}</span><br> <small>tasks</small></div>
+                    <div class="pa-3"><span class="title success--text">{{doneTasks(project).length}}</span><br> <small>done</small></div>
                     
                   </v-layout>
                   <div :id="`${project.id}-piechart`" :ref="`${project.id}-piechart`"></div>
@@ -97,7 +117,8 @@
       </v-layout>
       
       <!-- <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length === 0" @block-created="updateBlockMap(project, $store.getters)" style="margin-left: -12px"> -->
-      <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length === 0" style="margin-left: -12px">
+      <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length === 0"
+        style="margin-left: -12px" @block-created="updateChart(project)">
         <v-btn class="border-dashed-grey ma-0" slot="customactivator" ><v-icon small>add</v-icon>add block</v-btn>
       </dblock>
 
@@ -106,7 +127,7 @@
         <v-btn class="border-dashed-grey ma-0" block><v-icon small>add</v-icon>split to new roll</v-btn>
       </v-layout>
       <v-layout row align-content-start style="position: relative; margin-top: -4px;">
-        <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length > 0">
+        <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length > 0" @block-created="updateChart(project)">
           <!-- @block-created="updateBlockMap(project, $store.getters)"> -->
           <div class="new-block__button border-dashed-grey" slot="customactivator">
             <v-icon small>add</v-icon>ADD BLOCK
@@ -115,25 +136,32 @@
         <v-layout row align-content-start class="scroller-horiz" v-if="visionMap[project.id]" style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;">
 
           <!-- <v-flex v-for="block in blockMap[project.id]" :key="block.id" class="px-0 mr-2 project-block-container"> -->
-          <v-flex v-for="block in blockMap[project.id]" :key="block.id" class="px-0 mr-2 project-block-container">
-            <v-toolbar light :class="block.color + ' block-toolbar'" dense>
-              <v-toolbar-title v-html="block.text"/>
+          <v-flex v-for="block in project.blocks" :key="block" class="px-0 mr-2 project-block-container">
+            <v-toolbar light :class=" blocks[block].color + ' block-toolbar'" dense>
+              <v-toolbar-title v-html=" blocks[block].text"/>
               <v-spacer/>
               <v-btn small icon light>
                 <v-icon>more_horiz</v-icon>
               </v-btn>
             </v-toolbar>
-            <v-card :class="'transparent project-block scroller scroller__' + block.color" flat style="position: relative;">
+            <v-card :class="'transparent project-block scroller scroller__' +  blocks[block].color" flat style="position: relative;">
               <v-expansion-panel expand>
                 <taskcard :class="{ 'mt-1': tidx !== 0 }"
-                  v-for="(t, tidx) in block.tasks" :key="t.id" :taskId="t" :block="block" />
-                  <!-- @task-deleted="updateTaskMap(project, $store.getters)" @task-finished="updateTaskMap(project, $store.getters)"/>  -->
+                  @task-finished="finishTask($event)"
+                  @task-deleted="deleteTask($event)"
+                  v-for="(t, tidx) in  blocks[block].tasks" :key="t" :taskId="t" :block=" blocks[block]" />
               </v-expansion-panel>
             </v-card>
-            <v-toolbar :class="'block-footer ' + block.color" dense>
+            <v-toolbar :class="'block-footer ' +  blocks[block].color" dense>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
+              <v-icon style="width: 12px;">drag_indicator</v-icon>
               <v-spacer/>
-              <!-- <dtask :suggestedBlock="block" :suggestedProject="project" @task-created="updateTaskMap(project, $store.getters)"> -->
-              <dtask :suggestedBlock="block" :suggestedProject="project">
+              <dtask :suggestedBlock="blocks[block]" :suggestedProject="project"
+                @task-created="updateChart(project)">
                 <v-btn small class="border-dashed-dark ma-0" slot="customactivator" style="min-width: 100%">
                   <v-icon small>add</v-icon> add task
                 </v-btn>
@@ -163,24 +191,11 @@ export default {
       descending: true,
       myCharts: {},
       visionMap: {}
-      // taskMap: {}
-      // blockMap: {}
     }
   },
   computed: {
     sortButtonText () { return this.descending ? 'older first' : 'recent first' },
     userProjects () { return this.myProjects.sort(this.sortProjects) },
-    blockMap () {
-      return Object.values(this.blocks)
-        .reduce((map, block) => Object.assign(map,
-          {
-            ...map,
-            [block.project]: [block].concat(map[block.project] || [])
-          }), {})
-    },
-    // blockMap () {
-    //   return this.userProjects.reduce((map, p) => Object.assign(map, {...map, [p.id]: this.$store.getters.projectBlocks(p.id)}), {})
-    // },
     taskMap () {
       return Object.values(this.tasks).reduce((map, task) => {
         console.dir(task)
@@ -200,11 +215,6 @@ export default {
               }
           })
       }, {})
-      // [task.project]: {
-      //   delayed: this.$store.getters.projectTasks(task.project).filter(t => this.isDelayed(t)).length,
-      //   complete: this.$store.getters.projectTasks(task.project).filter(t => t.status === 1).length,
-      //   taskCount: this.projectTaskCount(task.project)
-      // }
     }
   },
   created () {
@@ -235,8 +245,15 @@ export default {
     this.updateAllCharts()
   },
   methods: {
+    finishTask (task) {
+      this.updateChart(task.project)
+      console.log(task, this.tasks[task.id])
+    },
+    deleteTask (task) {
+      this.updateChart(task.project)
+      console.log(task, this.tasks[task.id])
+    },
     printJSONState () {
-      // console.log(this.$store.getters.JSONState)
       console.log(JSON.parse(this.$store.getters.JSONState))
     },
     sortProjects (a, b) {
@@ -253,18 +270,14 @@ export default {
     toggleProject (pid) {
       this.visionMap[pid] = !this.visionMap[pid]
     },
-    updateBlockMap (p, getters) {
-      this.blockMap[p.id] = getters.projectBlocks(p.id) || []
-      this.updateChart(p)
-    },
-    updateTaskMap (p, getters) {
-      this.taskMap[p.id] = {
-        delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
-        complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
-        taskCount: this.projectTaskCount(p)
-      }
-      this.updateChart(p)
-    },
+    // updateTaskMap (p, getters) {
+    //   this.taskMap[p.id] = {
+    //     delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
+    //     complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
+    //     taskCount: this.projectTaskCount(p)
+    //   }
+    //   this.updateChart(p)
+    // },
     updateChart (p) {
       if (this.myCharts[p.id]) this.myCharts[p.id].destroy()
       this.myCharts[p.id] = this.highchart(p)
@@ -283,7 +296,14 @@ export default {
       })
       console.warn('all charts updated successfully')
     },
-    projectTaskCount (project) { return this.blockMap[project.id].reduce((count, b) => count + b.tasks.length, 0) },
+    projectTasks ({ id }) {
+      return this.projects[id].blocks
+        .reduce((taskArr, b) => taskArr.concat(
+          this.blocks[b].tasks
+            .map(t => this.tasks[t])), [])
+    },
+    delayedTasks ({ id }) { return this.projectTasks({id: id}).filter(t => this.isDelayed(t)) },
+    doneTasks ({ id }) { return this.projectTasks({id: id}).filter(t => t.status === 1) },
     // Build the chart
     highchart (p) {
       if (!p) return
@@ -304,7 +324,7 @@ export default {
               discrete: true,
               allowPointSelect: true,
               cursor: 'pointer',
-              colors: pieColors(this.blockMap[p.id]),
+              colors: pieColors(this.projects[p.id].blocks.map(b => this.blocks[b])),
               dataLabels: {
                 enabled: false
                 // format: '{point.name} {point.y}'
@@ -317,7 +337,7 @@ export default {
           series: [{
             type: 'pie',
             name: 'Tasks per block',
-            data: pieSeries(this.blockMap[p.id])
+            data: pieSeries(this.projects[p.id].blocks.map(b => this.blocks[b]))
           }]
         })
       }
@@ -367,12 +387,12 @@ export default {
   outline: none;
 }
 .border-dashed-grey {
-  color: #777;
+  /* color: #777; */
   background: transparent !important;
   border: 1.5px dashed #777;
 }
 .border-dashed-grey i{
-  color: #777;
+  /* color: #777; */
 }
 .border-dashed-grey:hover {
   /* background: rgba(255,255,255,0.2); */
@@ -381,12 +401,12 @@ export default {
 }
 
 .border-dashed-dark {
-  color: #444;
+  /* color: #444; */
   background: transparent !important;
   border: 1.5px dashed #444;
 }
 .border-dashed-dark i{
-  color: #444;
+  /* color: #444; */
 }
 .border-dashed-dark:hover {
   background: rgba(0,0,0,0.1) !important;

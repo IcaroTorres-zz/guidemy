@@ -22,28 +22,26 @@
       <v-list dense class="pa-0">
         <template v-for="(item, j) in items">
           <v-layout
-            v-if="item.heading"
-            :key="item.heading"
+            v-if="item.groupHeading"
+            :key="item.groupHeading"
             row
+            justify-start
             align-center
           >
-            <v-flex xs6>
-              <v-subheader v-if="item.heading">
-                {{ item.heading }}
-              </v-subheader>
-            </v-flex>
-            <v-flex xs6 class="text-xs-center">
-              <a href="#!" class="body-2">EDIT</a>
-            </v-flex>
+            <v-subheader v-if="item.groupHeading">
+              {{ item.groupHeading }}
+            </v-subheader>
           </v-layout>
 
           <v-list-group
+            subheader
             v-else-if="item.children"
             v-model="item.model"
             :key="j"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             append-icon=""
           >
+          <v-subheader style="font-size: 10px;" class="grey--text text--darken-2" v-text="item.heading" />
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -86,6 +84,7 @@
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
+              <v-divider inset v-if="i !== item.children.length - 1"/>
             </template>
           </v-list-group>
           <v-list-tile v-else :key="item.text">
@@ -101,9 +100,7 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="primary"
-      :clipped-left="lgAndUp" app fixed dense flat :style="{ 'z-index': '5' }"
-    >
+    <v-toolbar color="primary" :clipped-left="lgAndUp" app fixed dense flat :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.stop="toggleSidebar"></v-toolbar-side-icon>
         <router-link to="/" v-html="apptitle"
@@ -153,8 +150,10 @@
     components: { dproject, dtask },
     data: () => ({
       items: [
+        { groupHeading: 'Management' },
         { icon: 'update', text: 'Dailies' },
         {
+          heading: 'Manage project activities',
           icon: 'table_chart',
           'icon-alt': 'view_carousel',
           text: 'Projects',
@@ -166,6 +165,7 @@
           ]
         },
         {
+          heading: 'handle your tasks',
           icon: 'view_week',
           'icon-alt': 'view_column',
           text: 'Tasks',
@@ -175,7 +175,9 @@
             { icon: 'view_week', text: 'View all' }
           ]
         },
+        { groupHeading: 'General settings' },
         { icon: 'settings', text: 'Settings' },
+        { groupHeading: 'Help us to evolve' },
         { icon: 'chat_bubble', text: 'Send feedback' },
         { icon: 'help', text: 'Help' }
       ]

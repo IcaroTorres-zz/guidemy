@@ -34,7 +34,12 @@
                   prepend-icon="event"
                   readonly
                 ></v-text-field>
-                <v-date-picker v-model="editing.end" @input="$refs.menudate.save(editing.end)"></v-date-picker>
+                <v-date-picker v-model="editing.end"
+                  :min="dateToISODate(editing.start)"
+                  reactive
+                  locale="pt-BR"
+                  @input="$refs.menudate.save(editing.end)"
+                ></v-date-picker>
               </v-menu>
             </v-flex>
             <v-flex xs12>
@@ -152,22 +157,20 @@ export default {
     })
   },
   computed: {
-    coworkers () { return this.editing.project ? this.projects[this.editing.project].coworkers.map(w => this.user(w)) : [] },
-    // coworkers () { return this.editing.project ? this.getProject(this.editing.project).coworkers.map(w => this.user(w)) : [] },
-    blocks () { return this.editing.project ? this.$store.getters.projectBlocks(this.editing.project) : [] },
+    coworkers () {
+      return this.editing.project ? this.projects[this.editing.project].coworkers.map(w => this.user(w)) : []
+    },
+    blocks () {
+      return this.editing.project ? this.$store.getters.projectBlocks(this.editing.project) : []
+    },
     assignable () {
-      return this.editing.projec
-        ? this.coworkers.filter(
-          u => u.id !== this.projects[this.editing.project].manager ||
-           u.id === this.loggedUser
-        )
+      return this.editing.project
+        ? this.coworkers.filter(u => u.id !== this.projects[this.editing.project].manager || u.id === this.loggedUser)
         : [this.loggedUserObj]
     },
     computedDate () { return this.stringToDateddmmYYYY(this.editing.end) }
   },
   methods: {
-    close () {
-    },
     saveTask () {
       this.$store.dispatch('saveTask', this.editing)
         .then(() => {

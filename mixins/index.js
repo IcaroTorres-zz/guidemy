@@ -43,6 +43,8 @@ export const globalMixin = {
       deleteTask (commit, payload) { commit('deleteTask', payload) },
       judgeDaily (commit, payload) { commit('judgeDaily', payload) },
       answerDaily (commit, payload) { commit('answerDaily', payload) },
+      postComment (commit, payload) { commit('postComment', payload) },
+      deleteComment (commit, payload) { commit('deleteComment', payload) },
       toggleSidebar (commit) { commit('toggleSidebar') },
       toggleMini (commit) { commit('toggleMini') },
       toggleLight (commit) { commit('toggleLight') },
@@ -50,14 +52,19 @@ export const globalMixin = {
       setLoading (commit) { commit('setLoading') }
     }),
     daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)),
-    stringToDateddmmYYYY (date) {
-      if (!date) return null
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
+    stringToDateddmmYYYY (dateString) {
+      return (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
+    },
+    dateToISODate (date) {
+      return new Date(date).toISOString().split('T')[0]
     },
     isDelayed (t) {
       return (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
       (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime())
+    },
+    formatPostTime (date = new Date()) {
+      let d = new Date(date)
+      return d.toLocaleDateString('pt-BR') + ' - ' + d.toLocaleTimeString()
     }
   }
 }

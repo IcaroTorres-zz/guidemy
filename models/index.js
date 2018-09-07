@@ -65,3 +65,14 @@ export class Task {
     this.status = payload.status || 0
   }
 }
+
+export class Comment {
+  constructor (payload = {}) {
+    this.id = payload.id || 'cm' + Date.now().toString()
+    this.by = payload.by
+    this.at = payload.at
+    this.date = payload.date || new Date()
+    this.text = payload.text || ''
+    this.likes = payload.likes || []
+  }
+}

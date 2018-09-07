@@ -1,11 +1,13 @@
 <template>
-  <v-dialog v-model="dialog" width="1000px" scrollable>
+  <v-dialog v-model="dialog" fullscreen scrollable>
     <template slot="activator" @click.stop="dialog = !dialog">
       <slot name="customactivator"/>
     </template>
     <v-card :dark="lightOut">
       <v-card-title class="py-3 display-1 primary">
         {{project.title}} Daily Meetings
+        <v-spacer/>
+        <v-icon @click.stop="dialog = !dialog">close</v-icon>
       </v-card-title>
       <div class="px-3 mt-2">
         Description: <p class="grey--text text-xs-justify">{{project.description}}</p>
@@ -111,7 +113,7 @@
                         <div class="ml-2">
                           <a class="primary--text subheading">{{username(daily.assigned)}}</a><br>
                           <div v-if="daily.finishedAt" class="caption grey--text mr-2">
-                            responded at: {{new Date(daily.start).toLocaleDateString()}} - {{new Date(daily.finishedAt).toLocaleTimeString()}}
+                            responded at: {{formatPostTime(daily.finishedAt)}}
                           </div>
                         </div>
                         <v-spacer></v-spacer>

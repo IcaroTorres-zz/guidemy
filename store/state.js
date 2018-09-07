@@ -215,7 +215,7 @@ export default () => ({
     },
     'c2': {
       id: 'c2',
-      by: 'u1',
+      by: 'u3',
       at: 't1',
       date: new Date('08/19/2018'),
       text: 'uidyqwudbquidbnqi uyqbnwi https://material.io/tools/icons/?style=baseline qwdqwdqw',
@@ -223,7 +223,7 @@ export default () => ({
     },
     'c3': {
       id: 'c3',
-      by: 'u1',
+      by: 'u2',
       at: 't1',
       date: new Date('08/22/2018'),
       text: 'dummy test https://drive.google.com/drive/folders/1nz4rLyca0IlFph7DlRtSQkjVCWDgtb83 sample https://bit.ly/2Mq79KV',

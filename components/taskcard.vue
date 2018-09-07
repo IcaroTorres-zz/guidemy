@@ -20,14 +20,10 @@
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
                 <dtaskdone :task="task" v-if="task.status !== 1" @task-finished="onTaskFinished">
-                  <!-- <v-btn small icon flat class="ma-0" color="light-green accent-2" slot="customactivator"> -->
                   <v-icon small color="success" slot="customactivator">done_outline</v-icon>
-                  <!-- </v-btn> -->
                 </dtaskdone>
                 <dtaskdel :task="task" @task-deleted="onTaskDeleted">
-                  <!-- <v-btn small icon flat class="ma-0" color="error" v-if="canRemove" slot="customactivator"> -->
                   <v-icon small color="error" v-if="canRemove" slot="customactivator">delete</v-icon>
-                  <!-- </v-btn> -->
                 </dtaskdel>
               </v-layout>
             </v-flex>
@@ -42,16 +38,6 @@
             <v-divider></v-divider>
           </div>
           <div class="layout row wrap align-center justify-content-end px-2">
-            <!-- <v-flex xs12 class="py-0 mb-1">
-              <v-range-slider
-                hide-details
-                v-model="sliderange"
-                :max="slidemax"
-                :min="0"
-                readonly
-                :color="ratecolor"
-              ></v-range-slider>
-            </v-flex> -->
             <v-flex xs12>
               <v-layout class="pa-1">
                 <span class="info--text pr-2">starts</span> {{startDate}} <v-spacer/> {{endDate}} <span class="error--text pl-2">ends</span>
@@ -109,9 +95,7 @@
           <div class="d--wrapper">
             <span class="caption grey--text mr-2">{{commentCount}}</span>
             <dtaskcomments :task="task">
-              <!-- <v-btn icon small slot="customactivator"> -->
               <v-icon slot="customactivator" color="grey lighten-2" class="mr-1">question_answer</v-icon>
-              <!-- </v-btn> -->
             </dtaskcomments>
           </div>
         </v-card-actions>
@@ -125,17 +109,15 @@ export default {
   name: 'taskcard',
   components: {dtaskcomments, dtaskdone, dtaskdel},
   props: {
-    taskId: [String, Number],
+    // task: { type: Object, required: true },
+    taskId: { type: [String, Number], required: true },
     block: Object
   },
-  data: () => ({
-    sliderange: [0, 0]
-  }),
   computed: {
-    task () { return this.$store.getters.task(this.taskId) },
+    task () { return this.tasks[this.taskId] },
     assigned () { return this.user(this.task.assigned) },
     avatar () { return this.assigned.profilePicture || this.dummyavatar },
-    commentCount () { return this.task.comments.length || Math.floor(Math.random() * 100) },
+    commentCount () { return this.task.comments.length },
     color () {
       return (this.task.status === 0 && new Date(this.task.end).getTime() < new Date().getTime()) ||
         (this.task.status === 1 && new Date(this.task.end).getTime() < new Date(this.task.finishedAt).getTime())
@@ -145,7 +127,7 @@ export default {
     delayed () { return this.isDelayed(this.task) },
     rating () {
       let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
-      this.sliderangeUpdate()
+      // this.sliderangeUpdate()
       return this.task.status === 0
         ? Math.min(this.daysBetween(new Date(this.task.start), new Date()), max)
         : Math.min(this.daysBetween(new Date(this.task.start), new Date(this.task.finishedAt)), max)
@@ -187,26 +169,25 @@ export default {
       return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString('pt-BR') : undefined
     },
     canRemove () {
-      return this.task.creator === this.loggedUserObj.id || this.$store.getters.project(this.task.project).manager === this.loggedUserObj.id
+      return this.task.creator === this.loggedUser || this.projects(this.task.project).manager === this.loggedUser
     }
   },
   methods: {
     onTaskDeleted () {
-      this.$emit('task-deleted')
+      this.$emit('task-deleted', this.task)
     },
     onTaskFinished () {
-      this.$emit('task-finished')
-    },
-    sliderangeUpdate () {
-      this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
-      return this.sliderange
+      this.$emit('task-finished', this.task)
     }
+    // sliderangeUpdate () {
+    // this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
+    // return this.sliderange
+    // }
   }
 }
 </script>
 <style scoped>
 .task-delayed {
-  /* border-top: 3px solid #f72719 !important; */
   background-color: rgba(255, 0, 0, 0.3) !important;
 }
 </style>
