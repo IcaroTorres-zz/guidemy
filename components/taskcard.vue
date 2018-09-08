@@ -1,6 +1,6 @@
 <template>
     <v-expansion-panel-content  hide-actions :class="{'task-delayed': delayed}">
-      <template slot="header" row>
+      <template slot="header" row :class="{'mt-1': index !== 0 }">
           <v-progress-linear
             style="left: 0; right:0; top: 0;position: absolute; transform: translateY(-14px)"
             background-color="transparent"
@@ -14,15 +14,15 @@
             <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
             <v-flex class="pa-0">
               <span class="subheading">{{task.title}}</span>
-              <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">finished at: {{finished}}</div>
+              <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{finished}}</div>
             </v-flex>
             <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
-                <dtaskdone :task="task" v-if="task.status !== 1" @task-finished="onTaskFinished">
+                <dtaskdone :task="task" v-if="task.status !== 1" @task-finished="update($event)">
                   <v-icon small color="success" slot="customactivator">done_outline</v-icon>
                 </dtaskdone>
-                <dtaskdel :task="task" @task-deleted="onTaskDeleted">
+                <dtaskdel :task="task" @task-deleted="update($event)">
                   <v-icon small color="error" v-if="canRemove" slot="customactivator">delete</v-icon>
                 </dtaskdel>
               </v-layout>
@@ -104,17 +104,16 @@
 </template>
 
 <script lang="js">
-import { dtaskcomments, dtaskdone, dtaskdel } from '../components/dialog'
+import { dtaskcomments, dtaskdone, dtaskdel } from '@/components/dialog'
 export default {
   name: 'taskcard',
   components: {dtaskcomments, dtaskdone, dtaskdel},
   props: {
-    // task: { type: Object, required: true },
-    taskId: { type: [String, Number], required: true },
-    block: Object
+    taskid: { required: true, type: [String, Number] },
+    index: Number
   },
   computed: {
-    task () { return this.tasks[this.taskId] },
+    task () { return this.tasks[this.taskid] },
     assigned () { return this.user(this.task.assigned) },
     avatar () { return this.assigned.profilePicture || this.dummyavatar },
     commentCount () { return this.task.comments.length },
@@ -122,7 +121,7 @@ export default {
       return (this.task.status === 0 && new Date(this.task.end).getTime() < new Date().getTime()) ||
         (this.task.status === 1 && new Date(this.task.end).getTime() < new Date(this.task.finishedAt).getTime())
         ? 'error'
-        : this.block.color
+        : this.blocks[this.task.block].color
     },
     delayed () { return this.isDelayed(this.task) },
     rating () {
@@ -160,25 +159,29 @@ export default {
       return this.daysBetween(new Date(this.task.start), new Date(this.task.end))
     },
     startDate () {
-      return new Date(this.task.start).toLocaleDateString('pt-BR')
+      return new Date(this.task.start).toLocaleDateString()
     },
     endDate () {
-      return new Date(this.task.end).toLocaleDateString('pt-BR')
+      return new Date(this.task.end).toLocaleDateString()
     },
     finished () {
-      return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString('pt-BR') : undefined
+      return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString() : undefined
     },
     canRemove () {
       return this.task.creator === this.loggedUser || this.projects(this.task.project).manager === this.loggedUser
     }
   },
   methods: {
-    onTaskDeleted () {
-      this.$emit('task-deleted', this.task)
-    },
-    onTaskFinished () {
-      this.$emit('task-finished', this.task)
+    update (val) {
+      console.log('valor emitido apos finalizar tarefa', val)
+      this.$emit('input', val)
     }
+    // onTaskDeleted () {
+    //   this.$emit('task-deleted', this.task)
+    // },
+    // onTaskFinished () {
+    //   this.$emit('task-finished', this.task)
+    // }
     // sliderangeUpdate () {
     // this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
     // return this.sliderange

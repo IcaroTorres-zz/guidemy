@@ -19,6 +19,16 @@
   min-width: 300px;
   max-width: 550px;
 }
+.project-block.singleview {
+  margin: 0 auto;
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.project-block-container.singleview {
+  min-width: 300px;
+  max-width: 800px;
+}
 
 .block-toolbar {
   position: sticky;
@@ -235,4 +245,56 @@ g.highcharts-data-labels {
 
 text.highcharts-credits {
   opacity: 0 !important;
+}
+
+.border-dashed-grey {
+  /* color: #777; */
+  background: transparent !important;
+  border: 1.5px dashed #777;
+}
+.border-dashed-grey i{
+  /* color: #777; */
+}
+.border-dashed-grey:hover {
+  /* background: rgba(255,255,255,0.2); */
+  background: rgba(255,255,255,0.1) !important;
+  transition: all .2s ease-out;
+}
+
+.border-dashed-dark {
+  /* color: #444; */
+  background: transparent !important;
+  border: 1.5px dashed #444;
+}
+.border-dashed-dark i{
+  /* color: #444; */
+}
+.border-dashed-dark:hover {
+  background: rgba(0,0,0,0.1) !important;
+  transition: all .2s ease-out;
+}
+
+.control-buttons{
+  position: sticky;
+  top: 48px;
+  width: 100%;
+  /* text-align: right; */
+  z-index: 3;
+  margin: 0;
+}
+.new-block__button {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  /* left: -3px; */
+  bottom: 0;
+  width: 36px;
+  margin: 16px 0 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  text-align: center;
+  line-height: 36px;
+  cursor: pointer;
+  font: normal normal 20px;
+  outline: none;
 }

@@ -29,5 +29,9 @@ export const getters = {
         ...dailyMap,
         [uid]: state.projects[pid].dailyMeetings[uid].map(daily => state.dailyMeetings[daily])
       }), {}),
-  taskComments: state => task => task.comments.map(c => state.comments[c])
+  taskComments: state => task => task.comments.map(c => state.comments[c]),
+  delayedTasks: (state, getters) => pid => getters.projectTasks(pid).filter(t => getters.isDelayed(t)),
+  doneTasks: (state, getters) => pid => getters.projectTasks(pid).filter(t => t.status === 1),
+  isDelayed: (state, getters) => t => (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
+    (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime())
 }

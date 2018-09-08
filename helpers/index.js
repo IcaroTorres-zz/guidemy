@@ -42,6 +42,15 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
   }).reverse()
 }
 
+export const defaultBlockSetup = [
+  {text: 'TO-DO', color: 'primary'},
+  {text: 'DOING', color: 'accent'},
+  {text: 'TO-CHECK', color: 'info'},
+  {text: 'TO-FIX', color: 'warning'},
+  {text: 'TO-REVERT', color: 'error'},
+  {text: 'DONE', color: 'success'}
+]
+
 export const spliceInManyStates = (modelPairs, toRemove, state) => modelPairs.forEach(pair => {
   console.log('before splice', pair)
   pair[0].tasks.splice(pair[0].tasks.findIndex(t => t === toRemove.id), 1)

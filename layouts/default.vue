@@ -100,7 +100,7 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar color="primary" :clipped-left="lgAndUp" app fixed dense flat :style="{ 'z-index': '5' }">
+    <v-toolbar :clipped-left="lgAndUp" color="primary" app fixed flat :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.stop="toggleSidebar"></v-toolbar-side-icon>
         <router-link to="/" v-html="apptitle"
@@ -114,12 +114,16 @@
         class="hidden-sm-and-down"
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
+      
       <v-toolbar-items>
+        <v-btn flat small nuxt :to="{ name: 'home' }">
+          <v-icon >home</v-icon>
+        </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
           <v-icon >dashboard</v-icon>Dashboard
         </v-btn>
       </v-toolbar-items>
+      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-tooltip bottom>
         <v-badge slot="activator" color="red" overlap>
           <span slot="badge">{{notifications.filter(n => n.status === 0).length}}</span>
@@ -145,7 +149,7 @@
 </template>
 
 <script>
-  import { dproject, dtask } from '../components/dialog'
+  import { dproject, dtask } from '@/components/dialog'
   export default {
     components: { dproject, dtask },
     data: () => ({

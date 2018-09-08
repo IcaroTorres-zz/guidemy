@@ -32,8 +32,8 @@ export default {
   methods: {
     onTaskFinished () {
       this.finishTask(this.task.id)
+      this.$emit('task-finished', this.tasks[this.task.id])
       this.dialog = false
-      setTimeout(() => this.$emit('task-finished'), 0)
     }
   }
 }

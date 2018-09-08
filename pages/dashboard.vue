@@ -49,21 +49,21 @@
                 <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon>done_all</v-icon><span class="hidden-md-and-down">finish</span>
                 </v-btn>
-              <v-divider vertical></v-divider>
+                <v-divider vertical></v-divider>
                 <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon >edit</v-icon><span class="hidden-md-and-down">edit</span>
                 </v-btn>
-              <v-divider vertical></v-divider>
+                <v-divider vertical></v-divider>
                 <v-btn small flat :icon="!lgAndUp" class="ma-0" disabled>
                   <v-icon >delete</v-icon><span class="hidden-md-and-down">remove</span>
                 </v-btn>
-              <v-divider vertical></v-divider>
+                <v-divider vertical></v-divider>
                 <v-btn small icon class="pa-0" disabled>
                   <v-icon>person_add</v-icon>
                 </v-btn>
               </template>
               <v-spacer/>
-              <ddailies :project="project">
+              <ddailies :projectid="project.id">
                 <v-btn small flat :icon="!lgAndUp" class="ma-0" color="info" slot="customactivator">
                   <span class="hidden-md-and-down">view dailes</span><v-icon >update</v-icon>
                 </v-btn>
@@ -75,10 +75,10 @@
             </v-toolbar>
             <v-layout row justify-space-between class="py-0 px-1">
               <v-flex sm7 md8 >
-                <a class="title">{{project.title}}</a>
+                <nuxt-link nuxt :to="{ name:'project-id', params: { id: project.id } }" class="title">{{project.title}}</nuxt-link>
                 <div>Manager: <a class="info--text">@{{username(project.manager)}}</a></div>
                 <div>Team: <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a></div>
-                <div>Created: <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString('pt-BR')}}</span></div>
+                <div>Created: <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString()}}</span></div>
                 <v-divider class="my-2"></v-divider>
                 <div class="layout row ml-0">
                   Description:
@@ -102,9 +102,9 @@
                     'secondary--text': !lightOut,
                     'grey--text text--lighten-3': lightOut }">
 
-                    <div class="pa-3"><span class="title error--text">{{delayedTasks(project).length}}</span><br> <small>delayed</small></div>
-                    <div class="pa-3"><span class="title">{{projectTasks(project).length}}</span><br> <small>tasks</small></div>
-                    <div class="pa-3"><span class="title success--text">{{doneTasks(project).length}}</span><br> <small>done</small></div>
+                    <div class="pa-3"><span class="title error--text">{{delayedTasks(project.id).length}}</span><br> <small>delayed</small></div>
+                    <div class="pa-3"><span class="title">{{projectTasks(project.id).length}}</span><br> <small>tasks</small></div>
+                    <div class="pa-3"><span class="title success--text">{{doneTasks(project.id).length}}</span><br> <small>done</small></div>
                     
                   </v-layout>
                   <div :id="`${project.id}-piechart`" :ref="`${project.id}-piechart`"></div>
@@ -116,27 +116,35 @@
 
       </v-layout>
       
-      <!-- <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length === 0" @block-created="updateBlockMap(project, $store.getters)" style="margin-left: -12px"> -->
-      <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length === 0"
-        style="margin-left: -12px" @block-created="updateChart(project)">
-        <v-btn class="border-dashed-grey ma-0" slot="customactivator" ><v-icon small>add</v-icon>add block</v-btn>
-      </dblock>
+      <template v-if="visionMap[project.id] && project.blocks.length === 0">
 
+        <dblock :project="project"
+          style="margin-left: -12px" @block-created="updateChart(project)">
+          <v-btn class="border-dashed-grey ma-0" slot="customactivator" ><v-icon small>add</v-icon>add block</v-btn>
+        </dblock>
+        <v-btn color="accent" style="font-size:10px" small flat @click="defaultBlocks(project)" >default block setup ?</v-btn>
+
+      </template>
       <v-layout row v-if="visionMap[project.id] && project.blocks.length > 6" class="mt-4">
         <v-btn icon small @click="toggleAll" v-if="project.blocks.length > 0"><v-icon>view_day</v-icon></v-btn>
         <v-btn class="border-dashed-grey ma-0" block><v-icon small>add</v-icon>split to new roll</v-btn>
       </v-layout>
       <v-layout row align-content-start style="position: relative; margin-top: -4px;">
+
         <dblock :project="project" v-if="visionMap[project.id] && project.blocks.length > 0" @block-created="updateChart(project)">
-          <!-- @block-created="updateBlockMap(project, $store.getters)"> -->
           <div class="new-block__button border-dashed-grey" slot="customactivator">
             <v-icon small>add</v-icon>ADD BLOCK
           </div>
         </dblock>
-        <v-layout row align-content-start class="scroller-horiz" v-if="visionMap[project.id]" style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;">
 
-          <!-- <v-flex v-for="block in blockMap[project.id]" :key="block.id" class="px-0 mr-2 project-block-container"> -->
-          <v-flex v-for="block in project.blocks" :key="block" class="px-0 mr-2 project-block-container">
+        <v-layout row align-content-start class="scroller-horiz" v-if="visionMap[project.id]" style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;">
+                       
+          <taskblock
+            @input="updateBlock($event)"
+            v-for="blockid in  project.blocks" :key="blockid"
+            :blockid="blockid"/>
+
+          <!-- <v-flex v-for="block in project.blocks" :key="block" class="px-0 mr-2 project-block-container">
             <v-toolbar light :class=" blocks[block].color + ' block-toolbar'" dense>
               <v-toolbar-title v-html=" blocks[block].text"/>
               <v-spacer/>
@@ -147,9 +155,10 @@
             <v-card :class="'transparent project-block scroller scroller__' +  blocks[block].color" flat style="position: relative;">
               <v-expansion-panel expand>
                 <taskcard :class="{ 'mt-1': tidx !== 0 }"
-                  @task-finished="finishTask($event)"
-                  @task-deleted="deleteTask($event)"
-                  v-for="(t, tidx) in  blocks[block].tasks" :key="t" :taskId="t" :block=" blocks[block]" />
+                  v-model.sync="tasks[t]"
+                  @input="updateChart($event)"
+                  v-for="(t, tidx) in  blocks[block].tasks" :key="t"
+                  :block=" blocks[block]" />
               </v-expansion-panel>
             </v-card>
             <v-toolbar :class="'block-footer ' +  blocks[block].color" dense>
@@ -167,7 +176,7 @@
                 </v-btn>
               </dtask>
             </v-toolbar>
-          </v-flex>
+          </v-flex> -->
           
         </v-layout>
       </v-layout>
@@ -175,91 +184,47 @@
   </div>
 </template>
 <script>
-import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '../components/dialog'
-import taskcard from '../components/taskcard'
-import Highcharts from 'highcharts'
-import { colors } from '../helpers'
-
-const pieColors = (blocks) => blocks.map(b => colors[b.color])
-const pieSeries = (blocks) => blocks.map(b => Object.assign({}, { name: b.text, y: b.tasks.length }))
+import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '@/components/dialog'
+import taskblock from '@/components/taskblock'
+import { Block } from '@/models'
+import { defaultBlockSetup } from '@/helpers'
 
 export default {
-  components: {taskcard, dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies},
+  components: {taskblock, dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies},
   data () {
     return {
       expandAll: false,
       descending: true,
       myCharts: {},
-      visionMap: {}
+      visionMap: {},
+      defaultBlockSetup: defaultBlockSetup
     }
   },
   computed: {
     sortButtonText () { return this.descending ? 'older first' : 'recent first' },
-    userProjects () { return this.myProjects.sort(this.sortProjects) },
-    taskMap () {
-      return Object.values(this.tasks).reduce((map, task) => {
-        console.dir(task)
-        return Object.assign(map,
-          {
-            ...map,
-            [task.project]: map[task.project]
-              ? {
-                delayed: map[task.project].delayed + (this.isDelayed(task) ? 1 : 0),
-                complete: map[task.project].complete + (task.status === 1 ? 1 : 0),
-                taskCount: map[task.project].taskCount + 1
-              }
-              : {
-                delayed: this.isDelayed(task) ? 1 : 0,
-                complete: task.status === 1 ? 1 : 0,
-                taskCount: 1
-              }
-          })
-      }, {})
+    userProjects () {
+      return this.descending
+        ? this.myProjects.sort(this.sortByStart)
+        : this.myProjects.sort(this.sortByStart).reverse()
     }
   },
   created () {
     this.visionMap = this.userProjects.reduce((map, p) => Object.assign(map, {...map, [p.id]: !!this.visionMap[p.id]}), {})
-    // this.updateVisionMap(this.userProjects)
-    // const getters = this.$store.getters
-
-    // const map = this.userProjects.reduce((m, p) => {
-    //   m.blockMap[p.id] = getters.projectBlocks(p.id) || []
-    //   m.taskMap[p.id] = {
-    //     delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
-    //     complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
-    //     taskCount: this.projectTaskCount(p)
-    //   }
-    //   if (m.visionMap[p.id] === undefined) m.visionMap[p.id] = false
-
-    //   return m
-    // }, {
-    //   blockMap: this.blockMap,
-    //   taskMap: this.taskMap,
-    //   visionMap: this.visionMap
-    // })
-    // this.visionMap = map.visionMap
-    // this.blockMap = map.blockMap
-    // this.taskMap = map.taskMap
   },
   mounted () {
     this.updateAllCharts()
   },
   methods: {
-    finishTask (task) {
-      this.updateChart(task.project)
-      console.log(task, this.tasks[task.id])
+    updateBlock (block) {
+      this.updateChart(this.projects[block.project])
+      console.log(block, this.blocks[block.id])
     },
-    deleteTask (task) {
-      this.updateChart(task.project)
+    updateTask (task) {
+      this.updateChart(this.projects[task.project])
       console.log(task, this.tasks[task.id])
     },
     printJSONState () {
       console.log(JSON.parse(this.$store.getters.JSONState))
-    },
-    sortProjects (a, b) {
-      return this.descending
-        ? new Date(b.start).getTime() - new Date(a.start).getTime()
-        : new Date(a.start).getTime() - new Date(b.start).getTime()
     },
     toggleAll () {
       this.expandAll = !this.expandAll
@@ -270,18 +235,21 @@ export default {
     toggleProject (pid) {
       this.visionMap[pid] = !this.visionMap[pid]
     },
-    // updateTaskMap (p, getters) {
-    //   this.taskMap[p.id] = {
-    //     delayed: getters.projectTasks(p.id).filter(t => this.isDelayed(t)).length,
-    //     complete: getters.projectTasks(p.id).filter(t => t.status === 1).length,
-    //     taskCount: this.projectTaskCount(p)
-    //   }
-    //   this.updateChart(p)
-    // },
     updateChart (p) {
       if (this.myCharts[p.id]) this.myCharts[p.id].destroy()
       this.myCharts[p.id] = this.highchart(p)
       console.warn(`project ${p.title}'s chart updated sucessfully`)
+    },
+    defaultBlocks (p) {
+      this.defaultBlockSetup.forEach(b => {
+        let block = new Block({...b, project: p.id})
+        this.$store.dispatch('saveBlock', block)
+          .then((data) => {
+            console.log('success applying data: ')
+            console.dir(block)
+          })
+      })
+      this.updateChart(p)
     },
     updateAllCharts () {
       const charts = this.myCharts
@@ -295,122 +263,9 @@ export default {
         this.myCharts[p.id] = this.highchart(p)
       })
       console.warn('all charts updated successfully')
-    },
-    projectTasks ({ id }) {
-      return this.projects[id].blocks
-        .reduce((taskArr, b) => taskArr.concat(
-          this.blocks[b].tasks
-            .map(t => this.tasks[t])), [])
-    },
-    delayedTasks ({ id }) { return this.projectTasks({id: id}).filter(t => this.isDelayed(t)) },
-    doneTasks ({ id }) { return this.projectTasks({id: id}).filter(t => t.status === 1) },
-    // Build the chart
-    highchart (p) {
-      if (!p) return
-
-      if (this.$refs[`${p.id}-piechart`]) {
-        Highcharts.chart(`${p.id}-piechart`, {
-          chart: {
-            type: 'pie',
-            height: '180',
-            margin: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.0)'
-          },
-          title: {
-            text: null
-          },
-          plotOptions: {
-            pie: {
-              discrete: true,
-              allowPointSelect: true,
-              cursor: 'pointer',
-              colors: pieColors(this.projects[p.id].blocks.map(b => this.blocks[b])),
-              dataLabels: {
-                enabled: false
-                // format: '{point.name} {point.y}'
-              },
-              width: '100%',
-              innerSize: '60%',
-              height: '100%'
-            }
-          },
-          series: [{
-            type: 'pie',
-            name: 'Tasks per block',
-            data: pieSeries(this.projects[p.id].blocks.map(b => this.blocks[b]))
-          }]
-        })
-      }
-    },
-    onDrop: function (collection, dropResult) {
-      // this[collection] = applyDrag(this[collection], dropResult)
-    },
-    getChildPayload1: function (index) {
-      return this.items1[index]
-    },
-    getChildPayload2: function (index) {
-      return this.items2[index]
-    },
-    getChildPayload3: function (index) {
-      return this.items3[index]
-    },
-    getChildPayload4: function (index) {
-      return this.items4[index]
     }
   }
 }
 </script>
 <style src="assets/style/style.css"></style>
-<style scoped>
-.control-buttons{
-  position: sticky;
-  top: 48px;
-  width: 100%;
-  /* text-align: right; */
-  z-index: 3;
-  margin: 0;
-}
-.new-block__button {
-  position: absolute;
-  top: -4px;
-  left: 0;
-  /* left: -3px; */
-  bottom: 0;
-  width: 36px;
-  margin: 16px 0 0;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  text-align: center;
-  line-height: 36px;
-  cursor: pointer;
-  font: normal normal 20px;
-  outline: none;
-}
-.border-dashed-grey {
-  /* color: #777; */
-  background: transparent !important;
-  border: 1.5px dashed #777;
-}
-.border-dashed-grey i{
-  /* color: #777; */
-}
-.border-dashed-grey:hover {
-  /* background: rgba(255,255,255,0.2); */
-  background: rgba(255,255,255,0.1) !important;
-  transition: all .2s ease-out;
-}
-
-.border-dashed-dark {
-  /* color: #444; */
-  background: transparent !important;
-  border: 1.5px dashed #444;
-}
-.border-dashed-dark i{
-  /* color: #444; */
-}
-.border-dashed-dark:hover {
-  background: rgba(0,0,0,0.1) !important;
-  transition: all .2s ease-out;
-}
-</style>
 

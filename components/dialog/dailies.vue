@@ -1,16 +1,19 @@
 <template>
-  <v-dialog v-model="dialog" fullscreen scrollable>
+  <v-dialog v-model="dialog" fullscreen>
     <template slot="activator" @click.stop="dialog = !dialog">
       <slot name="customactivator"/>
     </template>
     <v-card :dark="lightOut">
-      <v-card-title class="py-3 display-1 primary">
+      <v-toolbar card fixed flat color="primary">
+        <v-toolbar-title class="headline">
         {{project.title}} Daily Meetings
+        </v-toolbar-title>
         <v-spacer/>
         <v-icon @click.stop="dialog = !dialog">close</v-icon>
-      </v-card-title>
-      <div class="px-3 mt-2">
-        Description: <p class="grey--text text-xs-justify">{{project.description}}</p>
+      </v-toolbar>
+      <div class="px-3">
+        <div class="mt-5 pt-4">Description: </div>
+        <p class="grey--text text-xs-justify">{{project.description}}</p>
         <v-divider v-if="isManager"></v-divider>
         <v-layout row justify-space-between align-center>
         
@@ -146,20 +149,14 @@
                         <span v-if="didx === 0 && new Date(daily.start).getDate() === new Date().getDate()">TODAY!</span>
                         <span v-else>{{new Date(daily.start).toLocaleDateString()}}</span>
                       </div>
-                      <!-- <v-btn icon small :class="{'success--text':daily.status === 1,  'action-middle-1': true}" -->
-                        <!-- :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === 1 ? 0 : 1})"> -->
                         <v-icon :class="{'success--text':daily.status === 1,  'action-middle-1': true}"
                           :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === 1 ? 0 : 1})">
                           done_outline
                         </v-icon>
-                      <!-- </v-btn> -->
-                      <!-- <v-btn icon small :class="{'error--text':daily.status === -1,  'action-middle-2': true}" -->
-                        <!-- :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === -1 ? 0 : -1})"> -->
                         <v-icon :class="{'error--text':daily.status === -1,  'action-middle-2': true}"
                           :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === -1 ? 0 : -1})">
                           gavel
                         </v-icon>
-                      <!-- </v-btn> -->
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -181,8 +178,8 @@
 export default {
   name: 'projectdailies',
   props: {
-    project: {
-      type: Object,
+    projectid: {
+      type: [String, Number],
       required: true
     }
   },
@@ -204,6 +201,7 @@ export default {
     this.selectedWorker = this.project.coworkers[0]
   },
   computed: {
+    project () { return this.projects[this.projectid] },
     manager () { return this.user(this.project.manager) },
     coworkers () { return this.project.coworkers.map(uid => this.user(uid)) },
     assigned () { return this.selectedWorker ? this.user(this.selectedWorker) : this.loggedUserObj },
@@ -212,23 +210,17 @@ export default {
         ? this.$store.getters.projectDailies(this.project.id)[this.selectedWorker]
         : this.$store.getters.projectDailies(this.project.id)[this.loggedUser]
 
-      mydailies = mydailies.sort((a, b) => new Date(b.start).getTime() - new Date(a.start).getTime())
-      console.log(
-        'condition values',
-        mydailies.length > 0,
-        mydailies[0].start,
-        new Date(mydailies[0].start).getDate() === new Date().getDate(),
-        mydailies[0].status === 0,
+      mydailies = mydailies.sort(this.sortByStart)
+
+      const iHaveNewDaily = (
+        mydailies.length > 0 &&
+        mydailies[0].start &&
+        new Date(mydailies[0].start).getDate() === new Date().getDate() &&
+        mydailies[0].status === 0 &&
         this.loggedUser === mydailies[0].assigned
       )
 
-      if (mydailies.length > 0 &&
-
-          new Date(mydailies[0].start).getDate() === new Date().getDate() &&
-
-          mydailies[0].status === 0 &&
-
-          this.loggedUser === mydailies[0].assigned) {
+      if (iHaveNewDaily) {
         this.newDaily = { ...mydailies[0] }
         this.open = true
         return mydailies.slice(1)
