@@ -3,12 +3,12 @@
     <template slot="activator" @click.stop="dialog = !dialog" >
       <slot name="customactivator" />
     </template>
-    <v-card :dark="lightOut">
+    <v-card >
       <v-card-title class="py-4 title success">
         Confirm task as completed?
       </v-card-title>
       <v-card-text>
-        {{task.title}}
+        {{computedTask.title}}
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -24,15 +24,18 @@
 export default {
   name: 'dialogdone',
   props: {
-    task: { type: Object, required: true }
+    taskid: { type: [String, Number], required: true }
   },
   data: () => ({
     dialog: false
   }),
+  computed: {
+    computedTask () { return this.task(this.taskid) }
+  },
   methods: {
     onTaskFinished () {
-      this.finishTask(this.task.id)
-      this.$emit('task-finished', this.tasks[this.task.id])
+      this.finishTask(this.taskid)
+      this.$emit('task-finished', this.computedTask)
       this.dialog = false
     }
   }

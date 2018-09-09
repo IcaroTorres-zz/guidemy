@@ -1,4 +1,4 @@
-<template :dark="lightOut">
+<template >
   <v-dialog v-model="dialog" width="400px">
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" />

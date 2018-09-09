@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="400px" :dark="lightOut">
+  <v-dialog v-model="dialog" width="400px" >
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" />
     </template>
@@ -8,7 +8,7 @@
         Confirm task Exclusion?
       </v-card-title>
       <v-card-text>
-        {{task.title}}
+        {{computedTask.title}}
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
@@ -24,16 +24,19 @@
 export default {
   name: 'dialogtaskdel',
   props: {
-    task: { type: Object, required: true }
+    taskid: { type: [String, Number], required: true }
   },
   data: () => ({
     dialog: false
   }),
+  computed: {
+    computedTask () { return this.task(this.taskid) }
+  },
   methods: {
     onTaskDeleted () {
-      this.deleteTask(this.task.id)
+      this.deleteTask(this.taskid)
+      this.$emit('task-deleted')
       this.dialog = false
-      setTimeout(() => this.$emit('task-deleted'), 250)
     }
   }
 }

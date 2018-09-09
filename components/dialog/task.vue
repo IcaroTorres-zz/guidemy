@@ -3,7 +3,7 @@
       <template slot="activator">
         <slot name="customactivator"  @click.stop="dialog = !dialog" />
       </template>
-      <v-card :dark="lightOut">
+      <v-card >
         <v-card-title class="py-4 title primary">
           Task
         </v-card-title>
@@ -140,7 +140,7 @@ export default {
   props: {
     suggestedProject: Object,
     suggestedBlock: Object,
-    task: Object
+    taskid: [String, Number]
   },
   data () {
     return {
@@ -150,8 +150,8 @@ export default {
     }
   },
   created () {
-    this.editing = new Task({...this.task,
-      creator: this.loggedUserObj.id,
+    this.editing = new Task({...this.task(this.taskid),
+      creator: this.loggedUser,
       project: (this.suggestedProject || {}).id,
       block: (this.suggestedBlock || {}).id
     })
@@ -174,8 +174,6 @@ export default {
     saveTask () {
       this.$store.dispatch('saveTask', this.editing)
         .then(() => {
-          console.log('success applying data: ')
-          console.dir(this.editing)
           this.$emit('task-created')
           this.editing = new Task({
             creator: this.loggedUserObj.id,

@@ -1,11 +1,26 @@
 import { increaseDays, generateDailies } from '../helpers'
 const generatedDailes = {}
 
-let p1u2Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u2', 'u1')
-let p1u1Generated = generateDailies(generatedDailes, { startDate: new Date('07/14/2018') }, 'p1', 'u1', 'u1')
-let p2u1Generated = generateDailies(generatedDailes, { startDate: new Date('08/18/2018') }, 'p2', 'u1', 'u1')
-let p2u2Generated = generateDailies(generatedDailes, { startDate: new Date('08/18/2018') }, 'p2', 'u2', 'u1')
-let p3u1Generated = generateDailies(generatedDailes, { startDate: new Date('08/30/2018') }, 'p3', 'u1', 'u3')
+let p1u2Generated = generateDailies(generatedDailes,
+  { startDate: new Date('07/14/2018') },
+  'p1', 'u2', 'u1'
+)
+let p1u1Generated = generateDailies(generatedDailes,
+  { startDate: new Date('07/14/2018') },
+  'p1', 'u1', 'u1'
+)
+let p2u1Generated = generateDailies(generatedDailes,
+  { startDate: new Date('08/18/2018') },
+  'p2', 'u1', 'u1'
+)
+let p2u2Generated = generateDailies(generatedDailes,
+  { startDate: new Date('08/18/2018') },
+  'p2', 'u2', 'u1'
+)
+let p3u1Generated = generateDailies(generatedDailes,
+  { startDate: new Date('08/30/2018') },
+  'p3', 'u1', 'u3'
+)
 
 export default () => ({
   mini: true,
@@ -13,6 +28,13 @@ export default () => ({
   appError: null,
   appLoading: false,
   sidebar: false,
+  snack: {
+    active: false,
+    message: '',
+    color: 'secondary'
+  },
+  dictNamesToEmails: {
+  },
   loggedUser: 'u1',
   users: {
     'u1': {
@@ -124,14 +146,62 @@ export default () => ({
     }
   },
   blocks: {
-    'b1': { id: 'b1', project: 'p1', text: 'To-do', color: 'primary', tasks: [] },
-    'b2': { id: 'b2', project: 'p1', text: 'Doing', color: 'info', tasks: ['t2'] },
-    'b3': { id: 'b3', project: 'p1', text: 'To-check', color: 'accent', tasks: ['t3'] },
-    'b4': { id: 'b4', project: 'p1', text: 'To-fix', color: 'warning', tasks: ['t1', 't0'] },
-    'b5': { id: 'b5', project: 'p1', text: 'Done', color: 'success', tasks: [] },
-    'b6': { id: 'b6', project: 'p2', text: 'To-do', color: 'primary', tasks: [] },
-    'b7': { id: 'b7', project: 'p2', text: 'Doing', color: 'info', tasks: ['t4'] },
-    'b8': { id: 'b8', project: 'p2', text: 'Done', color: 'success', tasks: [] }
+    'b1': {
+      id: 'b1',
+      project: 'p1',
+      text: 'To-do',
+      color: 'primary',
+      tasks: []
+    },
+    'b2': {
+      id: 'b2',
+      project: 'p1',
+      text: 'Doing',
+      color: 'info',
+      tasks: ['t2']
+    },
+    'b3': {
+      id: 'b3',
+      project: 'p1',
+      text: 'To-check',
+      color: 'accent',
+      tasks: ['t3']
+    },
+    'b4': {
+      id: 'b4',
+      project: 'p1',
+      text: 'To-fix',
+      color: 'warning',
+      tasks: ['t1', 't0']
+    },
+    'b5': {
+      id: 'b5',
+      project: 'p1',
+      text: 'Done',
+      color: 'success',
+      tasks: []
+    },
+    'b6': {
+      id: 'b6',
+      project: 'p2',
+      text: 'To-do',
+      color: 'primary',
+      tasks: []
+    },
+    'b7': {
+      id: 'b7',
+      project: 'p2',
+      text: 'Doing',
+      color: 'info',
+      tasks: ['t4']
+    },
+    'b8': {
+      id: 'b8',
+      project: 'p2',
+      text: 'Done',
+      color: 'success',
+      tasks: []
+    }
   },
   tasks: {
     't0': {
@@ -260,19 +330,6 @@ export default () => ({
   //   end: increaseDays(new Date(), 1), // 24hr after
   //   finishedAt: null,
   //   status: 0
-  // },
-  // 'd2': {
-  //   id: 'd2',
-  //   manager: 'u2',
-  //   assigned: 'u1',
-  //   r1: '',
-  //   r2: '',
-  //   r3: '',
-  //   start: new Date(),
-  //   end: increaseDays(new Date(), 1), // 24hr after
-  //   finishedAt: null,
-  //   status: 0
-  // }
   // },
   status: {
     0: 'active',

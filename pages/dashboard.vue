@@ -261,7 +261,8 @@ export default {
       }
       this.userProjects.reduce((chartMap, p) => {
         this.myCharts[p.id] = this.highchart(p)
-      })
+        return chartMap
+      }, {})
       console.warn('all charts updated successfully')
     }
   }

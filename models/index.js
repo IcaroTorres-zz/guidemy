@@ -4,6 +4,7 @@ export class User {
     // console.dir(payload)
     this.id = payload.id || 'u' + Date.now().toString()
     this.username = payload.username || ''
+    this.displayName = payload.displayName || payload.username || ''
     this.email = payload.email || ''
     this.profilePicture = payload.profilePicture || ''
     this.tasks = payload.tasks || []
@@ -74,5 +75,33 @@ export class Comment {
     this.date = payload.date || new Date()
     this.text = payload.text || ''
     this.likes = payload.likes || []
+  }
+}
+
+export class Activity {
+  constructor (payload = {}) {
+    this.id = 'atv' + Date.now().toString()
+    this.text = payload.text || ''
+    this.project = payload.project
+    this.by = payload.by
+    this.at = payload.at
+  }
+}
+
+const appTitle = 'App title'
+export default class Notification {
+  constructor (payload = {}) {
+    const generatedId = 'nf' + Date.now().toString()
+    this.id = generatedId
+    this.receiverList = payload.receiverList || []
+    this.from = payload.from || appTitle
+    this.title = payload.title || 'App notification'
+    this.message = payload.message || ''
+    this.route = payload.route || {
+      name: 'notification', // route name
+      params: { id: generatedId }, // route params object
+      path: `/notification/${generatedId}`// route path
+    }
+    this.status = 0
   }
 }

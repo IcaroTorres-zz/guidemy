@@ -5,7 +5,7 @@
           <!-- <v-btn fab bottom right color="primary" slot="customactivator" dark fixed @click.stop="dialog = !dialog"><v-icon>add</v-icon></v-btn> -->
       </slot>
     </template>
-    <v-card :dark="lightOut">
+    <v-card >
       <v-card-title :class="{ 'py-4': true, 'title': true, 'primary': !project, 'warning grey--text text--darken-3': project }">
         {{project ? 'Edit' : 'Create'}} Project
       </v-card-title>
@@ -22,6 +22,9 @@
               <v-textarea
                 outline
                 label="Description"
+                :rows="1"
+                row-height="16"
+                auto-grow
                 v-model="editing.description"
               ></v-textarea>
             </v-flex>
@@ -137,8 +140,6 @@ export default {
     saveProject () {
       this.$store.dispatch('saveProject', this.editing)
         .then(() => {
-          console.log('success applying data:')
-          console.dir(this.editing)
           this.$emit('project-created')
           this.editing = new Project({creator: this.$store.getters.loggedUser})
           this.dialog = false

@@ -3,7 +3,7 @@
     <template slot="activator" @click.stop="dialog = !dialog" >
       <slot name="customactivator" />
     </template>
-    <v-card :dark="lightOut">
+    <v-card >
       <v-card-title class="py-4 title success">
         Finish project activities?
       </v-card-title>

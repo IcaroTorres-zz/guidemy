@@ -9,6 +9,15 @@
   width: 1px;
   background: #ddd;
 }
+.task-title { 
+  overflow: hidden;
+  word-wrap: break-word !important;
+  white-space: pre-wrap;
+  /* width: 200px !important; 
+  max-width: 100%; */
+  text-overflow: ellipsis;
+}
+
 .project-block {
   margin: 0 auto;
   max-height: 450px;
@@ -297,4 +306,9 @@ text.highcharts-credits {
   cursor: pointer;
   font: normal normal 20px;
   outline: none;
+}
+pre {
+  word-wrap: break-word !important;
+  white-space: pre-wrap;
+  max-width: 100%;
 }

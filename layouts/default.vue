@@ -84,7 +84,7 @@
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
-              <v-divider inset v-if="i !== item.children.length - 1"/>
+              <v-divider inset :key="child.text" v-if="i !== item.children.length - 1"/>
             </template>
           </v-list-group>
           <v-list-tile v-else :key="item.text">
@@ -142,8 +142,34 @@
         <nuxt/>
       </v-container>
     </v-content>
+     <v-snackbar
+      bottom
+      left
+      v-model="snack.active"
+      :color="snack.color"
+      :multi-line="!lgAndUp"
+    >
+      <!-- :timeout="snack.timeout" -->
+      {{ snack.message }}
+      <v-btn
+        dark
+        flat
+        @click="toggleSnack()"
+      >
+        dismiss
+      </v-btn>
+    </v-snackbar>
     <dproject>
-       <v-btn fab bottom right color="primary" slot="customactivator" :dark="lightOut" :light="!lightOut" fixed><v-icon>add</v-icon></v-btn>
+      <v-btn
+        fab 
+        bottom 
+        right 
+        color="primary" 
+        slot="customactivator" 
+        :dark="lightOut"
+        fixed>
+        <v-icon>add</v-icon>
+      </v-btn>
     </dproject>
   </v-app>
 </template>

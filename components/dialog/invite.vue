@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="600px" scrollable :dark="lightOut">
+  <v-dialog v-model="dialog" width="600px" scrollable >
     <template slot="activator">
       <slot name="customactivator"  @click.stop="dialog = !dialog" />
     </template>

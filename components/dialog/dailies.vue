@@ -3,7 +3,7 @@
     <template slot="activator" @click.stop="dialog = !dialog">
       <slot name="customactivator"/>
     </template>
-    <v-card :dark="lightOut">
+    <v-card >
       <v-toolbar card fixed flat color="primary">
         <v-toolbar-title class="headline">
         {{project.title}} Daily Meetings

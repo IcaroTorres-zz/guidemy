@@ -1,4 +1,17 @@
+import { User } from '@/models'
 export const mutations = {
+  signUser (state, payload) {
+    console.warn(`User ${payload.username} - ${payload.email}: logged On sucessfully`)
+    state.loggedUser = payload.id
+    state.users[payload.id] = new User({ ...state.users[payload.id], ...payload })
+  },
+  toggleSnack (state, payload) {
+    state.snack = {
+      message: payload ? payload.message : 'Warning',
+      color: payload ? payload.color : 'secondary',
+      active: !!payload
+    }
+  },
   toggleMini (state) {
     state.mini = !state.mini
   },
@@ -62,13 +75,6 @@ export const mutations = {
     state.blocks[task.block].tasks
       .splice(state.blocks[task.block].tasks
         .findIndex(t => t === task.id), 1)
-
-    // spliceInManyStates(
-    //   [
-    //     [new User(state.users[task.assigned]), 'users'],
-    //     [new Block(state.blocks[task.block]), 'blocks']
-    //   ], task, state)
-
     delete state.tasks[payload]
   },
   judgeDaily (state, payload) {

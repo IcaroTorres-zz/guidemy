@@ -9,20 +9,20 @@
             :value="rating * (100 / slidemax)"
           ></v-progress-linear>
 
-        <v-flex xs12:class="{'pl-0': true}">
+        <v-flex xs12 :class="{'pl-0': true}">
           <v-layout row wrap align-center>
             <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
-            <v-flex class="pa-0">
-              <span class="subheading">{{task.title}}</span>
-              <div v-if="task.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{finished}}</div>
+            <v-flex class="pa-0 task-title">
+              <span class="subheading">{{computedTask.title}}</span>
+              <div v-if="computedTask.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{finished}}</div>
             </v-flex>
             <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
-                <dtaskdone :task="task" v-if="task.status !== 1" @task-finished="update($event)">
+                <dtaskdone :taskid="taskid" v-if="computedTask.status !== 1" @task-finished="update($event)">
                   <v-icon small color="success" slot="customactivator">done_outline</v-icon>
                 </dtaskdone>
-                <dtaskdel :task="task" @task-deleted="update($event)">
+                <dtaskdel :taskid="taskid" @task-deleted="update($event)">
                   <v-icon small color="error" v-if="canRemove" slot="customactivator">delete</v-icon>
                 </dtaskdel>
               </v-layout>
@@ -34,7 +34,7 @@
       <v-card tile flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
         <v-card-text class="px-2 pt-2 pb-0">
           <div class="body-1 grey--text">
-            {{task.description}}
+            {{computedTask.description}}
             <v-divider></v-divider>
           </div>
           <div class="layout row wrap align-center justify-content-end px-2">
@@ -94,7 +94,7 @@
           <v-spacer/>
           <div class="d--wrapper">
             <span class="caption grey--text mr-2">{{commentCount}}</span>
-            <dtaskcomments :task="task">
+            <dtaskcomments :taskid="taskid">
               <v-icon slot="customactivator" color="grey lighten-2" class="mr-1">question_answer</v-icon>
             </dtaskcomments>
           </div>
@@ -113,29 +113,30 @@ export default {
     index: Number
   },
   computed: {
-    task () { return this.tasks[this.taskid] },
-    assigned () { return this.user(this.task.assigned) },
+    computedTask () { return this.task(this.taskid) },
+    // task () { return this.tasks[this.taskid] },
+    assigned () { return this.user(this.computedTask.assigned) },
     avatar () { return this.assigned.profilePicture || this.dummyavatar },
-    commentCount () { return this.task.comments.length },
+    commentCount () { return this.computedTask.comments.length },
     color () {
-      return (this.task.status === 0 && new Date(this.task.end).getTime() < new Date().getTime()) ||
-        (this.task.status === 1 && new Date(this.task.end).getTime() < new Date(this.task.finishedAt).getTime())
+      return (this.computedTask.status === 0 && new Date(this.computedTask.end).getTime() < new Date().getTime()) ||
+        (this.computedTask.status === 1 && new Date(this.computedTask.end).getTime() < new Date(this.computedTask.finishedAt).getTime())
         ? 'error'
-        : this.blocks[this.task.block].color
+        : this.blocks[this.computedTask.block].color
     },
     delayed () { return this.isDelayed(this.task) },
     rating () {
-      let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      let max = this.daysBetween(new Date(this.computedTask.start), new Date(this.computedTask.end))
       // this.sliderangeUpdate()
-      return this.task.status === 0
-        ? Math.min(this.daysBetween(new Date(this.task.start), new Date()), max)
-        : Math.min(this.daysBetween(new Date(this.task.start), new Date(this.task.finishedAt)), max)
+      return this.computedTask.status === 0
+        ? Math.min(this.daysBetween(new Date(this.computedTask.start), new Date()), max)
+        : Math.min(this.daysBetween(new Date(this.computedTask.start), new Date(this.computedTask.finishedAt)), max)
     },
     overdue () {
       let today = new Date()
-      let end = new Date(this.task.end)
-      let finished = new Date(this.task.finishedAt)
-      return this.task.status === 1
+      let end = new Date(this.computedTask.end)
+      let finished = new Date(this.computedTask.finishedAt)
+      return this.computedTask.status === 1
         ? finished.getTime() > end.getTime()
           ? Math.abs(this.daysBetween(finished, end))
           : undefined
@@ -144,7 +145,7 @@ export default {
           : undefined
     },
     ratecolor () {
-      let max = this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      let max = this.daysBetween(new Date(this.computedTask.start), new Date(this.computedTask.end))
       return this.rating <= (1 * max / 5)
         ? 'success'
         : this.rating <= (2 * max / 5)
@@ -156,24 +157,23 @@ export default {
               : 'deep-orange'
     },
     slidemax () {
-      return this.daysBetween(new Date(this.task.start), new Date(this.task.end))
+      return this.daysBetween(new Date(this.computedTask.start), new Date(this.computedTask.end))
     },
     startDate () {
-      return new Date(this.task.start).toLocaleDateString()
+      return new Date(this.computedTask.start).toLocaleDateString()
     },
     endDate () {
-      return new Date(this.task.end).toLocaleDateString()
+      return new Date(this.computedTask.end).toLocaleDateString()
     },
     finished () {
-      return this.task.finishedAt ? new Date(this.task.finishedAt).toLocaleDateString() : undefined
+      return this.computedTask.finishedAt ? new Date(this.computedTask.finishedAt).toLocaleDateString() : undefined
     },
     canRemove () {
-      return this.task.creator === this.loggedUser || this.projects(this.task.project).manager === this.loggedUser
+      return this.computedTask.creator === this.loggedUser || this.projects(this.computedTask.project).manager === this.loggedUser
     }
   },
   methods: {
     update (val) {
-      console.log('valor emitido apos finalizar tarefa', val)
       this.$emit('input', val)
     }
     // onTaskDeleted () {
@@ -183,7 +183,7 @@ export default {
     //   this.$emit('task-finished', this.task)
     // }
     // sliderangeUpdate () {
-    // this.sliderange = [0, this.daysBetween(new Date(this.task.start), new Date())]
+    // this.sliderange = [0, this.daysBetween(new Date(this.computedTask.start), new Date())]
     // return this.sliderange
     // }
   }

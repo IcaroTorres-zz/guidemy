@@ -1,5 +1,47 @@
 const dummyavatar = 'https://bit.ly/2CaX7sw'
 export const getters = {
+  dictNamesToEmails: (state) => Object.values(state.users)
+    .reduce((nameDictionary, user) => Object.assign(
+      nameDictionary, {
+        ...nameDictionary,
+        [user.username]: user.email
+      }), {}),
+  // on signUp component check if tried user isn't already used
+  available: (state, getters) => username => !getters.dictNamesToEmails[username],
+  // get email for equivalente name
+  email: (state) => name => state.DictNamesToEmails[name],
+  filledProjects: (state, getters) => {
+    return Object.entries(state.projects)
+      .map(([pid, project]) => ({
+        ...project,
+        blocks: getters.projectBlocks(pid).map(blockToFill => ({
+          ...blockToFill,
+          tasks: blockToFill.tasks
+            .map(taskid => state.tasks[taskid])
+        }))
+      }))
+  },
+  filledUserProjects: (state, getters) => uid => {
+    return getters.userProjects(uid)
+      .map(project => ({
+        ...project,
+        blocks: getters.projectBlocks(project.id)
+          .map(blockToFill => ({
+            ...blockToFill,
+            tasks: blockToFill.tasks
+              .map(taskid => state.tasks[taskid])
+          }))
+      }))
+  },
+  filledProject: (state, getters) => pid => ({
+    ...state.projects[pid],
+    blocks: getters.projectBlocks(pid)
+      .map(blockToFill => ({
+        ...blockToFill,
+        tasks: blockToFill.tasks
+          .map(taskid => state.tasks[taskid])
+      }))
+  }),
   // ui states
   // lightOut: state => state.lightOut,
   // user states

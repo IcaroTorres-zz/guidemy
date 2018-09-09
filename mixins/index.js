@@ -3,7 +3,11 @@ import { colors } from '../helpers'
 import Highcharts from 'highcharts'
 
 const pieColors = (blocks) => blocks.map(b => colors[b.color])
-const pieSeries = (blocks) => blocks.map(b => Object.assign({}, { name: b.text, y: b.tasks.length }))
+const pieSeries = (blocks) => {
+  blocks.map(b => Object.assign({},
+    { name: b.text, y: b.tasks.length })
+  )
+}
 
 // import { state, getters, actions, mutations } from '../store'
 
@@ -30,10 +34,14 @@ export const globalMixin = {
       'teams',
       'projects',
       'blocks',
-      'tasks'
+      'tasks',
+      'snack'
     ]),
     ...mapGetters([
       'myProjects',
+      'filledProjects',
+      'filledUserProjects',
+      'filledProject',
       'loggedUserObj',
       'users',
       'usernames',
@@ -43,7 +51,8 @@ export const globalMixin = {
       'projectTasks',
       'doneTasks',
       'delayedTasks',
-      'isDelayed'
+      'isDelayed',
+      'task'
     ]),
     lgAndUp () { return this.$vuetify.breakpoint.lgAndUp }
   },
@@ -55,6 +64,7 @@ export const globalMixin = {
       answerDaily (commit, payload) { commit('answerDaily', payload) },
       postComment (commit, payload) { commit('postComment', payload) },
       deleteComment (commit, payload) { commit('deleteComment', payload) },
+      toggleSnack (commit, payload) { commit('toggleSnack', payload) },
       toggleSidebar (commit) { commit('toggleSidebar') },
       toggleMini (commit) { commit('toggleMini') },
       toggleLight (commit) { commit('toggleLight') },
@@ -99,6 +109,7 @@ export const globalMixin = {
               allowPointSelect: true,
               cursor: 'pointer',
               colors: pieColors(this.projects[p.id].blocks.map(b => this.blocks[b])),
+              // colors: pieColors(p.blocks),
               dataLabels: {
                 enabled: false
                 // format: '{point.name} {point.y}'
@@ -112,6 +123,7 @@ export const globalMixin = {
             type: 'pie',
             name: 'Tasks per block',
             data: pieSeries(this.projects[p.id].blocks.map(b => this.blocks[b]))
+            // data: pieSeries(p.blocks)
           }]
         })
       }

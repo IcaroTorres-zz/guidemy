@@ -3,7 +3,7 @@
       <template slot="activator" @click.stop="dialog = !dialog">
         <slot name="customactivator" />
       </template>
-      <v-card :dark="lightOut">
+      <v-card >
         <v-card-title :class="{'py-4 title': true, 'primary': !!project, 'warning': !project }">
           {{dialogtitle}}
         </v-card-title>
@@ -69,8 +69,6 @@ export default {
     saveBlock () {
       this.$store.dispatch('saveBlock', this.editing)
         .then((data) => {
-          console.log('success applying data: ')
-          console.dir(this.editing)
           this.$emit('block-created')
           this.editing = new Block({project: this.project.id})
           this.dialog = false
