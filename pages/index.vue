@@ -6,8 +6,20 @@
     <v-card-text class="caption text-xs-center">
       <b>Sign Up</b> below and try {{apptitle}} on your new projects.
       <hr class="primary my-1">
+      <v-alert
+        v-if="!!appError"
+        :value="!!appError"
+        type="error"
+        dismissible
+      >
+        {{appError.message}}
+      </v-alert>
     </v-card-text>
-      <v-form v-model="valid" ref="form" @submit.prevent="signup">
+      <v-form 
+        v-model="valid" 
+        ref="form" 
+        @submit.prevent="signup"
+        @keydown.prevent.enter>
         <v-layout row wrap justify-space-around>
           <v-flex xs10 sm5>
             <v-text-field
@@ -31,7 +43,7 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex xs11>
+          <v-flex xs10>
             <v-text-field
               label="Email"
               name="email"
@@ -67,19 +79,12 @@
           <v-flex xs11>
             <v-layout>
               <v-spacer></v-spacer>
-              <v-btn color="success" type="submit" :disabled="!valid" @submit="">Register</v-btn>
+              <v-btn color="success" type="submit" :disabled="!valid" >Register</v-btn>
             </v-layout>
           </v-flex>
         </v-layout>
       </v-form>
-    <v-card-text class="body-2 text-xs-justify">
       <hr class="primary my-1">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Vel quo praesentium, soluta omnis rem nostrum aperiam fugiat ab numquam dolor!
-      <div class="text-xs-right">
-        <em><small>&mdash; Ícaro Torres</small></em>
-      </div>
-      <hr class="primary my-1">
-    </v-card-text>
     <v-card-actions>
       <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
@@ -88,8 +93,10 @@
   </v-card>
 </template>
 <script>
+import { routeMixin } from '@/mixins'
 export default {
   layout: 'login',
+  mixins: [routeMixin],
   data: (vm) => ({
     valid: false,
     newUser: {

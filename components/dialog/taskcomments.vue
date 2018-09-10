@@ -29,7 +29,7 @@
               <pre>{{comment.text}}</pre>
               <v-layout>
                 <div class="caption grey--text px-1">
-                  posted: {{formatPostTime(comment.date)}}
+                  posted: {{comment.date | postFormat}}
                 </div>
                 <v-icon small class="px-1">thumb_up</v-icon>
                 <v-icon small class="px-1">thumb_down</v-icon>
@@ -57,10 +57,7 @@
                       >cancel</v-btn>
                       <v-btn
                         flat
-                        @click="() => {
-                          deleteComment(comment.id)
-                          sheet = false
-                        }">Confirm</v-btn>
+                        @click="onDeleteComment(comment.id)">Confirm</v-btn>
                     </v-card-actions>
                   </v-card>
                 </v-bottom-sheet>             
@@ -89,7 +86,7 @@
                 <v-icon small class="px-1">chat_bubble_outline</v-icon>
                 <v-icon small class="px-1">star_border</v-icon>
                 <div class="caption grey--text px-1">
-                  posted: {{formatPostTime(comment.date)}}
+                  posted: {{comment.date | postFormat}}
                 </div>
               </v-layout>
               <v-divider style="margin-left: 56px"/>
@@ -110,7 +107,11 @@
           <img :src="loggedUserObj.profilePicture" alt="avatar">
         </v-avatar>
         <v-flex>
-          <v-form v-model="valid" ref="newcomment" @submit="post">
+          <v-form 
+            v-model="valid" 
+            ref="newcomment" 
+            @submit.prevent="post"
+            @keydown.prevent.enter>
             <v-textarea
               required
               :rules="[v => !!v || 'type your comment']"
@@ -149,10 +150,10 @@ export default {
     }
   },
   created () {
-    this.comment = new Comment({
+    this.comment = Object(new Comment({
       at: this.taskid,
       by: this.loggedUser
-    })
+    }))
   },
   computed: {
     computedTask () { return this.task(this.taskid) },
@@ -163,17 +164,18 @@ export default {
   },
   methods: {
     post () {
-      this.postComment(new Comment({
+      this.postComment(Object(new Comment({
         ...this.comment,
         date: new Date()
-      }))
-      this.comment = new Comment({ at: this.taskid, by: this.loggedUser })
+      })))
+      this.comment = Object(new Comment({ at: this.taskid, by: this.loggedUser }))
     },
     submit () {
-      if (this.$refs.newcomment.validate()) {
-        // Native form submission is not yet supported
-        this.post()
-      }
+      if (this.$refs.newcomment.validate()) this.post()
+    },
+    onDeleteComment (cid) {
+      this.deleteComment(cid)
+      this.sheet = false
     }
   }
 }

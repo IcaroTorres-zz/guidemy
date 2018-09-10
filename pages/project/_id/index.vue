@@ -273,7 +273,6 @@
           @input="updateBlock($event)"
           v-for="blockid in  project.blocks" :key="blockid"
           :blockid="blockid"/>
-          <!-- :blockid="blockid" -->
       </v-layout>
     </v-layout>
   </v-container>

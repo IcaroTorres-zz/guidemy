@@ -132,8 +132,11 @@ export default {
     team () {
       return this.project
         ? this.project.coworkers.map(cid => this.user(cid))
-        : this.loggedUserObj.teams.reduce((coworkers, tm) => coworkers.concat(this.teams[tm].members), [])
-          .map(uid => this.user(uid))
+        : this.loggedUser
+          ? this.loggedUserObj.teams
+            .reduce((coworkers, tm) => coworkers.concat(this.teams[tm].members), [])
+            .map(uid => this.user(uid))
+          : []
     }
   },
   methods: {

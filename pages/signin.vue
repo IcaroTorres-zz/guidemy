@@ -6,9 +6,21 @@
         <b>Sign In</b> below to continue managing your projects.
         <hr class="primary my-1">
       </div>
+      <v-alert
+        v-if="!!appError"
+        :value="!!appError"
+        type="error"
+        dismissible
+        @input="clearError"
+      >
+        {{appError.message}}
+      </v-alert>
     </v-card-title>
     <v-layout row wrap justify-center>
-      <v-form v-model="valid" @submit.prevent="signin">
+      <v-form 
+        v-model="valid" 
+        @submit.prevent="signin"
+        @keydown.prevent.enter>
         <v-text-field class="my-0"
           label="Email or User Name"
           name="emailOrUsername"
@@ -27,7 +39,7 @@
           :rules="[v => !!v || 'Field is required']"
         >
         </v-text-field>
-        <v-btn color="success" block type="submit">Sign in</v-btn>
+        <v-btn color="success" block type="submit" :disabled="!valid">Sign in</v-btn>
       </v-form>
     </v-layout>
     <hr class="primary my-1">
@@ -39,8 +51,10 @@
   </v-card>
 </template>
 <script>
+import { routeMixin } from '@/mixins'
 export default {
   layout: 'login',
+  mixins: [routeMixin],
   data: () => ({
     valid: false,
     newUser: {
@@ -51,28 +65,28 @@ export default {
   methods: {
     signin () {
       if (this.valid) {
-        const patt = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
-        if (patt.test(this.emailOrUsername)) {
-          this.$store.dispatch('signin', {email: this.emailOrUsername, password: this.password})
-            .then((responseUser) => {
-              console.log(responseUser)
-              this.$router.push('/home')
-            })
-        } else if (!this.$store.getters.available(this.emailOrUsername.trim().toLowerCase())) {
-          const username = this.emailOrUsername
-          this.$store.dispatch('signin', {
-            email: this.$store.getters.email(username),
-            password: this.password
-          })
-            .then((responseUser) => {
-              console.log(responseUser)
-              this.$router.push('/home')
-            })
-        } else {
-          this.$store.dispatch('setError', {
-            message: 'The password is invalid or the user does not have a password.'
-          })
+        const emailOrUsername = this.newUser.emailOrUsername.trim().toLowerCase()
+        const emailPattern = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
+        const payload = {
+          email: emailPattern.test(emailOrUsername)
+            ? emailOrUsername
+            : this.$store.getters.emailByUsername(emailOrUsername),
+          username: !this.$store.getters.available(emailOrUsername)
+            ? emailOrUsername
+            : this.$store.getters.usernameByEmail(emailOrUsername),
+          password: this.password
         }
+        this.$store.dispatch('signin', payload)
+          .then((result) => {
+            if (result) {
+              if (result.username) {
+                console.log(result)
+                console.warn(`User ${result.username} - ${result.email}: logged On sucessfully`)
+                this.$router.push('/home')
+              } else throw new Error('Invalid E-mail or Username!!')
+            } else throw Error('Request failed!!')
+          })
+          .catch(error => console.warn(error))
       }
     }
   }

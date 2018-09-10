@@ -1,8 +1,8 @@
 <template>
   <v-app :dark="lightOut">
     <v-navigation-drawer
-      :clipped="lgAndUp"
-      :value="sidebar"
+      clipped
+      v-model="sidebarVisible"
       :mini-variant.sync="mini"
       fixed floating
       app
@@ -39,9 +39,8 @@
             v-model="item.model"
             :key="j"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
-            append-icon=""
-          >
-          <v-subheader style="font-size: 10px;" class="grey--text text--darken-2" v-text="item.heading" />
+            append-icon="">
+            <v-subheader style="font-size: 10px;" class="grey--text text--darken-2" v-text="item.heading" />
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -63,7 +62,7 @@
                 </v-list-tile>
               </dproject>
               <dtask v-else-if="child.component && child.component === 'task'" :key="child.component">
-                <v-list-tile :slot="child.slot">
+                <v-list-tile :slot="child.slot" :disabled="canCreateTask">
                     <v-list-tile-action v-if="child.icon">
                       <v-icon>{{ child.icon }}</v-icon>
                     </v-list-tile-action>
@@ -87,7 +86,7 @@
               <v-divider inset :key="child.text" v-if="i !== item.children.length - 1"/>
             </template>
           </v-list-group>
-          <v-list-tile v-else :key="item.text">
+          <v-list-tile v-else :key="item.text" @click="item.action ? item.action() : ''">
             <v-list-tile-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
@@ -100,9 +99,9 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar :clipped-left="lgAndUp" color="primary" app fixed flat :style="{ 'z-index': '5' }">
+    <v-toolbar clipped-left color="primary" app fixed flat :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
-        <v-toolbar-side-icon @click.stop="toggleSidebar"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.native="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
         <router-link to="/" v-html="apptitle"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
@@ -176,10 +175,15 @@
 
 <script>
   import { dproject, dtask } from '@/components/dialog'
+  import { mapMutations } from 'vuex'
   export default {
     components: { dproject, dtask },
-    data: () => ({
+    data: (vm) => ({
+      sidebarVisible: true,
       items: [
+        { groupHeading: 'User' },
+        { icon: 'portrait', text: 'Profile settings' },
+        { icon: 'arrow_back', text: 'LogOut', action: vm.logUserOut },
         { groupHeading: 'Management' },
         { icon: 'update', text: 'Dailies' },
         {
@@ -212,12 +216,37 @@
         { icon: 'help', text: 'Help' }
       ]
     }),
+    watch: {
+      sidebarVisible (val) {
+        this.toggleSidebar(val)
+      },
+      loggedUser (val) {
+        if (!val) {
+          console.warn('User logged out')
+          this.$router.push('/signin')
+        }
+      }
+    },
+    mounted () {
+      this.sidebarVisible = this.sidebar
+    },
     computed: {
+      canCreateTask () { return this.myProjects.length === 0 },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
         return this.$store.getters.userNotifications(this.loggedUser)
       }
+    },
+    methods: {
+      logUserOut () {
+        this.$store.dispatch('logOut')
+      },
+      ...mapMutations({
+        toggleSidebar (commit, ismobile) { commit('toggleSidebar') },
+        toggleMini (commit) { commit('toggleMini') },
+        toggleLight (commit) { commit('toggleLight') }
+      })
     }
   }
 </script>

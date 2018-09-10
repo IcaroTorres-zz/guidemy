@@ -8,15 +8,13 @@
       </v-btn>
     </v-toolbar>
     <v-card
-      :class="`transparent project-block scroller scroller__ 
-      ${block.color} ${singleview ? 'singleview' : ''}`"
+      :class="`transparent project-block scroller scroller__${block.color} ${singleview ? 'singleview' : ''}`"
       flat
       style="position: relative;"
     >
       <v-expansion-panel expand>
-          <!-- v-for="(taskid, i) in block.tasks" :key="taskid" -->
         <taskcard 
-          v-for="(taskid, i) in block.tasks" :key="tasks[taskid]"
+          v-for="(taskid, i) in block.tasks" :key="taskid"
           :index="i"
           :taskid="taskid"
           @input="update"/>

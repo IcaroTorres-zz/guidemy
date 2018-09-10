@@ -1,5 +1,5 @@
 <template>
-    <v-expansion-panel-content  hide-actions :class="{'task-delayed': delayed}">
+    <v-expansion-panel-content  hide-actions :class="{'task-delayed': isDelayed(computedTask)}">
       <template slot="header" row :class="{'mt-1': index !== 0 }">
           <v-progress-linear
             style="left: 0; right:0; top: 0;position: absolute; transform: translateY(-14px)"
@@ -11,7 +11,9 @@
 
         <v-flex xs12 :class="{'pl-0': true}">
           <v-layout row wrap align-center>
-            <v-flex style="max-width: 26px; transform: scaleY(1.4) scaleX(1.2); margin-left: -6px;" class="pa-0"><v-icon color="primary">drag_indicator</v-icon></v-flex>
+            <v-flex style="max-width: 26px; transform: scaleY(1.2); margin-left: -6px;" class="pa-0">
+              <v-icon color="primary">drag_indicator</v-icon>
+            </v-flex>
             <v-flex class="pa-0 task-title">
               <span class="subheading">{{computedTask.title}}</span>
               <div v-if="computedTask.status === 1" :class="ratecolor +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{finished}}</div>
@@ -85,7 +87,7 @@
         </v-card-text>
         <v-card-actions>
           <v-avatar size="46px" class="mr-1">
-            <img :src="avatar">
+            <img :src="assigned.profilePicture">
           </v-avatar>
           <div>
             <div class="body-1">{{assigned.username}}</div>
@@ -93,7 +95,7 @@
           </div>
           <v-spacer/>
           <div class="d--wrapper">
-            <span class="caption grey--text mr-2">{{commentCount}}</span>
+            <span class="caption grey--text mr-2">{{computedTask.comments.length}}</span>
             <dtaskcomments :taskid="taskid">
               <v-icon slot="customactivator" color="grey lighten-2" class="mr-1">question_answer</v-icon>
             </dtaskcomments>
@@ -112,19 +114,24 @@ export default {
     taskid: { required: true, type: [String, Number] },
     index: Number
   },
+  watch: {
+    computedTask: {
+      deep: true,
+      handler (val, oldval) {
+        console.warn('computed task val changed')
+        console.dir(val)
+      }
+    }
+  },
   computed: {
-    computedTask () { return this.task(this.taskid) },
-    // task () { return this.tasks[this.taskid] },
+    computedTask () { return this.tasks[this.taskid] },
     assigned () { return this.user(this.computedTask.assigned) },
-    avatar () { return this.assigned.profilePicture || this.dummyavatar },
-    commentCount () { return this.computedTask.comments.length },
     color () {
       return (this.computedTask.status === 0 && new Date(this.computedTask.end).getTime() < new Date().getTime()) ||
         (this.computedTask.status === 1 && new Date(this.computedTask.end).getTime() < new Date(this.computedTask.finishedAt).getTime())
         ? 'error'
         : this.blocks[this.computedTask.block].color
     },
-    delayed () { return this.isDelayed(this.task) },
     rating () {
       let max = this.daysBetween(new Date(this.computedTask.start), new Date(this.computedTask.end))
       // this.sliderangeUpdate()
@@ -176,16 +183,6 @@ export default {
     update (val) {
       this.$emit('input', val)
     }
-    // onTaskDeleted () {
-    //   this.$emit('task-deleted', this.task)
-    // },
-    // onTaskFinished () {
-    //   this.$emit('task-finished', this.task)
-    // }
-    // sliderangeUpdate () {
-    // this.sliderange = [0, this.daysBetween(new Date(this.computedTask.start), new Date())]
-    // return this.sliderange
-    // }
   }
 }
 </script>

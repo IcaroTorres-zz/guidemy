@@ -35,7 +35,7 @@
                   readonly
                 ></v-text-field>
                 <v-date-picker v-model="editing.end"
-                  :min="dateToISODate(editing.start)"
+                  :min="editing.start | YYYYmmdd"
                   reactive
                   locale="pt-BR"
                   @input="$refs.menudate.save(editing.end)"

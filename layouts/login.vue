@@ -1,40 +1,56 @@
 <template>
   <v-app dark>
-    <v-toolbar light flat class="transparent">
-      <v-layout row justify-center align-center>
-        <v-flex xs12 sm10 md8>
-          <v-layout row justify-space-between align-center>
-            <v-layout row align-center>
+    <v-toolbar flat absolute class="transparent">
+      <!-- <v-layout row justify-end align-center> -->
+        <!-- <v-flex xs12 md9 class="text-xs-right"> -->
+          <!-- <v-layout row justify-space-between align-center> -->
+            <!-- <v-layout row align-center> -->
               <!-- <nuxt-link to="/" class="flat-link"><img src="../assets/logo1-alpha.png" alt="Guideme" height="50"></nuxt-link> -->
-              <nuxt-link to="/" class="title flat-link">{{apptitle}}</nuxt-link>
-            </v-layout>
-            <div class="text-xs-right">
+              <!-- <nuxt-link to="/" class="title flat-link">{{apptitle}}</nuxt-link> -->
+            <!-- </v-layout> -->
+            <!-- <div> -->
+              <v-spacer v-if="smAndUp"/>
               <nuxt-link to="/" class="subheading px-2 flat-link">Why {{apptitle}}?</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
               <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
-            </div>
-          </v-layout>
-        </v-flex>
-      </v-layout>
+            <!-- </div> -->
+          <!-- </v-layout> -->
+        <!-- </v-flex> -->
+      <!-- </v-layout> -->
     </v-toolbar>
 
     <v-content>
       <section>
-        <v-parallax :src="require('@/assets/hero.jpeg')" style="height: auto" class="pt-5">
+        <!-- <v-layout row justify-end align-center style="position: absolute; right: 0; top: 0; z-index: 5">
+          <v-spacer v-if="smAndUp"/>
+          <nuxt-link to="/" class="subheading px-2 flat-link">Why {{apptitle}}?</nuxt-link>
+          <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
+          <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
+          <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
+        </v-layout> -->
+        <v-parallax
+          :src="require('@/assets/hero.jpeg')" 
+          :style="{ 'height': 'auto'}"
+          class="pt-5"
+          >
           <v-layout
-            row
-            wrap
+            :row="mdAndUp || $route.name === 'index'"
+            :wrap="mdAndUp || $route.name === 'index'"
+            :column="smAndDown && $route.name === 'signin'"
             align-center
             justify-center
             class="my-3"
+            fill-height
+            :style="{'height':smAndUp || $route.name === 'signin' ? '600px' : '850px'}"
           >
             <div class="text-xs-center">
-              <img src="../assets/logo1-alpha.png" alt="Guideme">
-              <h1 class=" display-3 primary--text">{{apptitle}}</h1>
-              <div class="title secondary--text">Lorem, ipsum dolor.</div>
+              <img src="../assets/logo1-alpha.png" alt="Guideme"
+                :style="{'height':smAndUp ? '100px' : '60px'}">
+              <h1 :class="{'display-2': smAndUp, 'headline': !smAndUp, 'primary--text': true}">{{apptitle}}</h1>
+              <div :class="{'subheading': smAndUp, 'body-2': !smAndUp, 'secondary--text': true}">Lorem, ipsum dolor.</div>
             </div>
-            <v-flex xs12 sm7 md5 lg4 offset-xs1 style="opacity: .8">
+            <v-flex xs12 sm7 md5 lg4 offset-md1 style="opacity: .8">
               <nuxt />
             </v-flex>
           </v-layout>
@@ -59,52 +75,19 @@
               </v-flex>
               <v-flex xs12>
                 <v-container grid-list-xl>
-                  <v-layout row wrap align-center>
-                    <v-flex xs12 md4>
-                      <v-card light class="elevation-5 primary lighten-2">
-                        <v-card-text class="text-xs-center">
-                          <v-icon x-large>color_lens</v-icon>
-                        </v-card-text>
-                        <v-card-title class="layout justify-center">
-                          <div class="headline text-xs-center">Ease usage</div>
-                        </v-card-title>
-                        <v-card-text>
-                          Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                          Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                        </v-card-text>
-                      </v-card>
-                    </v-flex>
-                    <v-flex xs12 md4>
-                      <v-card light class="elevation-10 primary">
-                        <v-card-text class="text-xs-center">
-                          <v-icon x-large>flash_on</v-icon>
-                        </v-card-text>
-                        <v-card-title class="layout justify-center">
-                          <div class="headline">Fast feedbacks</div>
-                        </v-card-title>
-                        <v-card-text>
-                          Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                          Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                        </v-card-text>
-                      </v-card>
-                    </v-flex>
-                    <v-flex xs12 md4>
-                      <v-card light class="elevation-15 primary darken-2">
-                        <v-card-text class="text-xs-center">
-                          <v-icon x-large>build</v-icon>
-                        </v-card-text>
-                        <v-card-title class="layout justify-center">
-                          <div class="headline text-xs-center">Better guidance</div>
-                        </v-card-title>
-                        <v-card-text>
-                          Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-                          Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-                          Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti. 
-                        </v-card-text>
-                      </v-card>
-                    </v-flex>
+                  <v-layout row :wrap="smAndDown" justify-center align-center>
+                    <template v-for="(column, i) in promoColumns">
+                      <v-flex xs12 :key="column.title">
+                        <v-card :color="column.color" class="elevation-20">
+                          <v-card-text class="text-xs-center">
+                            <v-icon medium v-html="column.icon"/>
+                          </v-card-text>
+                          <v-card-title class="layout justify-center title pa-0" v-text="column.title"/>
+                          <v-card-text v-text="column.text" class="grey--text caption"/>
+                        </v-card>
+                      </v-flex>
+                      <v-divider :vertical="$vuetify.breakpoint.mdAndUp" :key="i" v-if="i !== promoColumns.length - 1"></v-divider>
+                    </template>
                   </v-layout>
                 </v-container>
               </v-flex>
@@ -212,6 +195,34 @@
 </template>
 <script>
 export default {
+  data: () => ({
+    promoColumns: [
+      {
+        color: 'secondary',
+        title: 'Ease Usage',
+        icon: 'color_lens',
+        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
+              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+      },
+      {
+        color: 'transparent',
+        title: 'Fast Feedbacks',
+        icon: 'flash_on',
+        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
+              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+      },
+      {
+        color: 'secondary darken-1',
+        title: 'Better Guidance',
+        icon: 'build',
+        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
+              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+      }
+    ]
+  })
 }
 </script>
 
@@ -221,7 +232,6 @@ export default {
   z-index: 99;
 }
 .v-content {
-  margin-top: -64px;
-
+  /* margin-top: -64px; */
 }
 </style>

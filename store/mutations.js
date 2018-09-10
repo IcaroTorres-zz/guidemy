@@ -1,9 +1,19 @@
+import Vue from 'vue'
 import { User } from '@/models'
+// this.$set(this, '_level', this._level + 1);
 export const mutations = {
-  signUser (state, payload) {
-    console.warn(`User ${payload.username} - ${payload.email}: logged On sucessfully`)
+  signup (state, payload) {
     state.loggedUser = payload.id
     state.users[payload.id] = new User({ ...state.users[payload.id], ...payload })
+    return state.users[payload.id]
+  },
+  signin (state, payload) {
+    state.users[payload.id] = new User({ ...state.users[payload.id], ...payload })
+    state.loggedUser = payload.id
+    return state.users[payload.id]
+  },
+  logOut (state) {
+    Vue.set(state, 'loggedUser', undefined)
   },
   toggleSnack (state, payload) {
     state.snack = {
@@ -11,6 +21,7 @@ export const mutations = {
       color: payload ? payload.color : 'secondary',
       active: !!payload
     }
+    return state.snack
   },
   toggleMini (state) {
     state.mini = !state.mini
@@ -60,14 +71,14 @@ export const mutations = {
     state.tasks[payload.id] = { ...payload }
   },
   finishTask (state, payload) {
-    state.tasks[payload] = { ...state.tasks[payload], status: 1, finishedAt: new Date() }
+    const task = { ...state.tasks[payload], status: 1, finishedAt: new Date() }
+    delete state.tasks[payload]
+    state.blocks[task.block].tasks.splice(state.blocks[task.block].tasks.findIndex(t => t === task.id), 1)
+    state.tasks[payload] = task
+    state.blocks[task.block].tasks.push(task.id)
   },
   deleteTask (state, payload) {
     let task = state.tasks[payload]
-    /* needs pairs of model and constructor name
-     * to walk through satte properties
-     * fixed cause minification modify original constructors names
-     */
     state.users[task.assigned].tasks
       .splice(state.users[task.assigned].tasks
         .findIndex(t => t === task.id), 1)

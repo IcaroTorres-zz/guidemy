@@ -23,11 +23,11 @@ let p3u1Generated = generateDailies(generatedDailes,
 )
 
 export default () => ({
-  mini: true,
+  mini: false,
   lightOut: true,
   appError: null,
   appLoading: false,
-  sidebar: false,
+  sidebar: true,
   snack: {
     active: false,
     message: '',
@@ -264,6 +264,7 @@ export default () => ({
       id: 't4',
       creator: 'u1',
       project: 'p1',
+      block: 't7',
       assigned: 'u1',
       title: 'Dummy task title',
       description: 'task description',

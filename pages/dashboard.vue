@@ -217,11 +217,9 @@ export default {
   methods: {
     updateBlock (block) {
       this.updateChart(this.projects[block.project])
-      console.log(block, this.blocks[block.id])
     },
     updateTask (task) {
       this.updateChart(this.projects[task.project])
-      console.log(task, this.tasks[task.id])
     },
     printJSONState () {
       console.log(JSON.parse(this.$store.getters.JSONState))
@@ -245,8 +243,8 @@ export default {
         let block = new Block({...b, project: p.id})
         this.$store.dispatch('saveBlock', block)
           .then((data) => {
-            console.log('success applying data: ')
-            console.dir(block)
+            console.log('success applyied data: ')
+            console.dir(data)
           })
       })
       this.updateChart(p)

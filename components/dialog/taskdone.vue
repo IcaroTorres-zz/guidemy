@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="success" @click.stop="onTaskFinished">confirm</v-btn>
+        <v-btn round small color="success" @click="onTaskFinished">confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

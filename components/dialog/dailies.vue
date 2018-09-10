@@ -116,7 +116,7 @@
                         <div class="ml-2">
                           <a class="primary--text subheading">{{username(daily.assigned)}}</a><br>
                           <div v-if="daily.finishedAt" class="caption grey--text mr-2">
-                            responded at: {{formatPostTime(daily.finishedAt)}}
+                            responded at: {{daily.finishedAt | postFormat}}
                           </div>
                         </div>
                         <v-spacer></v-spacer>
