@@ -77,9 +77,81 @@ export const getters = {
     ? Object.keys(state.projects[pid].dailyMeetings)
       .reduce((dailyMap, uid) => Object.assign(dailyMap, {
         ...dailyMap,
-        [uid]: state.projects[pid].dailyMeetings[uid].map(daily => state.dailyMeetings[daily])
+        [uid]: state.projects[pid]
+          .dailyMeetings[uid]
+          .map(daily => state.dailyMeetings[daily])
       }), {})
     : [],
+  temperColor: state => (max, value) => {
+    return value >= (4 * max / 5)
+      ? 'success'
+      : value >= (3 * max / 5)
+        ? 'accent'
+        : value >= (2 * max / 5)
+          ? 'info'
+          : value >= (1 * max / 5)
+            ? 'warning'
+            : 'deep-orange'
+  },
+  daysBetween: state => (date1, date2) => Math.round(
+    (new Date(date2).getTime() - new Date(date1).getTime()) /
+    (1000 * 60 * 60 * 24) // day in milisseconds
+  ),
+  memberScoreForTasks: (state, getters) => (mid, pid) => {
+    return getters.projectTasks(pid)
+      .filter(t => t.assigned === mid)
+      .reduce((member, t) => {
+        console.dir(t)
+        // project credits value
+        const taskcredits = getters.daysBetween(t.start, t.end)
+
+        let innerCredits = 0
+        if (t.status !== 0) {
+          member.score += taskcredits
+          // finished tasks
+          innerCredits = getters.daysBetween(t.finishedAt, t.end)
+        } else {
+          // pending tasks
+          innerCredits = getters.daysBetween(new Date(), t.end)
+        }
+        console.log('task credits gained by member', innerCredits)
+        // computed credits acumulation
+        if (innerCredits > 0) {
+          member.antecipatedCredits += innerCredits
+          member.antecipatedTasks += 1
+        } else {
+          member.overduedCredits += (innerCredits * -1)
+          member.overduedTasks += 1
+        }
+
+        member.credits += taskcredits
+        // assigned score
+        member.score += innerCredits
+        // task count
+        member.total += 1
+        return member
+      }, {
+        score: 0,
+        antecipatedCredits: 0,
+        antecipatedTasks: 0,
+        overduedCredits: 0,
+        overduedTasks: 0,
+        credits: 0,
+        total: 0
+      })
+  },
+  memberScoreForDailies: (state, getters) => (mid, pid) => {
+    let dailies = getters.projectDailies(pid)[mid] || []
+    let total = dailies.length
+    let attended = dailies.filter(d => d.status === 1).length
+    let participation = (attended * 100 / total).toFixed(2)
+    return {
+      participation: participation,
+      attended: attended,
+      missed: total - attended,
+      total: total
+    }
+  },
   taskComments: state => task => task ? task.comments.map(c => state.comments[c]) : [],
   delayedTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => getters.isDelayed(t)) : [],
   doneTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => t.status === 1) : [],

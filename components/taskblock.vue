@@ -12,21 +12,15 @@
       flat
       style="position: relative;"
     >
-      <v-expansion-panel expand>
-        <taskcard 
-          v-for="(taskid, i) in block.tasks" :key="taskid"
-          :index="i"
-          :taskid="taskid"
-          @input="update"/>
-      </v-expansion-panel>
+      <taskcards :value="blocktasks" @input="update"/>
     </v-card>
     <v-toolbar :class="'block-footer ' +  block.color" dense>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
-      <v-icon style="width: 12px;">drag_indicator</v-icon>
+      <v-icon 
+        v-for="n in 6" 
+        :key="n" 
+        style="width: 12px; cursor; drag">drag_indicator
+      </v-icon>
+      <!-- <dragarea/> -->
       <v-spacer/>
       <dtask 
         :suggestedBlock="block" 
@@ -46,24 +40,27 @@
 </template>
 
 <script lang="js">
-import taskcard from '@/components/taskcard'
+import taskcards from '@/components/taskcards'
+import dragarea from '@/components/dragarea'
 import { dtask } from '@/components/dialog'
 export default {
   name: 'taskblock',
-  components: {taskcard, dtask},
+  components: {taskcards, dtask, dragarea},
   props: {
-    // blockid: { required: true, type: [String, Number] },
     blockid: { required: true, type: [String, Number] },
     singleview: Boolean
   },
   computed: {
     block () {
       return this.blocks[this.blockid]
+    },
+    blocktasks () {
+      return this.block.tasks.map(tid => this.task(tid))
     }
   },
   methods: {
     update () {
-      this.$emit('input', this.block)
+      this.$emit('input', this.blocktasks)
     }
   }
 }

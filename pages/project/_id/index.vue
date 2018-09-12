@@ -5,139 +5,7 @@
       
       <v-flex xs12 class="pa-0">
         <v-card class="transparent" flat>
-          <v-toolbar
-            dense
-            flat
-            :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut, 'project--toolbar': true}"
-          >
-            <template v-if="project.manager === loggedUser">
-              <dfinish :project="project">
-                <v-btn 
-                  small 
-                  flat 
-                  :icon="!lgAndUp" 
-                  class="ma-0" 
-                  color="success" 
-                  slot="customactivator"
-                  :disabled="project.manager !== loggedUser">
-                  <v-icon>done_all</v-icon>
-                  <span class="hidden-md-and-down">finish</span>
-                </v-btn>
-              </dfinish>
-              <v-divider vertical></v-divider>
-              <dproject :edition="true" :project="project">
-                <v-btn 
-                  small 
-                  flat 
-                  :icon="!lgAndUp" 
-                  class="ma-0" 
-                  color="warning" 
-                  slot="customactivator"  
-                  :disabled="project.manager !== loggedUser">
-                  <v-icon >edit</v-icon>
-                  <span class="hidden-md-and-down">edit</span>
-                </v-btn>
-              </dproject>
-              <v-divider vertical></v-divider>
-              <dprojectdel :project="project">
-                <v-btn 
-                  small 
-                  flat 
-                  :icon="!lgAndUp" 
-                  class="ma-0" 
-                  color="error" 
-                  slot="customactivator"  
-                  :disabled="project.manager !== loggedUser">
-                  <v-icon >delete</v-icon>
-                  <span class="hidden-md-and-down">remove</span>
-                </v-btn>
-              </dprojectdel>
-              <v-divider vertical></v-divider>
-              <dinvite :project="project" class="pa-0">
-                <v-btn 
-                  small 
-                  icon 
-                  slot="customactivator" 
-                  class="pa-0" 
-                  :disabled="project.manager !== loggedUser">
-                  <v-icon>person_add</v-icon>
-                </v-btn>
-              </dinvite>                
-            </template>
-            <template v-else>
-              <v-btn 
-                small 
-                flat 
-                :icon="!lgAndUp" 
-                class="ma-0" 
-                disabled>
-                <v-icon>done_all</v-icon>
-                <span class="hidden-md-and-down">finish</span>
-              </v-btn>
-              <v-divider vertical></v-divider>
-              <v-btn 
-                small 
-                flat 
-                :icon="!lgAndUp" 
-                class="ma-0" 
-                disabled>
-                <v-icon >edit</v-icon>
-                <span class="hidden-md-and-down">edit</span>
-              </v-btn>
-              <v-divider vertical></v-divider>
-              <v-btn 
-                small 
-                flat 
-                :icon="!lgAndUp" 
-                class="ma-0" 
-                disabled>
-                <v-icon >delete</v-icon>
-                <span class="hidden-md-and-down">remove</span>
-              </v-btn>
-              <v-divider vertical></v-divider>
-              <v-btn 
-                small 
-                icon 
-                class="pa-0" 
-                disabled>
-                <v-icon>person_add</v-icon>
-              </v-btn>
-            </template>
-            <v-spacer/>
-            <ddailies :projectid="$route.params.id">
-              <v-btn 
-                small 
-                flat 
-                :icon="!lgAndUp" 
-                class="ma-0" 
-                color="info" 
-                slot="customactivator">
-                <span class="hidden-md-and-down">view dailes</span>
-                <v-icon >update</v-icon>
-              </v-btn>
-            </ddailies>
-            <v-divider vertical></v-divider>
-            <v-btn 
-              small 
-              flat 
-              :icon="!lgAndUp" 
-              class="ma-0" 
-              color="accent" 
-              slot="" >
-              <span class="hidden-md-and-down">contributions</span>
-              <v-icon >supervised_user_circle</v-icon>
-            </v-btn>
-            <v-divider vertical></v-divider>
-            <v-btn 
-              small 
-              flat 
-              :icon="!lgAndUp" 
-              class="ma-0" 
-              color="success" >
-              <span class="hidden-md-and-down">results</span>
-              <v-icon >poll</v-icon>
-            </v-btn>
-          </v-toolbar>
+          <projectToolbar :projectid="project.id"/>
           <v-layout
             row
             justify-space-between
@@ -175,7 +43,7 @@
             </v-flex>
             <v-divider vertical></v-divider>
             <v-flex sm5 md4>
-              <div class="text-xs-center" style="position: relative">
+              <!-- <div class="text-xs-center" style="position: relative">
                 <v-layout row justify-space-around
                   :class="{
                   'body-2': lgAndUp,
@@ -196,7 +64,8 @@
                   </div>
                 </v-layout>
                 <div :id="`${project.id}-piechart`" :ref="`${project.id}-piechart`"></div>
-              </div>
+              </div> -->
+              <projectPieChart :projectid="project.id"/>
             </v-flex>
           </v-layout>
         </v-card>
@@ -207,8 +76,8 @@
       <dblock
         :project="project"
         style="margin-left: -12px"
-        @block-created="updateChart(project)"
       >
+        <!-- @block-created="updateChart(project)" -->
         <v-btn
           class="border-dashed-grey ma-0"
           slot="customactivator"
@@ -252,8 +121,8 @@
       <dblock
         :project="project"
         v-if="expand && project.blocks.length > 0"
-        @block-created="updateChart(project)"
       >
+        <!-- @block-created="updateChart(project)" -->
         <div
           class="new-block__button border-dashed-grey"
           slot="customactivator"
@@ -268,9 +137,9 @@
         v-if="expand"
         style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;"
       >            
+          <!-- @input="updateBlock($event)" -->
         <taskblock
           :singleview="true"
-          @input="updateBlock($event)"
           v-for="blockid in  project.blocks" :key="blockid"
           :blockid="blockid"/>
       </v-layout>
@@ -280,6 +149,7 @@
 
 <script>
 import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '@/components/dialog'
+import { projectPieChart, projectToolbar } from '@/components/project'
 import taskblock from '@/components/taskblock'
 import { Block } from '@/models'
 import { defaultBlockSetup } from '@/helpers'
@@ -288,7 +158,18 @@ export default {
   validate ({ params, store }) {
     return !!store.state.projects[params.id] // Must be a valid project id
   },
-  components: {taskblock, dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies},
+  components: {
+    projectPieChart,
+    projectToolbar,
+    taskblock,
+    dproject,
+    dtask,
+    dinvite,
+    dfinish,
+    dprojectdel,
+    dblock,
+    ddailies
+  },
   data: () => ({
     expand: true,
     myChart: undefined,
@@ -297,29 +178,18 @@ export default {
   computed: {
     project () { return this.projects[this.$route.params.id] }
   },
-  mounted () {
-    this.updateChart(this.project)
-  },
   methods: {
-    updateChart (p) {
-      if (this.myChart) this.myChart.destroy()
-      this.myChart = this.highchart(p)
-      console.warn(`project ${p.title}'s chart updated sucessfully`)
-    },
-    updateBlock (block) {
-      // this.updateChart(this.projects[block.project])
-      this.updateChart(this.project)
-    },
-    updateTask (task) {
-      // this.updateChart(this.projects[task.project])
-      this.updateChart(this.project)
-    },
+    // updateChart (p) {
+    //   if (this.myChart) this.myChart.destroy()
+    //   this.myChart = this.highchart(p)
+    //   console.warn(`project ${p.title}'s chart updated sucessfully`)
+    // },
     defaultBlocks (p) {
       this.defaultBlockSetup.forEach(b => {
         let block = new Block({...b, project: p.id})
         this.$store.dispatch('saveBlock', block)
       })
-      this.updateChart(p)
+      // this.updateChart(p)
     }
   }
 }

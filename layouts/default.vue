@@ -28,9 +28,7 @@
             justify-start
             align-center
           >
-            <v-subheader v-if="item.groupHeading">
-              {{ item.groupHeading }}
-            </v-subheader>
+            <v-subheader>{{ item.groupHeading }}</v-subheader>
           </v-layout>
 
           <v-list-group
@@ -43,37 +41,66 @@
             <v-subheader style="font-size: 10px;" class="grey--text text--darken-2" v-text="item.heading" />
             <v-list-tile slot="activator">
               <v-list-tile-content>
-                <v-list-tile-title>
+                <v-list-tile-title class="layout row justify-space-between align-center">
                   {{ item.text }}
+                  <span v-if="item.soon"
+                  style="font-size: 10px;"
+                  class="ml-2 grey--text text--darken-2"
+                  v-text="item.soon"/>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
             <template v-for="(child, i) in item.children">
-              <dproject :edition="false" :key="child.component" v-if="child.component && child.component === 'dproject'">
-                <v-list-tile :slot="child.slot">
+              <dproject
+                style="width: 100%;"
+                :edition="false"
+                :key="child.component"
+                v-if="child.component && child.component === 'dproject'">
+                <v-list-tile
+                  @click="child.action ? child.action() : ''"
+                  :slot="child.slot"
+                  style="width: 100%;">
                   <v-list-tile-action v-if="child.icon">
                     <v-icon>{{ child.icon }}</v-icon>
                   </v-list-tile-action>
                   <v-list-tile-content>
                     <v-list-tile-title>
                       {{ child.text }}
+                      <span v-if="child.soon"
+                        style="font-size: 10px;"
+                        class="ml-2 grey--text text--darken-2"
+                        v-text="child.soon"/>
                     </v-list-tile-title>
                   </v-list-tile-content>
                 </v-list-tile>
               </dproject>
-              <dtask v-else-if="child.component && child.component === 'task'" :key="child.component">
-                <v-list-tile :slot="child.slot" :disabled="canCreateTask">
+
+              <dtask 
+                style="width: 100%;"
+                v-else-if="child.component && child.component === 'task'"
+                :key="child.component">
+                <v-list-tile
+                  @click="child.action ? child.action() : ''"
+                  style="width: 100%;"
+                  :slot="child.slot" 
+                  :disabled="canCreateTask">
                     <v-list-tile-action v-if="child.icon">
                       <v-icon>{{ child.icon }}</v-icon>
                     </v-list-tile-action>
                     <v-list-tile-content>
                       <v-list-tile-title>
                         {{ child.text }}
+                        <span v-if="child.soon"
+                        style="font-size: 10px;"
+                        class="ml-2 grey--text text--darken-2"
+                        v-text="child.soon"/>
                       </v-list-tile-title>
                     </v-list-tile-content>
                 </v-list-tile>
               </dtask>
-              <v-list-tile v-else :key="i">
+              <v-list-tile v-else
+                :key="i"
+                @click="child.action ? child.action() : ''">
                 <v-list-tile-action v-if="child.icon">
                   <v-icon>{{ child.icon }}</v-icon>
                 </v-list-tile-action>
@@ -86,13 +113,20 @@
               <v-divider inset :key="child.text" v-if="i !== item.children.length - 1"/>
             </template>
           </v-list-group>
-          <v-list-tile v-else :key="item.text" @click="item.action ? item.action() : ''">
+          <v-list-tile
+            v-else
+            :key="item.text"
+            @click="item.action ? item.action() : ''">
             <v-list-tile-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>
+              <v-list-tile-title class="layout row justify-space-between align-center">
                 {{ item.text }}
+                <span v-if="item.soon"
+                  style="font-size: 10px;"
+                  class="ml-2 grey--text text--darken-2"
+                  v-text="item.soon"/>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -182,38 +216,38 @@
       sidebarVisible: true,
       items: [
         { groupHeading: 'User' },
-        { icon: 'portrait', text: 'Profile settings' },
+        { icon: 'portrait', text: 'Profile settings', soon: '( future feature )' },
         { icon: 'arrow_back', text: 'LogOut', action: vm.logUserOut },
         { groupHeading: 'Management' },
-        { icon: 'update', text: 'Dailies' },
+        { icon: 'update', text: 'Dailies', action: () => vm.$router.push('dailymeetings') },
         {
-          heading: 'Manage project activities',
+          heading: 'Manage project activities and handle tasks',
           icon: 'table_chart',
-          'icon-alt': 'view_carousel',
+          'icon-alt': 'dashboard',
           text: 'Projects',
           model: false,
           children: [
             { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
-            { icon: 'view_stream', text: 'View all' },
-            { icon: 'group', text: 'View Teams' }
+            { icon: 'view_stream', text: 'View all', action: () => vm.$router.push('dashboard') },
+            { icon: 'group', text: 'View Teams', soon: '( future feature )' }
           ]
         },
-        {
-          heading: 'handle your tasks',
-          icon: 'view_week',
-          'icon-alt': 'view_column',
-          text: 'Tasks',
-          model: false,
-          children: [
-            { icon: 'add', text: 'Create task', slot: 'customactivator', component: 'task' },
-            { icon: 'view_week', text: 'View all' }
-          ]
-        },
+        // {
+        //   heading: 'handle your tasks',
+        //   icon: 'view_week',
+        //   'icon-alt': 'view_column',
+        //   text: 'Tasks',
+        //   model: false,
+        //   children: [
+        //     { icon: 'add', text: 'Create task', slot: 'customactivator', component: 'task' },
+        //     { icon: 'view_week', text: 'View all' }
+        //   ]
+        // },
         { groupHeading: 'General settings' },
-        { icon: 'settings', text: 'Settings' },
+        { icon: 'settings', text: 'Settings', soon: '( future feature )' },
         { groupHeading: 'Help us to evolve' },
-        { icon: 'chat_bubble', text: 'Send feedback' },
-        { icon: 'help', text: 'Help' }
+        { icon: 'chat_bubble', text: 'Send feedback', soon: '( future feature )' },
+        { icon: 'help', text: 'Help', soon: '( future feature )' }
       ]
     }),
     watch: {

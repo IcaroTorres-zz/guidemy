@@ -1,4 +1,6 @@
 <template>
+
+  <v-expansion-panel expand>
     <v-expansion-panel-content  hide-actions :class="{'task-delayed': isDelayed(computedTask)}">
       <template slot="header" row :class="{'mt-1': index !== 0 }">
           <v-progress-linear
@@ -103,26 +105,45 @@
         </v-card-actions>
       </v-card>
     </v-expansion-panel-content>
+  </v-expansion-panel>
 </template>
 
 <script lang="js">
 import { dtaskcomments, dtaskdone, dtaskdel } from '@/components/dialog'
 export default {
-  name: 'taskcard',
+  name: 'taskcards',
   components: {dtaskcomments, dtaskdone, dtaskdel},
   props: {
-    taskid: { required: true, type: [String, Number] },
-    index: Number
+    value: { require: true, type: Array }
+    // taskid: { required: true, type: [String, Number] },
+    // index: Number
   },
-  watch: {
-    computedTask: {
-      deep: true,
-      handler (val, oldval) {
-        console.warn('computed task val changed')
-        console.dir(val)
-      }
-    }
-  },
+  // 'myProjects',
+  // 'filledProjects',
+  // 'filledUserProjects',
+  // 'filledProject',
+  // 'loggedUserObj',
+  // 'users',
+  // 'usernames',
+  // 'user',
+  // 'username',
+  // 'useravatar',
+  // 'projectTasks',
+  // 'doneTasks',
+  // 'delayedTasks',
+  // 'isDelayed',
+  // 'task',
+  // 'xlOnly',
+  // 'lgAndUp',
+  // 'lgAndDown',
+  // 'lgOnly',
+  // 'mdAndUp',
+  // 'mdAndDown',
+  // 'mdOnly',
+  // 'smAndUp',
+  // 'smAndDown',
+  // 'smOnly',
+  // 'xsOnly'
   computed: {
     computedTask () { return this.tasks[this.taskid] },
     assigned () { return this.user(this.computedTask.assigned) },

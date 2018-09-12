@@ -11,7 +11,133 @@
         <v-icon>print</v-icon>log json state
       </v-btn>
     </div>
-    <v-container grid-list-xl v-for="(project, pidx) in userProjects" :key="project.id" class="pt-1">
+      <v-container grid-list-xl v-for="(project, pidx) in userProjects" :key="project.id" class="pt-1">
+        
+        <v-layout row justify-center align-center>
+          
+          <v-flex xs12 class="pa-0">
+            <v-card flat>
+              <v-divider v-if="pidx !== 0" class="py-2"></v-divider>
+              <projectToolbar :projectid="project.id"/>
+              <v-layout
+                row
+                justify-space-between
+                class="py-0 px-1"
+              >
+                <v-flex xs12 md8 >
+                  <a class="title">{{project.title}}</a>
+                  <div>Manager: 
+                    <a class="info--text">@{{username(project.manager)}}</a>
+                  </div>
+                  <div>Team: 
+                    <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a>
+                  </div>
+                  <div>Created: 
+                    <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString()}}</span>
+                  </div>
+                  <v-divider class="my-2"></v-divider>
+                  <div class="layout row ml-0">
+                    Description:
+                    <v-spacer></v-spacer>
+                    <v-tooltip left>
+                      <v-btn 
+                        icon 
+                        small 
+                        flat 
+                        class="pa-0 mr-1 ml-0 my-0" 
+                        @click.stop="expand = !expand" 
+                        slot="activator">
+                        <v-icon>{{expand ? 'unfold_less' : 'unfold_more'}}</v-icon>
+                      </v-btn>
+                      <span>{{expand ? 'Collapse project' : 'Expand project'}}</span>
+                    </v-tooltip>
+                  </div>
+                  <p class="caption text-xs-justify primary--text">{{project.description}}</p>
+                </v-flex>
+                <v-divider vertical class="hidden-sm-and-down"></v-divider>
+                <v-flex sm5 md4 class="hidden-sm-and-down">
+                  <projectPieChart :projectid="project.id"/>
+                </v-flex>
+              </v-layout>
+            </v-card>
+          </v-flex>
+
+        </v-layout>
+        <template v-if="visionMap[project.id] && project.blocks.length == 0">
+          <dblock
+            :project="project"
+            style="margin-left: -12px"
+          >
+            <!-- @block-created="updateChart(project)" -->
+            <v-btn
+              class="border-dashed-grey ma-0"
+              slot="customactivator"
+            >
+              <v-icon small>add</v-icon>add block
+            </v-btn>
+          </dblock>
+          <v-btn
+            color="accent"
+            style="font-size:10px"
+            small
+            flat
+            @click="defaultBlocks(project)"
+          >
+            default block setup ?
+          </v-btn>
+        </template>
+        <v-layout
+          row v-if="visionMap[project.id] && project.blocks.length > 6"
+          class="mt-4"
+        >
+          <v-btn
+            icon
+            small
+            v-if="project.blocks.length > 0"
+          >
+            <v-icon>view_day</v-icon>
+          </v-btn>
+          <v-btn
+            class="border-dashed-grey ma-0"
+            block
+          >
+            <v-icon small>add</v-icon>split to new roll
+          </v-btn>
+        </v-layout>
+        <v-layout
+          row
+          align-content-start
+          style="position: relative; margin-top: -4px;"
+        >
+          <dblock
+            :project="project"
+            v-if="visionMap[project.id] && project.blocks.length > 0"
+          >
+            <!-- @block-created="updateChart(project)" -->
+            <div
+              class="new-block__button border-dashed-grey"
+              slot="customactivator"
+            >
+              <v-icon small>add</v-icon>ADD BLOCK
+            </div>
+          </dblock>
+          <v-layout
+            row
+            align-content-start
+            class="scroller-horiz"
+            v-if="visionMap[project.id]"
+            style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;"
+          >            
+              <!-- @input="updateBlock($event)" -->
+            <taskblock
+              :singleview="true"
+              v-for="blockid in  project.blocks" :key="blockid"
+              :blockid="blockid"/>
+          </v-layout>
+        </v-layout>
+      </v-container>
+
+    <!-- <v-container grid-list-xl v-for="(project, pidx) in userProjects" :key="project.id" class="pt-1">
       
       <v-layout column>
         
@@ -178,19 +304,34 @@
             </v-toolbar>
           </v-flex> -->
           
-        </v-layout>
-      </v-layout>
-    </v-container>
+        <!-- </v-layout> -->
+      <!-- </v-layout> -->
+    <!-- </v-container> -->
   </div>
 </template>
 <script>
 import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '@/components/dialog'
+import { projectPieChart, projectToolbar } from '@/components/project'
 import taskblock from '@/components/taskblock'
 import { Block } from '@/models'
 import { defaultBlockSetup } from '@/helpers'
 
 export default {
-  components: {taskblock, dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies},
+  validate ({ params, store }) {
+    return !!store.state.projects[params.id] // Must be a valid project id
+  },
+  components: {
+    projectPieChart,
+    projectToolbar,
+    taskblock,
+    dproject,
+    dtask,
+    dinvite,
+    dfinish,
+    dprojectdel,
+    dblock,
+    ddailies
+  },
   data () {
     return {
       expandAll: false,
@@ -209,18 +350,11 @@ export default {
     }
   },
   created () {
-    this.visionMap = this.userProjects.reduce((map, p) => Object.assign(map, {...map, [p.id]: !!this.visionMap[p.id]}), {})
-  },
-  mounted () {
-    this.updateAllCharts()
+    this.visionMap = this.userProjects
+      .reduce((map, p) => Object
+        .assign(map, {...map, [p.id]: !!this.visionMap[p.id]}), {})
   },
   methods: {
-    updateBlock (block) {
-      this.updateChart(this.projects[block.project])
-    },
-    updateTask (task) {
-      this.updateChart(this.projects[task.project])
-    },
     printJSONState () {
       console.log(JSON.parse(this.$store.getters.JSONState))
     },
@@ -233,11 +367,6 @@ export default {
     toggleProject (pid) {
       this.visionMap[pid] = !this.visionMap[pid]
     },
-    updateChart (p) {
-      if (this.myCharts[p.id]) this.myCharts[p.id].destroy()
-      this.myCharts[p.id] = this.highchart(p)
-      console.warn(`project ${p.title}'s chart updated sucessfully`)
-    },
     defaultBlocks (p) {
       this.defaultBlockSetup.forEach(b => {
         let block = new Block({...b, project: p.id})
@@ -247,21 +376,6 @@ export default {
             console.dir(data)
           })
       })
-      this.updateChart(p)
-    },
-    updateAllCharts () {
-      const charts = this.myCharts
-      if (charts) {
-        console.log(charts)
-        Object.keys(charts).forEach(pid => {
-          if (pid && charts[pid]) charts[pid].destroy()
-        })
-      }
-      this.userProjects.reduce((chartMap, p) => {
-        this.myCharts[p.id] = this.highchart(p)
-        return chartMap
-      }, {})
-      console.warn('all charts updated successfully')
     }
   }
 }

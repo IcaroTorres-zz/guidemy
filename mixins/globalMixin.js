@@ -1,13 +1,5 @@
 import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
-import { colors } from '../helpers'
-import Highcharts from 'highcharts'
 
-const pieColors = (blocks) => blocks.map(b => colors[b.color])
-const pieSeries = (blocks) => {
-  blocks.map(b => Object.assign({},
-    { name: b.text, y: b.tasks.length })
-  )
-}
 export default {
   data () {
     return {
@@ -43,6 +35,10 @@ export default {
       'doneTasks',
       'delayedTasks',
       'isDelayed',
+      'temperColor',
+      'memberScoreForTasks',
+      'memberScoreForDailies',
+      'daysBetween',
       'task',
       'xlOnly',
       'lgAndUp',
@@ -58,6 +54,9 @@ export default {
     ])
   },
   filters: {
+    locale (dateString) {
+      return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : ''
+    },
     ddmmYYYY (dateString) {
       return (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
     },
@@ -78,55 +77,20 @@ export default {
       'answerDaily',
       'judgeDaily'
     ]),
-    ...mapMutations({
-      toggleSnack (commit, payload) { commit('toggleSnack', payload) },
-      setError (commit, payload) { commit('setError', payload) },
-      clearError (commit) { commit('clearError') },
-      setLoading (commit) { commit('setLoading') }
-    }),
-    daysBetween: (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)),
+    ...mapMutations([
+      'toggleSnack',
+      'setError',
+      'clearError',
+      'setLoading'
+    ]),
+    nuxtFromClick (route) {
+      this.$router.push(route)
+    },
     sortByStart (a, b) {
       return new Date(b.start).getTime() - new Date(a.start).getTime()
     },
     stringToDateddmmYYYY (dateString) {
       return (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
-    },
-    highchart (p) {
-      if (!p) return
-
-      if (this.$refs[`${p.id}-piechart`]) {
-        Highcharts.chart(`${p.id}-piechart`, {
-          chart: {
-            type: 'pie',
-            height: '180',
-            margin: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.0)'
-          },
-          title: {
-            text: null
-          },
-          plotOptions: {
-            pie: {
-              discrete: true,
-              allowPointSelect: true,
-              cursor: 'pointer',
-              colors: pieColors(this.projects[p.id].blocks.map(b => this.blocks[b])),
-              dataLabels: {
-                enabled: false
-                // format: '{point.name} {point.y}'
-              },
-              width: '100%',
-              innerSize: '60%',
-              height: '100%'
-            }
-          },
-          series: [{
-            type: 'pie',
-            name: 'Tasks per block',
-            data: pieSeries(this.projects[p.id].blocks.map(b => this.blocks[b]))
-          }]
-        })
-      }
     }
   }
 }

@@ -21,6 +21,10 @@ let p3u1Generated = generateDailies(generatedDailes,
   { startDate: new Date('08/30/2018') },
   'p3', 'u1', 'u3'
 )
+let p3u3Generated = generateDailies(generatedDailes,
+  { startDate: new Date('08/30/2018') },
+  'p3', 'u3', 'u3'
+)
 
 export default () => ({
   mini: false,
@@ -59,7 +63,9 @@ export default () => ({
       tasks: [],
       projects: ['p3'],
       teams: ['tm2'],
-      dailyMeetings: [],
+      dailyMeetings: {
+        p3: p3u3Generated
+      },
       notifications: []
     },
     'u2': {
@@ -136,7 +142,8 @@ export default () => ({
       company: '',
       blocks: [],
       dailyMeetings: {
-        u1: p3u1Generated
+        u1: p3u1Generated,
+        u3: p3u3Generated
       },
       start: new Date('08/30/2018'),
       end: null,

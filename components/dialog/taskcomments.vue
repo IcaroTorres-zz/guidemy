@@ -6,6 +6,8 @@
     <v-card>
       <v-card-title class="py-3 display-1 primary">
         {{computedTask.title}}
+        <v-spacer></v-spacer>
+        <v-btn icon flat @click="dialog = false"><v-icon>close</v-icon></v-btn>
       </v-card-title>
       <div class="px-3 py-2">
         Description: 
@@ -123,12 +125,10 @@
               auto-grow
               placeholder="Leave your comment"
               v-model="comment.text"
-              @click:append-outer="valid ? submit() : ''"
-              append-outer-icon="send"
             ></v-textarea>
           </v-form>
         </v-flex>
-        <v-btn flat color="primary" @click="dialog = false">Back</v-btn>
+        <v-icon class="pr-2" color="primary" @click="valid ? submit() : ''">send</v-icon>
       </v-card-actions>
     </v-card>
   </v-dialog>

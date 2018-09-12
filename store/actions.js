@@ -7,7 +7,7 @@ export const actions = {
     const userFound = getters.userByName(payload.username)
     if (userFound) {
       const userSent = new User({ ...payload, ...userFound })
-      commit('signin', userSent)
+      commit('signuser', userSent)
       commit('toggleSnack', {
         message: `${payload.username} logged`,
         color: 'info'
@@ -21,7 +21,7 @@ export const actions = {
   },
   signup ({ commit }, payload) {
     const userSent = new User(payload)
-    commit('signup', userSent)
+    commit('signuser', userSent)
     commit('toggleSnack', {
       message: `${payload.username} logged`,
       color: 'info'
@@ -115,9 +115,10 @@ export const actions = {
     return payload
   },
   deleteComment ({ commit, state }, payload) {
+    const tasktitle = state.tasks[state.comments[payload].at].title
     commit('deleteComment', payload)
     commit('toggleSnack', {
-      message: `comment deleted from ${state.tasks[state.comments[payload].at].title}.`
+      message: `comment deleted from ${tasktitle}.`
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return payload

@@ -206,26 +206,24 @@ export default {
     coworkers () { return this.project.coworkers.map(uid => this.user(uid)) },
     assigned () { return this.selectedWorker ? this.user(this.selectedWorker) : this.loggedUserObj },
     dailies () {
-      let mydailies = this.loggedUser === this.project.manager
-        ? this.$store.getters.projectDailies(this.project.id)[this.selectedWorker]
-        : this.$store.getters.projectDailies(this.project.id)[this.loggedUser]
-
-      mydailies = mydailies.sort(this.sortByStart)
+      const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
+      let dailyList = (this.$store.getters.projectDailies(this.project.id)[uid] || [])
+        .sort(this.sortByStart)
 
       const iHaveNewDaily = (
-        mydailies.length > 0 &&
-        mydailies[0].start &&
-        new Date(mydailies[0].start).getDate() === new Date().getDate() &&
-        mydailies[0].status === 0 &&
-        this.loggedUser === mydailies[0].assigned
+        dailyList.length > 0 &&
+        dailyList[0].start &&
+        new Date(dailyList[0].start).getDate() === new Date().getDate() &&
+        dailyList[0].status === 0 &&
+        this.loggedUser === dailyList[0].assigned
       )
 
       if (iHaveNewDaily) {
-        this.newDaily = { ...mydailies[0] }
+        this.newDaily = { ...dailyList[0] }
         this.open = true
-        return mydailies.slice(1)
+        return dailyList.slice(1)
       } else {
-        return mydailies
+        return dailyList
       }
     },
     isManager () { return this.loggedUser === this.project.manager },
@@ -242,16 +240,7 @@ export default {
       }
     },
     resultColor () {
-      let max = this.coworkerResults.total
-      return this.coworkerResults.attended >= (4 * max / 5)
-        ? 'success'
-        : this.coworkerResults.attended >= (3 * max / 5)
-          ? 'accent'
-          : this.coworkerResults.attended >= (2 * max / 5)
-            ? 'info'
-            : this.coworkerResults.attended >= (1 * max / 5)
-              ? 'warning'
-              : 'error'
+      return this.temperColor(this.coworkerResults.total, this.coworkerResults.attended)
     }
   },
   methods: {
