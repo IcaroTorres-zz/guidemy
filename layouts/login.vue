@@ -1,34 +1,16 @@
 <template>
   <v-app dark>
-    <v-toolbar flat absolute class="transparent">
-      <!-- <v-layout row justify-end align-center> -->
-        <!-- <v-flex xs12 md9 class="text-xs-right"> -->
-          <!-- <v-layout row justify-space-between align-center> -->
-            <!-- <v-layout row align-center> -->
-              <!-- <nuxt-link to="/" class="flat-link"><img src="../assets/logo1-alpha.png" alt="Guideme" height="50"></nuxt-link> -->
-              <!-- <nuxt-link to="/" class="title flat-link">{{apptitle}}</nuxt-link> -->
-            <!-- </v-layout> -->
-            <!-- <div> -->
-              <v-spacer v-if="smAndUp"/>
-              <nuxt-link to="/" class="subheading px-2 flat-link">Why {{apptitle}}?</nuxt-link>
-              <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
-              <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
-              <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
-            <!-- </div> -->
-          <!-- </v-layout> -->
-        <!-- </v-flex> -->
-      <!-- </v-layout> -->
-    </v-toolbar>
-
     <v-content>
+      <v-toolbar flat fixed class="transparent">
+      <v-spacer v-if="smAndUp"/>
+      <v-toolbar-items app>
+        <v-btn flat small color="primary">Why {{apptitle}}?</v-btn>
+        <v-btn flat small color="primary">Examples</v-btn>
+        <v-btn flat small color="primary">About Us</v-btn>
+        <v-btn flat small color="primary">Find Projects</v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
       <section>
-        <!-- <v-layout row justify-end align-center style="position: absolute; right: 0; top: 0; z-index: 5">
-          <v-spacer v-if="smAndUp"/>
-          <nuxt-link to="/" class="subheading px-2 flat-link">Why {{apptitle}}?</nuxt-link>
-          <nuxt-link to="/" class="subheading px-2 flat-link">Examples</nuxt-link>
-          <nuxt-link to="/" class="subheading px-2 flat-link">About Us</nuxt-link>
-          <nuxt-link to="/" class="subheading px-2 flat-link">Find Projects</nuxt-link>
-        </v-layout> -->
         <v-parallax
           :src="require('@/assets/hero.jpeg')" 
           :style="{ 'height': 'auto'}"

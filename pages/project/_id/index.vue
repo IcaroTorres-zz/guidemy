@@ -6,68 +6,47 @@
       <v-flex xs12 class="pa-0">
         <v-card class="transparent" flat>
           <projectToolbar :projectid="project.id"/>
-          <v-layout
-            row
-            justify-space-between
-            class="py-0 px-1"
-          >
-            <v-flex sm7 md8 >
-              <a class="title">{{project.title}}</a>
-              <div>Manager: 
-                <a class="info--text">@{{username(project.manager)}}</a>
-              </div>
-              <div>Team: 
-                <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a>
-              </div>
-              <div>Created: 
-                <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString()}}</span>
-              </div>
-              <v-divider class="my-2"></v-divider>
-              <div class="layout row ml-0">
-                Description:
-                <v-spacer></v-spacer>
-                <v-tooltip left>
-                  <v-btn 
-                    icon 
-                    small 
-                    flat 
-                    class="pa-0 mr-1 ml-0 my-0" 
-                    @click.stop="expand = !expand" 
-                    slot="activator">
-                    <v-icon>{{expand ? 'unfold_less' : 'unfold_more'}}</v-icon>
-                  </v-btn>
-                  <span>{{expand ? 'Collapse project' : 'Expand project'}}</span>
-                </v-tooltip>
-              </div>
-              <p class="caption text-xs-justify primary--text">{{project.description}}</p>
-            </v-flex>
-            <v-divider vertical></v-divider>
-            <v-flex sm5 md4>
-              <!-- <div class="text-xs-center" style="position: relative">
-                <v-layout row justify-space-around
-                  :class="{
-                  'body-2': lgAndUp,
-                  'caption': !lgAndUp,
-                  'secondary--text': !lightOut,
-                  'grey--text text--lighten-3': lightOut }">
-                  <div class="pa-3">
-                    <span class="title error--text">{{delayedTasks(project.id).length}}</span><br> 
-                    <small>delayed</small>
-                  </div>
-                  <div class="pa-3">
-                    <span class="title">{{projectTasks(project.id).length}}</span><br>
-                    <small>tasks</small>
-                  </div>
-                  <div class="pa-3">
-                    <span class="title success--text">{{doneTasks(project.id).length}}</span><br> 
-                    <small>done</small>
-                  </div>
-                </v-layout>
-                <div :id="`${project.id}-piechart`" :ref="`${project.id}-piechart`"></div>
-              </div> -->
-              <projectPieChart :projectid="project.id"/>
-            </v-flex>
-          </v-layout>
+          <v-card-text>
+            <v-layout
+              row
+              justify-space-between
+            >
+              <v-flex>
+                <a class="title">{{project.title}}</a>
+                <div>Manager: 
+                  <a class="info--text">@{{username(project.manager)}}</a>
+                </div>
+                <div>Team: 
+                  <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a>
+                </div>
+                <div>Created: 
+                  <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString()}}</span>
+                </div>
+                <v-divider class="my-2"></v-divider>
+                <div class="layout row ml-0">
+                  Description:
+                  <v-spacer></v-spacer>
+                  <v-tooltip left>
+                    <v-btn 
+                      icon 
+                      small 
+                      flat 
+                      class="pa-0 mr-1 ml-0 my-0" 
+                      @click.stop="expand = !expand" 
+                      slot="activator">
+                      <v-icon>{{expand ? 'unfold_less' : 'unfold_more'}}</v-icon>
+                    </v-btn>
+                    <span>{{expand ? 'Collapse project' : 'Expand project'}}</span>
+                  </v-tooltip>
+                </div>
+                <p class="caption text-xs-justify primary--text">{{project.description}}</p>
+              </v-flex>
+              <v-divider vertical class="hidden-sm-and-down"></v-divider>
+              <v-flex class="hidden-sm-and-down" style="max-width: 380px">
+                <projectPieChart :projectid="project.id"/>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
         </v-card>
       </v-flex>
 

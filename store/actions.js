@@ -87,10 +87,11 @@ export const actions = {
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
   },
-  finishTask ({ commit }, payload) {
+  finishTask ({ commit, state }, payload) {
+    let tasktitle = state.tasks[payload].title
     commit('finishTask', payload)
     commit('toggleSnack', {
-      message: `task '${payload.title}' finished.`,
+      message: `task '${tasktitle}' finished.`,
       color: 'success'
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)

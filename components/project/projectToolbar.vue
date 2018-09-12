@@ -1,5 +1,6 @@
 <template>
   <v-toolbar
+  card
   dense
   flat
   :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut, 'project--toolbar': true}"
