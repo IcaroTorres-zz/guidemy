@@ -14,7 +14,7 @@ export const increaseDays = (date, daysCount) => {
 export const daysBetween = (date1, date2) => Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24))
 
 export const isDelayed = t => (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
-  (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime())
+  (t.status === 1 && new Date(t.end).getTime() < new Date(t.finished).getTime())
 
 export const randomStatus = () => {
   let rand = Math.random()
@@ -34,7 +34,7 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
       r3: status === 1 ? 'aaaaaa' : '',
       start: increaseDays(startDate, i),
       end: increaseDays(startDate, i + 1), // 24hr after
-      finishedAt: status === 1 ? increaseDays(startDate, i) : null,
+      finished: status === 1 ? increaseDays(startDate, i) : null,
       status: status
     }
     target[newDaily.id] = newDaily

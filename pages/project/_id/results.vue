@@ -123,7 +123,7 @@ export default {
       return this.loggedUser === this.resultProject.manager
     },
     team () {
-      return this.resultProject.coworkers.map(uid => this.user(uid))
+      return this.resultProject.team.map(uid => this.users[uid])
     },
     color1 () {
       return this.temperColor(100, this.deliveryWeight)

@@ -22,7 +22,14 @@ export const getters = {
           ...blockToFill,
           tasks: blockToFill.tasks
             .map(taskid => state.tasks[taskid])
-        }))
+        })),
+        dailyMeetings: Object.entries(project.dailyMeetings)
+          .reduce((meetings, [uid, dllist]) => {
+            return {
+              ...meetings,
+              [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+            }
+          }, {})
       }))
   },
   filledUserProjects: (state, getters) => uid => {
@@ -35,7 +42,14 @@ export const getters = {
               ...blockToFill,
               tasks: blockToFill.tasks
                 .map(taskid => state.tasks[taskid])
-            }))
+            })),
+          dailyMeetings: Object.entries(project.dailyMeetings)
+            .reduce((meetings, [uid, dllist]) => {
+              return {
+                ...meetings,
+                [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+              }
+            }, {})
         }))
       : []
   },
@@ -47,7 +61,14 @@ export const getters = {
           ...blockToFill,
           tasks: blockToFill.tasks
             .map(taskid => state.tasks[taskid])
-        }))
+        })),
+      dailyMeetings: Object.entries(state.projects[pid].dailyMeetings)
+        .reduce((meetings, [uid, dllist]) => {
+          return {
+            ...meetings,
+            [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+          }
+        }, {})
     })
     : {},
   // ui states
@@ -56,16 +77,21 @@ export const getters = {
   JSONState: state => JSON.stringify(state),
   loggedUser: state => state.loggedUser,
   loggedUserObj: state => state.users[state.loggedUser] || {},
-  user: state => uid => uid ? state.users[uid] : {},
   username: state => uid => uid ? state.users[uid].username : '',
-  useravatar: state => uid => uid ? state.users[uid].profilePicture || dummyavatar : dummyavatar,
+  useravatar: state => uid => uid ? state.users[uid].picture || dummyavatar : dummyavatar,
   // appUser: state => uid => state.users[uid],
   // appUsername: state => uid => state.users[uid].username,
-  // appUseravatar: state => uid => state.users[uid].profilePicture || dummyavatar,
-  users: state => Object.values(state.users),
+  // appUseravatar: state => uid => state.users[uid]. || dummyavatar,
   usernames: state => Object.values(state.users).map(u => u.username),
   userByName: state => username => username ? Object.values(state.users).find(user => user.username === username) : {},
   userProjects: state => uid => uid ? state.users[uid].projects.map(pid => state.projects[pid]) : [],
+  userTasks: (state, getters) => uid => getters.userProjects(uid)
+    .reduce((projectTasklist, p) => p.blocks
+      .map(bid => state.blocks[bid])
+      .reduce((tasklist, b) => b.tasks
+        .map(tid => this.tasks[tid]).concat(tasklist)
+        , []).concat(projectTasklist)
+      , []),
   myProjects: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]) : [],
   userNotifications: state => uid => uid ? state.users[uid].notifications.map(nid => state.notifications[nid]) : [],
   // project states
@@ -93,23 +119,34 @@ export const getters = {
             ? 'warning'
             : 'deep-orange'
   },
+  temperColorInvert: state => (max, value) => {
+    return value <= (4 * max / 5)
+      ? 'success'
+      : value <= (3 * max / 5)
+        ? 'accent'
+        : value <= (2 * max / 5)
+          ? 'info'
+          : value <= (1 * max / 5)
+            ? 'warning'
+            : 'deep-orange'
+  },
   daysBetween: state => (date1, date2) => Math.round(
     (new Date(date2).getTime() - new Date(date1).getTime()) /
     (1000 * 60 * 60 * 24) // day in milisseconds
   ),
-  memberScoreForTasks: (state, getters) => (mid, pid) => {
+  memberScoreForTasks: (state, getters) => (uid, pid) => {
     return getters.projectTasks(pid)
-      .filter(t => t.assigned === mid)
+      .filter(t => t.assigned === uid)
       .reduce((member, t) => {
         console.dir(t)
         // project credits value
-        const taskcredits = getters.daysBetween(t.start, t.end)
+        const taskcredits = getters.daysBetween(t.created, t.end)
 
         let innerCredits = 0
         if (t.status !== 0) {
           member.score += taskcredits
           // finished tasks
-          innerCredits = getters.daysBetween(t.finishedAt, t.end)
+          innerCredits = getters.daysBetween(t.finished, t.end)
         } else {
           // pending tasks
           innerCredits = getters.daysBetween(new Date(), t.end)
@@ -140,8 +177,8 @@ export const getters = {
         total: 0
       })
   },
-  memberScoreForDailies: (state, getters) => (mid, pid) => {
-    let dailies = getters.projectDailies(pid)[mid] || []
+  memberScoreForDailies: (state, getters) => (uid, pid) => {
+    let dailies = getters.projectDailies(pid)[uid] || []
     let total = dailies.length
     let attended = dailies.filter(d => d.status === 1).length
     let participation = (attended * 100 / total).toFixed(2)
@@ -156,7 +193,7 @@ export const getters = {
   delayedTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => getters.isDelayed(t)) : [],
   doneTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => t.status === 1) : [],
   isDelayed: (state, getters) => t => t ? (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
-    (t.status === 1 && new Date(t.end).getTime() < new Date(t.finishedAt).getTime()) : false,
+    (t.status === 1 && new Date(t.end).getTime() < new Date(t.finished).getTime()) : false,
   ...([
     'xlOnly',
     'lgAndUp',

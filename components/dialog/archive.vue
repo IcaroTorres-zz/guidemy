@@ -4,8 +4,8 @@
       <slot name="customactivator" />
     </template>
     <v-card >
-      <v-card-title class="py-4 title success">
-        Finish project activities?
+      <v-card-title class="py-4 title primary">
+        Archive project and stop activities?
       </v-card-title>
       <v-card-text>
         {{project.title}}
@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: 'dialogfinish',
+  name: 'dialogarchive',
   props: {
     project: { type: Object, required: true }
   },

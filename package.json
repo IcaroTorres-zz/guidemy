@@ -11,6 +11,7 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "highcharts": "^6.1.2",
     "highcharts-vue": "^1.2.0",
     "nuxt": "^1.0.0",

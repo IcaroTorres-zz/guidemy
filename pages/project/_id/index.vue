@@ -17,10 +17,10 @@
                   <a class="info--text">@{{username(project.manager)}}</a>
                 </div>
                 <div>Team: 
-                  <a class="pr-2" v-for="coworker in project.coworkers" :key="coworker">@{{username(coworker)}}</a>
+                  <a class="pr-2" v-for="coworker in project.team" :key="coworker">@{{username(coworker)}}</a>
                 </div>
                 <div>Created: 
-                  <span class="text-xs-justify primary--text">{{new Date(project.start).toLocaleDateString()}}</span>
+                  <span class="text-xs-justify primary--text">{{new Date(project.created).toLocaleDateString()}}</span>
                 </div>
                 <v-divider class="my-2"></v-divider>
                 <div class="layout row ml-0">
@@ -151,7 +151,6 @@ export default {
   },
   data: () => ({
     expand: true,
-    myChart: undefined,
     defaultBlockSetup: defaultBlockSetup
   }),
   computed: {

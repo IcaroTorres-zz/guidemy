@@ -22,10 +22,10 @@
               dense
               hide-details
               v-model="selectedWorker"
-              :items="coworkers"
+              :items="team"
               item-value="id"
               item-text="username"
-              label="project coworkers">
+              label="project team">
               <v-list-tile slot="prepend-item" disabled>
                 <v-list-tile-avatar color="primary title">
                   M
@@ -45,7 +45,7 @@
                   </v-list-tile-avatar>
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                    <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
+                    <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
                   </v-list-tile-content>
                 </template>
               </template>
@@ -69,11 +69,11 @@
           <v-flex>
             <v-layout row align-center>
               <v-avatar  size="48px" color="grey lighten-4 mb-2">
-                <img :src="loggedUserObj.profilePicture" alt="avatar">
+                <img :src="loggedUserObj.picture" alt="avatar">
               </v-avatar>
               <div class="ml-2">
                 <a class="primary--text subheading">{{loggedUserObj.username}}</a><br>
-                {{new Date(newDaily.start).toLocaleDateString()}} <span class="body-2 ml-2">TODAY!</span>
+                {{new Date(newDaily.created).toLocaleDateString()}} <span class="body-2 ml-2">TODAY!</span>
               </div>
               <v-spacer></v-spacer>
               <v-icon @click="open = !open">{{open ? 'unfold_less' : 'unfold_more'}}</v-icon>
@@ -115,8 +115,8 @@
                         </v-avatar>
                         <div class="ml-2">
                           <a class="primary--text subheading">{{username(daily.assigned)}}</a><br>
-                          <div v-if="daily.finishedAt" class="caption grey--text mr-2">
-                            responded at: {{daily.finishedAt | postFormat}}
+                          <div v-if="daily.finished" class="caption grey--text mr-2">
+                            responded at: {{daily.finished | postFormat}}
                           </div>
                         </div>
                         <v-spacer></v-spacer>
@@ -146,8 +146,8 @@
                   <v-flex style="max-width: 40px;">
                     <v-layout column fill-height align-center justify-start style="position: relative;">
                       <div style="transform: translateY(-18px)" class="caption">
-                        <span v-if="didx === 0 && new Date(daily.start).getDate() === new Date().getDate()">TODAY!</span>
-                        <span v-else>{{new Date(daily.start).toLocaleDateString()}}</span>
+                        <span v-if="didx === 0 && new Date(daily.created).getDate() === new Date().getDate()">TODAY!</span>
+                        <span v-else>{{new Date(daily.created).toLocaleDateString()}}</span>
                       </div>
                         <v-icon :class="{'success--text':daily.status === 1,  'action-middle-1': true}"
                           :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === 1 ? 0 : 1})">
@@ -198,13 +198,13 @@ export default {
     }
   },
   created () {
-    this.selectedWorker = this.project.coworkers[0]
+    this.selectedWorker = this.project.team[0]
   },
   computed: {
     project () { return this.projects[this.projectid] },
-    manager () { return this.user(this.project.manager) },
-    coworkers () { return this.project.coworkers.map(uid => this.user(uid)) },
-    assigned () { return this.selectedWorker ? this.user(this.selectedWorker) : this.loggedUserObj },
+    manager () { return this.users[this.project.manager] },
+    team () { return this.project.team.map(uid => this.users[uid]) },
+    assigned () { return this.selectedWorker ? this.users[this.selectedWorker] : this.loggedUserObj },
     dailies () {
       const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
       let dailyList = (this.$store.getters.projectDailies(this.project.id)[uid] || [])
@@ -212,8 +212,8 @@ export default {
 
       const iHaveNewDaily = (
         dailyList.length > 0 &&
-        dailyList[0].start &&
-        new Date(dailyList[0].start).getDate() === new Date().getDate() &&
+        dailyList[0].created &&
+        new Date(dailyList[0].created).getDate() === new Date().getDate() &&
         dailyList[0].status === 0 &&
         this.loggedUser === dailyList[0].assigned
       )

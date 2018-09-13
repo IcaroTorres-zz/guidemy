@@ -3,6 +3,11 @@ import { User } from '@/models'
 // Vue.set(target, 'property', newValue) Obj
 // $set(target, index, newValue) Arr
 export const mutations = {
+  generateusers (state, payload) {
+    Vue.set(state, 'users', {
+      ...state.users, ...payload
+    })
+  },
   signuser (state, payload) {
     Vue.set(state, 'loggedUser', payload.id)
     Vue.set(state.users, payload.id, new User({ ...state.users[payload.id], ...payload }))
@@ -29,7 +34,7 @@ export const mutations = {
   },
   saveProject (state, payload) {
     Vue.set(state.projects, payload.id, { ...payload })
-    payload.coworkers.forEach(uid => {
+    payload.team.forEach(uid => {
       if (state.users[uid].projects.indexOf(payload.id) === -1) {
         state.users[uid].projects.push(payload.id)
       }
@@ -60,7 +65,7 @@ export const mutations = {
     Vue.set(state.tasks, payload.id, { ...payload })
   },
   finishTask (state, payload) {
-    const task = { ...state.tasks[payload], status: 1, finishedAt: new Date() }
+    const task = { ...state.tasks[payload], status: 1, finished: new Date() }
     Vue.set(state.tasks, payload, task)
   },
   deleteTask (state, payload) {

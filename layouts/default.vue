@@ -166,7 +166,7 @@
       </v-tooltip>
       <v-btn icon large>
         <v-avatar size="46px">
-          <img :src="loggedUserObj.profilePicture" :alt="loggedUserObj.username">
+          <img :src="loggedUserObj.picture" :alt="loggedUserObj.username">
         </v-avatar>
       </v-btn>
     </v-toolbar>
@@ -228,21 +228,10 @@
           model: false,
           children: [
             { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
-            { icon: 'view_stream', text: 'View all', action: () => vm.$router.push('dashboard') },
-            { icon: 'group', text: 'View Teams', soon: '( future feature )' }
+            { icon: 'view_stream', text: 'Dashboard', action: () => vm.$router.push('dashboard') },
+            { icon: 'archiev', text: 'Archived', action: () => vm.$router.push('archieved') }
           ]
         },
-        // {
-        //   heading: 'handle your tasks',
-        //   icon: 'view_week',
-        //   'icon-alt': 'view_column',
-        //   text: 'Tasks',
-        //   model: false,
-        //   children: [
-        //     { icon: 'add', text: 'Create task', slot: 'customactivator', component: 'task' },
-        //     { icon: 'view_week', text: 'View all' }
-        //   ]
-        // },
         { groupHeading: 'General settings' },
         { icon: 'settings', text: 'Settings', soon: '( future feature )' },
         { groupHeading: 'Help us to evolve' },
@@ -265,7 +254,6 @@
       this.sidebarVisible = this.sidebar
     },
     computed: {
-      canCreateTask () { return this.myProjects.length === 0 },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
@@ -277,7 +265,7 @@
         this.$store.dispatch('logOut')
       },
       ...mapMutations({
-        toggleSidebar (commit, ismobile) { commit('toggleSidebar') },
+        toggleSidebar (commit) { commit('toggleSidebar') },
         toggleMini (commit) { commit('toggleMini') },
         toggleLight (commit) { commit('toggleLight') }
       })

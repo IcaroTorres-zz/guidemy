@@ -53,6 +53,10 @@ export default {
     chartProject: {
       deep: true,
       handler (val, oldval) {
+        console.log('values changes for piechart project component', val, oldval)
+        if (val && val !== oldval && this.piechart) {
+          this.piechart.destroy()
+        }
         Vue.set(this, 'piechart', this.drawPiechart(this.chartProject))
       }
     }

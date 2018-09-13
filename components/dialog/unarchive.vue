@@ -4,8 +4,8 @@
       <slot name="customactivator"  @click.stop="dialog = !dialog" />
     </template>
     <v-card>
-      <v-card-title class="py-4 title error">
-        Confirm Project Exclusion?
+      <v-card-title class="py-4 title info">
+        Re-open Project Activities?
       </v-card-title>
       <v-card-text>
         {{project.title}}
@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  name: 'dialogtaskdel',
+  name: 'dialogunarchive',
   props: {
     project: Object
   },

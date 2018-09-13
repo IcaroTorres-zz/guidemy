@@ -57,7 +57,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -67,8 +67,8 @@
               <v-autocomplete
                 prepend-icon="group"
                 label="team coworkers"
-                :items="team"
-                v-model="editing.coworkers"
+                :items="Object.values(users)"
+                v-model="editing.team"
                 clearable
                 dense
                 item-text="username"
@@ -86,7 +86,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -127,17 +127,6 @@ export default {
   },
   created () {
     this.editing = new Project({...this.project, creator: this.$store.getters.loggedUser})
-  },
-  computed: {
-    team () {
-      return this.project
-        ? this.project.coworkers.map(cid => this.user(cid))
-        : this.loggedUser
-          ? this.loggedUserObj.teams
-            .reduce((coworkers, tm) => coworkers.concat(this.teams[tm].members), [])
-            .map(uid => this.user(uid))
-          : []
-    }
   },
   methods: {
     saveProject () {

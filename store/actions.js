@@ -1,8 +1,63 @@
 import { User } from '@/models'
-// import { snack } from '../helpers'
+import axios from 'axios'
+
 const snackTimeout = 6000
 const dailyResult = { 0: 'pending', 1: 'accepted', '-1': 'rejected' }
 export const actions = {
+  fetchAppData ({ dispatch, commit }) {
+    dispatch('generateusers', 30).then(newUsers => {
+      return dispatch('generateProjects', newUsers)
+    }).then(data => console.log(data))
+      .catch(e => {
+        commit('setError', e.message)
+      })
+  },
+  generateusers: async function ({ commit, state }, usercount) {
+    return axios
+      .get(`https://randomuser.me/api/?results=${usercount}&nat=BR&inc=name,email,picture,login`)
+      .then(jsonUsers => {
+        commit('setLoading', true)
+        const myCustomUsers = jsonUsers.data.results
+          .reduce((usersState, u) => Object.assign(
+            {},
+            {
+              ...usersState,
+              [u.login.uuid]: new User({
+                id: u.login.uuid,
+                email: u.email,
+                picture: u.picture.medium,
+                username: u.login.username,
+                displayName: Object.values(u.name)
+                  .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
+                  .join(' ')
+              })
+            }
+          ), {})
+
+        console.log(myCustomUsers)
+        commit('generateusers', myCustomUsers)
+        commit('toggleSnack', {
+          message: `Dummy users generated. Enjoy!`,
+          color: 'info'
+        })
+        setTimeout(() => commit('toggleSnack'), snackTimeout)
+        commit('setLoading', false)
+      })
+      .catch(e => {
+        console.log(e.message)
+        commit('setError', e.message)
+        commit('toggleSnack', {
+          message: 'Fail to load dummy users',
+          color: 'error'
+        })
+        setTimeout(() => commit('toggleSnack'), snackTimeout)
+        commit('setLoading', false)
+      })
+      .then(() => state.users)
+  },
+  loremIpsum: async function () {
+    return axios.get('http://loripsum.net/api/1/medium/prude/plaintext')
+  },
   signin ({ commit, getters }, payload) {
     const userFound = getters.userByName(payload.username)
     if (userFound) {

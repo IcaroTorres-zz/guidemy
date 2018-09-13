@@ -35,7 +35,7 @@
                   readonly
                 ></v-text-field>
                 <v-date-picker v-model="editing.end"
-                  :min="editing.start | YYYYmmdd"
+                  :min="editing.created | YYYYmmdd"
                   reactive
                   locale="pt-BR"
                   @input="$refs.menudate.save(editing.end)"
@@ -109,7 +109,7 @@
                     </v-list-tile-avatar>
                     <v-list-tile-content>
                       <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.teams.map(t => teams[t].name).join(' - ')"></v-list-tile-sub-title>
+                      <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
                     </v-list-tile-content>
                   </template>
                 </template>
@@ -157,15 +157,15 @@ export default {
     })
   },
   computed: {
-    coworkers () {
-      return this.editing.project ? this.projects[this.editing.project].coworkers.map(w => this.user(w)) : []
+    team () {
+      return this.editing.project ? this.projects[this.editing.project].team.map(w => this.users[w]) : []
     },
     blocks () {
       return this.editing.project ? this.$store.getters.projectBlocks(this.editing.project) : []
     },
     assignable () {
       return this.editing.project
-        ? this.coworkers.filter(u => u.id !== this.projects[this.editing.project].manager || u.id === this.loggedUser)
+        ? this.team.filter(u => u.id !== this.projects[this.editing.project].manager || u.id === this.loggedUser)
         : [this.loggedUserObj]
     },
     computedDate () { return this.stringToDateddmmYYYY(this.editing.end) }

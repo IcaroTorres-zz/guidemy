@@ -21,7 +21,7 @@
             </v-flex>
             <v-flex class="pa-0 task-title">
               <span class="subheading">{{task.title}}</span>
-              <div v-if="task.status === 1" :class="ratecolor(task) +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{task.finishedAt | locale}}</div>
+              <div v-if="task.status === 1" :class="ratecolor(task) +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{task.finished | locale}}</div>
             </v-flex>
             <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
@@ -47,7 +47,7 @@
           <div class="layout row wrap align-center justify-content-end px-2">
             <v-flex xs12>
               <v-layout class="pa-1">
-                <span class="info--text pr-2">starts</span> {{task.start | locale }} <v-spacer/> {{task.end | locale}} <span class="error--text pl-2">ends</span>
+                <span class="info--text pr-2">starts</span> {{task.created | locale }} <v-spacer/> {{task.end | locale}} <span class="error--text pl-2">ends</span>
               </v-layout>
             </v-flex>
             <v-flex xs12 class="py-0 px-1">
@@ -96,7 +96,7 @@
           </v-avatar>
           <div>
             <div class="body-1">{{username(task.assigned)}}</div>
-            <div class="caption grey--text">#{{user(task.assigned).teams.map(t => teams[t].name).join(' - ')}}</div>
+            <div class="caption grey--text">#{{users[task.assigned].displayName}}</div>
           </div>
           <v-spacer/>
           <div class="d--wrapper">
@@ -120,24 +120,24 @@ export default {
     value: { require: true, type: Array }
   },
   methods: {
-    assigned (task) { return this.user(task.assigned) },
+    assigned (task) { return this.users[task.assigned] },
     color (task) {
       return (task.status === 0 && new Date(task.end).getTime() < new Date().getTime()) ||
-        (task.status === 1 && new Date(task.end).getTime() < new Date(task.finishedAt).getTime())
+        (task.status === 1 && new Date(task.end).getTime() < new Date(task.finished).getTime())
         ? 'error'
         : this.blocks[task.block].color
     },
     rating (task) {
-      let max = this.daysBetween(new Date(task.start), new Date(task.end))
+      let max = this.daysBetween(new Date(task.created), new Date(task.end))
       return Math.min(this.daysBetween(
-        new Date(task.start),
-        (task.status === 0 ? new Date() : new Date(task.finishedAt))
+        task.created,
+        (task.status === 0 ? new Date() : task.finished)
       ), max)
     },
     overdue (task) {
       let today = new Date()
       let end = new Date(task.end)
-      let finished = new Date(task.finishedAt)
+      let finished = new Date(task.finished)
       return task.status === 1
         ? finished.getTime() > end.getTime()
           ? Math.abs(this.daysBetween(finished, end))
@@ -147,11 +147,11 @@ export default {
           : undefined
     },
     ratecolor (task) {
-      let max = this.daysBetween(task.start, task.end)
-      return this.temperColor(max, this.rating(task))
+      let max = this.daysBetween(task.created, task.end)
+      return this.temperColorInvert(max, this.rating(task))
     },
     slidemax (task) {
-      return this.daysBetween(new Date(task.start), new Date(task.end))
+      return this.daysBetween(new Date(task.created), new Date(task.end))
     },
     canRemove (task) {
       return task.creator === this.loggedUser || this.projects(task.project).manager === this.loggedUser

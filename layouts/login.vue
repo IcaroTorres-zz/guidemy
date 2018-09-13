@@ -204,7 +204,19 @@ export default {
               Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
       }
     ]
-  })
+  }),
+  watch: {
+    hasUserLogged (val, oldval) {
+      if (!oldval && val) {
+        this.$store.dispatch('generateusers', 150)
+      }
+    }
+  },
+  computed: {
+    hasUserLogged () {
+      return !!this.loggedUser
+    }
+  }
 }
 </script>
 
@@ -212,8 +224,5 @@ export default {
 
 .v-toolbar {
   z-index: 99;
-}
-.v-content {
-  /* margin-top: -64px; */
 }
 </style>

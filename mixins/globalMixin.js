@@ -14,7 +14,7 @@ export default {
       'appLoading',
       'appError',
       'loggedUser',
-      'teams',
+      'users',
       'projects',
       'blocks',
       'tasks',
@@ -26,9 +26,7 @@ export default {
       'filledUserProjects',
       'filledProject',
       'loggedUserObj',
-      'users',
       'usernames',
-      'user',
       'username',
       'useravatar',
       'projectTasks',
@@ -36,6 +34,7 @@ export default {
       'delayedTasks',
       'isDelayed',
       'temperColor',
+      'temperColorInvert',
       'memberScoreForTasks',
       'memberScoreForDailies',
       'daysBetween',
@@ -87,7 +86,7 @@ export default {
       this.$router.push(route)
     },
     sortByStart (a, b) {
-      return new Date(b.start).getTime() - new Date(a.start).getTime()
+      return new Date(b.created).getTime() - new Date(a.created).getTime()
     },
     stringToDateddmmYYYY (dateString) {
       return (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))

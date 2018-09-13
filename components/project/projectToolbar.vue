@@ -6,26 +6,26 @@
   :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut, 'project--toolbar': true}"
   >
     <template v-if="toolbarProject.manager === loggedUser">
-      <dfinish :project="toolbarProject">
+      <darchive :project="toolbarProject" >
         <v-btn 
-          small 
+          class="ma-0"
           flat 
           :icon="!lgAndUp" 
-          class="ma-0" 
-          color="success" 
+ 
+          color="primary" 
           slot="customactivator"
           :disabled="toolbarProject.manager !== loggedUser">
-          <v-icon>done_all</v-icon>
-          <span class="hidden-md-and-down">finish</span>
+          <v-icon>archive</v-icon>
+          <span class="hidden-md-and-down">archive</span>
         </v-btn>
-      </dfinish>
+      </darchive>
       <v-divider vertical></v-divider>
-      <dproject :edition="true" :project="toolbarProject">
+      <dproject :edition="true" :project="toolbarProject" >
         <v-btn 
-          small 
+           class="ma-0"
           flat 
           :icon="!lgAndUp" 
-          class="ma-0" 
+ 
           color="warning" 
           slot="customactivator"  
           :disabled="toolbarProject.manager !== loggedUser">
@@ -34,23 +34,23 @@
         </v-btn>
       </dproject>
       <v-divider vertical></v-divider>
-      <dprojectdel :project="toolbarProject">
+      <dunarchive :project="toolbarProject" >
         <v-btn 
-          small 
+           class="ma-0"
           flat 
           :icon="!lgAndUp" 
-          class="ma-0" 
+ 
           color="error" 
           slot="customactivator"  
           :disabled="toolbarProject.manager !== loggedUser">
           <v-icon >delete</v-icon>
-          <span class="hidden-md-and-down">remove</span>
+          <span class="hidden-md-and-down">backup</span>
         </v-btn>
-      </dprojectdel>
+      </dunarchive>
       <v-divider vertical></v-divider>
-      <dinvite :project="toolbarProject" class="pa-0">
+      <dinvite :project="toolbarProject" class="pa-0" >
         <v-btn 
-          small 
+           
           icon 
           slot="customactivator" 
           class="pa-0" 
@@ -61,37 +61,34 @@
     </template>
     <template v-else>
       <v-btn 
-        small 
-        flat 
-        :icon="!lgAndUp" 
         class="ma-0" 
+        flat 
+        :icon="!lgAndUp"  
         disabled>
-        <v-icon>done_all</v-icon>
-        <span class="hidden-md-and-down">finish</span>
+        <v-icon>archive</v-icon>
+        <span class="hidden-md-and-down">archive</span>
       </v-btn>
       <v-divider vertical></v-divider>
       <v-btn 
-        small 
-        flat 
-        :icon="!lgAndUp" 
         class="ma-0" 
+        flat 
+        :icon="!lgAndUp"  
         disabled>
         <v-icon >edit</v-icon>
         <span class="hidden-md-and-down">edit</span>
       </v-btn>
       <v-divider vertical></v-divider>
       <v-btn 
-        small 
-        flat 
-        :icon="!lgAndUp" 
         class="ma-0" 
+        flat 
+        :icon="!lgAndUp"  
         disabled>
         <v-icon >delete</v-icon>
         <span class="hidden-md-and-down">remove</span>
       </v-btn>
       <v-divider vertical></v-divider>
       <v-btn 
-        small 
+         
         icon 
         class="pa-0" 
         disabled>
@@ -102,21 +99,19 @@
     <v-btn 
       nuxt
       :to="{ path: `/project/${toolbarProject.id}/results` }"
-      small 
+      class="ma-0" 
       flat 
       :icon="!lgAndUp" 
-      class="ma-0" 
       color="success" >
       <span class="hidden-md-and-down">results</span>
       <v-icon >poll</v-icon>
     </v-btn>
     <v-divider vertical></v-divider>
-    <ddailies :projectid="toolbarProject.id">
+    <ddailies :projectid="toolbarProject.id" >
       <v-btn 
-        small 
+       class="ma-0" 
         flat 
-        :icon="!lgAndUp" 
-        class="ma-0" 
+        :icon="!lgAndUp"  
         color="info" 
         slot="customactivator">
         <span class="hidden-md-and-down">view dailes</span>
@@ -125,23 +120,22 @@
     </ddailies>
     <v-divider vertical></v-divider>
     <v-btn 
-      small 
+      class="ma-0" 
       flat 
       :icon="!lgAndUp" 
-      class="ma-0" 
       color="accent" 
       slot="" >
       <span class="hidden-md-and-down">contributions</span>
       <v-icon >update</v-icon>
-    </v-btn>      
+    </v-btn>
   </v-toolbar>
 </template>
 
 <script>
-import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '@/components/dialog'
+import { dproject, darchive, dunarchive, dblock, dinvite, dtask, ddailies } from '@/components/dialog'
 export default {
   name: 'toolbarproject',
-  components: { dproject, dtask, dinvite, dfinish, dprojectdel, dblock, ddailies },
+  components: { dproject, dtask, dinvite, darchive, dunarchive, dblock, ddailies },
   props: {
     projectid: { required: true, type: [String, Number] }
   },

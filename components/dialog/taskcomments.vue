@@ -106,7 +106,7 @@
           size="48px"
           color="grey lighten-4"
         >
-          <img :src="loggedUserObj.profilePicture" alt="avatar">
+          <img :src="loggedUserObj.picture" alt="avatar">
         </v-avatar>
         <v-flex>
           <v-form 

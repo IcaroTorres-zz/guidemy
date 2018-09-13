@@ -66,9 +66,12 @@
 
 <script>
 export default {
+  validate ({ params, state }) {
+    return !!this.userByName(this.$route.params.username).id
+  },
   computed: {
     pageOWner () {
-      return this.loggedUserObj
+      return this.userByName(this.$route.params.username)
     },
     userProjects () {
       return this.userProjects(this.pageOWner.id)

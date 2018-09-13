@@ -5,11 +5,8 @@ export class User {
     this.username = payload.username || ''
     this.displayName = payload.displayName || payload.username || ''
     this.email = payload.email || ''
-    this.profilePicture = payload.profilePicture || dummyavatar
-    this.tasks = payload.tasks || []
+    this.picture = payload.picture || dummyavatar
     this.projects = payload.projects || []
-    this.teams = payload.teams || []
-    this.dailyMeetings = payload.dailyMeetings || {}
     this.notifications = payload.notifications || []
   }
 }
@@ -17,17 +14,14 @@ export class Project {
   constructor (payload = {}) {
     this.id = payload.id || 'p' + Date.now().toString()
     this.creator = payload.creator
-    this.manager = payload.description || ''
-    this.coworkers = payload.coworkers || [payload.creator]
+    this.manager = payload.manager || ''
+    this.team = payload.team || []
     this.title = payload.title || ''
     this.description = payload.description || ''
-    this.company = payload.company || ''
     this.blocks = payload.blocks || []
     this.dailyMeetings = payload.dailyMeetings || {}
-    this.start = payload.start || new Date()
-    this.end = payload.end || null
-    this.finishedAt = payload.finishedAt || null
-    this.notes = payload.notes || ''
+    this.created = payload.created || new Date()
+    this.archieved = payload.finished || null
     this.status = payload.status || 0
   }
 }
@@ -46,14 +40,13 @@ export class Task {
   constructor (payload = {}) {
     this.id = payload.id || 't' + Date.now().toString()
     this.creator = payload.creator
-    this.project = payload.project || ''
     this.block = payload.block || ''
     this.assigned = payload.assigned || payload.creator
     this.title = payload.title || ''
     this.description = payload.description || ''
-    this.start = payload.start || new Date()
+    this.created = payload.created || new Date()
     this.end = payload.end || null
-    this.finishedAt = payload.finishedAt || null
+    this.finished = payload.finished || null
     this.comments = payload.comments || []
     this.status = payload.status || 0
   }
