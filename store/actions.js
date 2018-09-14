@@ -1,73 +1,120 @@
-import { User } from '@/models'
-import axios from 'axios'
+import { User, Project, Block } from '@/models'
+import userbase from '@/helpers/userbase'
+import {
+  loremTitle, loremDescription, userProjectDailies, defaultBlockSetup
+} from '@/helpers'
 
 const snackTimeout = 6000
 const dailyResult = { 0: 'pending', 1: 'accepted', '-1': 'rejected' }
 export const actions = {
   fetchAppData ({ dispatch, commit }) {
-    dispatch('generateusers', 30).then(newUsers => {
-      return dispatch('generateProjects', newUsers)
-    }).then(data => console.log(data))
-      .catch(e => {
-        commit('setError', e.message)
-      })
-  },
-  generateusers: async function ({ commit, state }, usercount) {
-    return axios
-      .get(`https://randomuser.me/api/?results=${usercount}&nat=BR&inc=name,email,picture,login`)
-      .then(jsonUsers => {
-        commit('setLoading', true)
-        const myCustomUsers = jsonUsers.data.results
-          .reduce((usersState, u) => Object.assign(
-            {},
-            {
-              ...usersState,
-              [u.login.uuid]: new User({
-                id: u.login.uuid,
-                email: u.email,
-                picture: u.picture.medium,
-                username: u.login.username,
-                displayName: Object.values(u.name)
-                  .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
-                  .join(' ')
-              })
-            }
-          ), {})
-
-        console.log(myCustomUsers)
-        commit('generateusers', myCustomUsers)
+    commit('setLoading', true)
+    dispatch('generateusers')
+      .then((newUsers) => dispatch('generateprojects', newUsers))
+      .then((newProjects) => {
+        console.log(newProjects, 'generateprojects promise data')
+        commit('setLoading', false)
         commit('toggleSnack', {
-          message: `Dummy users generated. Enjoy!`,
-          color: 'info'
+          message: `What can I say, except "You're Welcome!" ?`,
+          color: 'success'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
+        return newProjects
+      }).catch(e => {
         commit('setLoading', false)
-      })
-      .catch(e => {
-        console.log(e.message)
+        console.warn(e.message)
         commit('setError', e.message)
         commit('toggleSnack', {
-          message: 'Fail to load dummy users',
+          message: `Opps, placeholder data fails...!`,
           color: 'error'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
-        commit('setLoading', false)
       })
-      .then(() => state.users)
   },
-  loremIpsum: async function () {
-    return axios.get('http://loripsum.net/api/1/medium/prude/plaintext')
+  generateusers ({ commit }) {
+    const myCustomUsers = userbase.results
+      .reduce((usersState, u) => Object.assign(
+        {},
+        {
+          ...usersState,
+          [u.login.uuid]: new User({
+            id: u.login.uuid,
+            email: u.email,
+            picture: u.picture.medium,
+            username: u.login.username,
+            displayName: Object.values(u.name)
+              .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
+              .slice(1)
+              .join(' ')
+          })
+        }
+      ), {})
+    commit('generateusers', myCustomUsers)
+    return myCustomUsers
+  },
+  generateprojects ({ state, dispatch, commit }, usersState) {
+    const projectsState = {}
+    for (let i = 0; i < 10; i++) {
+      const tempUsers = Object.values(usersState || state.users)
+      let projectTeam = []
+      let teamsize = Math.round(Math.random() * (tempUsers.length / 50))
+      for (let j = 0; j < teamsize; j++) {
+        let chosenIndex = Math.round(Math.random() * (tempUsers.length - 1))
+        let insertId = tempUsers[chosenIndex].id
+        if (projectTeam.indexOf(insertId) === -1) {
+          projectTeam.push(insertId)
+        } else {
+          j -= 1
+        }
+      }
+      const projectId = 'pjt' + Math.random().toFixed(4).toString() + '-' +
+        Math.random().toFixed(3).toString() + '-' +
+        Math.random().toFixed(5).toString() + '-' + 'bls'
+      let flatenDailies = []
+      let projectDailies = projectTeam
+        .reduce((pDailies, uid) => {
+          pDailies[uid] = userProjectDailies(projectId, uid, state.loggedUser)
+          flatenDailies.concat(pDailies)
+          // console.log(pDailies[uid], uid, 'dailies aplyied to user')
+          return pDailies
+        }, {})
+      let projectBlocks = defaultBlockSetup.map(b => new Block({
+        ...b, project: projectId
+      }))
+      const newProject = new Project({
+        id: projectId,
+        title: loremTitle(),
+        description: loremDescription(),
+        creator: state.loggedUser,
+        manager: state.loggedUser,
+        team: projectTeam,
+        blocks: projectBlocks.map(b => b.id),
+        dailyMeetings: {}
+      })
+      Object.entries(projectDailies).forEach(([key, val]) => {
+        newProject.dailyMeetings[key] = val.map(dl => dl.id)
+      })
+      // console.log('new blocks', projectBlocks)
+      commit('generateProjectBlocks', projectBlocks)
+      // console.log(projectDailies, 'generateProjectDailies')
+      commit('generateProjectDailies', flatenDailies)
+      // console.log(newProject, 'project created before commit')
+      projectsState[projectId] = newProject
+    }
+    // console.log(projectsState, 'generateprojects')
+    commit('generateprojects', projectsState)
+    return projectsState
   },
   signin ({ commit, getters }, payload) {
     const userFound = getters.userByName(payload.username)
     if (userFound) {
       const userSent = new User({ ...payload, ...userFound })
       commit('signuser', userSent)
-      commit('toggleSnack', {
-        message: `${payload.username} logged`,
-        color: 'info'
-      })
-      setTimeout(() => commit('toggleSnack'), snackTimeout)
+      // commit('toggleSnack', {
+      //   message: `${payload.username} logged`,
+      //   color: 'info'
+      // })
+      // setTimeout(() => commit('toggleSnack'), snackTimeout)
       return userSent
     }
     const error = new Error('Invalid E-mail or Username!!')
@@ -77,11 +124,11 @@ export const actions = {
   signup ({ commit }, payload) {
     const userSent = new User(payload)
     commit('signuser', userSent)
-    commit('toggleSnack', {
-      message: `${payload.username} logged`,
-      color: 'info'
-    })
-    setTimeout(() => commit('toggleSnack'), snackTimeout)
+    // commit('toggleSnack', {
+    //   message: `${payload.username} logged`,
+    //   color: 'info'
+    // })
+    // setTimeout(() => commit('toggleSnack'), snackTimeout)
     return userSent
   },
   logOut ({ commit, getters }) {
@@ -142,11 +189,12 @@ export const actions = {
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
   },
-  finishTask ({ commit, state }, payload) {
+  toggleTask ({ commit, state }, payload) {
     let tasktitle = state.tasks[payload].title
-    commit('finishTask', payload)
+    let taskstatus = state.tasks[payload].status ? 're-opened' : 'finished'
+    commit('toggleTask', payload)
     commit('toggleSnack', {
-      message: `task '${tasktitle}' finished.`,
+      message: `task '${tasktitle}' ${taskstatus}.`,
       color: 'success'
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)

@@ -1,80 +1,78 @@
 <template>
-  <v-container grid-list-xl fill-height style="height: 80vh; min-height: 650px">
-    <v-layout row align-center justify-center class="pa-3">
+  <v-container grid-list-xl>
+    <v-layout column align-center justify-center class="pa-3">
+      <v-avatar size="150px">
+        <img :src="useravatar(pageOwner.id)" :alt="pageOwner.username">
+      </v-avatar>
       <div>
-        <v-avatar size="150px" >
-          <img :src="pageOwner.picture" :alt="pageOwner.username">
-        </v-avatar>
+          <div class="headline">{{pageOwner.displayName || pageOwner.username}}</div>
+          <hr>
+          <div class="subheading">{{pageOwner.username}}</div>
       </div>
-      <div :class="{'elevation-2 pa-3': true, 'secondary':lightOut, 'grey lighten-5': !lightOut}">
-        <div class="display-1 primary--text">
-        {{pageOwner.displayName}}
-        </div><br><hr>
-        <div class="subheading secondary--text">
-        {{pageOwner.username}}
-        </div>
-      </div>
-    </v-layout>
-    <v-layout row wrap justify-center align-center>
-      <v-flex xs12 class="layout align-center justify-center">
-        <v-card tile flat>
-          <v-card-title class="primary-title">
-            <div class="title">
-              Projects {{userProjects.length}}
-            </div>
-            <div class="subheading">
-              Tasks {{userTasks.length}}
-            </div>
-          </v-card-title>
-          <v-card-text>
-            <v-expansion-panel>
-              <v-expansion-panel-content v-for="project in userProjects" :key="project.id">
-                <template slot="head">
-                  {{Project.title}}
-                </template>
-                <v-card flat class="transparent">
-                  <v-layout row align-center justify-center>
-                    Project tasks - {{userTasks.filter(t => project.blocks.indexOf(t.block) > -1).length}}
-                  </v-layout>
-                  <v-divider inset></v-divider>
-                  <v-card-text>
-                    {{project.description}}
-                  </v-card-text>
-                </v-card>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn flat color="success">
-              <v-icon>user_add</v-icon>
-              invite
-            </v-btn>
-            <v-btn flat color="info">
-              <v-icon>chat_bubble</v-icon>
-              send message
-            </v-btn>
-            <v-btn>
+      <v-card tile flat>
+        <v-card-text>
+          <v-flex>
+            <v-layout row class="title" align-center justify-space-between>
+              <span class="title info--text">Projects involved {{ownerProjects.length}}</span>
+              <span class="body-2 warning--text">{{ownerTasks.length}} Tasks assigned</span>
+            </v-layout>
+          </v-flex>
+        </v-card-text>
+        <v-card-text>
+          <v-expansion-panel
+            expand
+          >
+            <v-expansion-panel-content style="width: 250px"
+              v-for="project in ownerProjects"
+              :key="project.id"
+            >
+              <div slot="header">{{project.title}}</div>
+              <v-card flat class="transparent">
+                <v-flex class="px-4 pt-0">
+                  Project description: <span class="grey--text text-darken-2 caption">{{project.description}}</span>
+                  <v-divider></v-divider>
+                  Tasks in the project: {{ownerTasks.filter(t => project.blocks.indexOf(t.block) > -1).length}}
+                </v-flex>
+              </v-card>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat color="success">
+            <v-icon>person_add</v-icon>
+            invite
+          </v-btn>
+          <v-btn flat color="info">
+            <v-icon>chat_bubble</v-icon>
+            send message
+          </v-btn>
+          <v-tooltip top>
+            <v-btn icon slot="activator">
               <v-icon color="error">block</v-icon>
             </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-flex>
+            <span>block user</span>
+          </v-tooltip>
+        </v-card-actions>
+      </v-card>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 export default {
+  mounted () {
+    console.log(this.loggedUserObj.username, 'user')
+  },
   computed: {
-    pageOWner () {
+    pageOwner () {
       return this.loggedUserObj
     },
-    userProjects () {
-      return this.userProjects(this.pageOWner.id)
+    ownerProjects () {
+      return this.userProjects(this.pageOwner.id)
     },
-    userTasks () {
-      return this.userTasks(this.pageOWner.id)
+    ownerTasks () {
+      return this.userTasks(this.pageOwner.id)
     }
   }
 }

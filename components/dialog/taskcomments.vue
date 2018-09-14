@@ -156,7 +156,7 @@ export default {
     }))
   },
   computed: {
-    computedTask () { return this.task(this.taskid) },
+    computedTask () { return this.tasks[this.taskid] },
     comments () {
       return this.$store.getters.taskComments(this.computedTask)
         .sort(this.sortByStart)

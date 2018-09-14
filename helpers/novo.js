@@ -16,7 +16,7 @@ class User {
     this.displayName = payload.displayName || payload.username || ''
     this.email = payload.email || ''
     this.picture = payload.picture || dummyavatar
-    this.tasks = payload.tasks || []
+    this.projects = payload.projects || []
     this.notifications = payload.notifications || []
   }
 }
@@ -46,30 +46,6 @@ class Block {
     this.color = payload.color || ''
     this.tasks = payload.tasks || []
   }
-}
-
-const generateTitleAndDescription = async () => {
-  return axios.get('http://loripsum.net/api/1/short/prude/plaintext').then(title => {
-    return axios.get('http://loripsum.net/api/1/medium/prude/plaintext').then(description => ({
-      title: title.data.split('. ')[0],
-      description: description.data.replace(/\n/g, '')
-    }))
-  })
-}
-
-const defaultBlockSetup = (pid) => {
-  return [
-    {text: 'TO-DO', color: 'primary'},
-    {text: 'DOING', color: 'accent'},
-    {text: 'TO-CHECK', color: 'info'},
-    {text: 'TO-FIX', color: 'warning'},
-    {text: 'TO-REVERT', color: 'error'},
-    {text: 'DONE', color: 'success'}
-  ].map(block => {
-    const newBlock = new Block({...block, project: pid})
-    state.blocks[newBlock.id] = newBlock
-    return newBlock.id
-  })
 }
 
 const generateMyUsers = async (count = 150) => {

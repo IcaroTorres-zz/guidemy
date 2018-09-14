@@ -150,7 +150,7 @@ export default {
     }
   },
   created () {
-    this.editing = new Task({...this.task(this.taskid),
+    this.editing = new Task({...this.tasks[this.taskid],
       creator: this.loggedUser,
       project: (this.suggestedProject || {}).id,
       block: (this.suggestedBlock || {}).id

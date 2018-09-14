@@ -1,17 +1,15 @@
 <template>
-  <div :class="{'pa-4 ma-2 text-xs-center': true, 'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}"
+  <div :class="{'pa-4 mx-2 mt-5 text-xs-center': true, 'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}"
    style="width: 360px;">
-    <v-layout row align-center justify-space-between class="pa-3">
-      <div>
-        <v-avatar size="80px" >
-          <img :src="useravatar(member.id)" :alt="member.username">
-        </v-avatar>
-        <div class="subheading">
-        {{member.username}}
-        </div>
-      </div>
-      <div :class="{'elevation-2 pa-3': true, 'secondary':lightOut, 'grey lighten-5': !lightOut}" style="width: 160px">
-        <div :class="`display-1 ${temperColor(100, assignedResult)}--text`">
+    <v-layout column align-center justify-center style="margin-top: -64px">
+        <nuxt-link :to="{name: 'user-username', params: {username: member.username}}">
+          <v-avatar size="80px" :class="`elevation-${hover}`" @mouseover="hover = 15" @mouseout="hover = 0">
+            <img :src="useravatar(member.id)" :alt="member.username">
+          </v-avatar>
+        </nuxt-link>
+        <div class="subheading">{{member.username}}</div>
+      <div style="width: 110px">
+        <div :class="`headline ${temperColor(100, assignedResult)}--text`">
         {{assignedResult}}%
         </div>
         <hr>
@@ -28,26 +26,26 @@
       </v-flex>
     </v-layout>
     <v-layout row justify-space-between align-content-end class="caption px-3">
-      <div class="pb-2">
-        <span :class="`${taskTemper}--text headline`">{{percentAssignedScore}}%</span>
+      <div class="py-2">
+        <span :class="`${taskTemper}--text title`">{{percentAssignedScore}}%</span>
         <br>Tasks Score<br>
         <hr>
         {{scoreForTasks.score}} credits
       </div>
       <div class="py-2">
-        <span :class="`${taskTemper}--text subheading`">{{scoreForTasks.antecipatedCredits}}</span>
+        <span :class="`${taskTemper}--text body-2`">{{scoreForTasks.antecipatedCredits}}</span>
         <br>Anticipation<br>
         <hr>
         {{scoreForTasks.antecipatedTasks}} tasks
       </div>
       <div class="py-2">
-        <span :class="`${taskTemper}--text subheading`">{{scoreForTasks.overduedCredits}}</span>
+        <span :class="`${taskTemper}--text body-2`">{{scoreForTasks.overduedCredits}}</span>
         <br>Overdue<br>
         <hr>
         {{scoreForTasks.overduedTasks}} tasks
       </div>
       <div class="py-2">
-        <span :class="`${taskTemper}--text subheading`">{{scoreForTasks.credits}}</span>
+        <span :class="`${taskTemper}--text body-2`">{{scoreForTasks.credits}}</span>
         <br>Credits<br>
         <hr>
         {{scoreForTasks.total}} tasks
@@ -64,20 +62,20 @@
       </v-flex>
     </v-layout>
     <v-layout row justify-space-between align-content-end class="caption px-3">
-      <div class="pb-2">
-        <span :class="`${dailyTemper}--text headline`"> {{scoreForDailies.participation}}%</span><br>
+      <div class="py-2">
+        <span :class="`${dailyTemper}--text title`"> {{scoreForDailies.participation}}%</span><br>
         Participation
       </div>
       <div class="py-2">
-        <span :class="`${dailyTemper}--text subheading`"> {{scoreForDailies.attended}}</span><br>
+        <span :class="`${dailyTemper}--text body-2`"> {{scoreForDailies.attended}}</span><br>
         Attended
       </div>
       <div class="py-2">
-        <span :class="`${dailyTemper}--text subheading`"> {{scoreForDailies.missed}}</span><br> 
+        <span :class="`${dailyTemper}--text body-2`"> {{scoreForDailies.missed}}</span><br> 
         Missed
       </div>
       <div class="py-2">
-        <span :class="`${dailyTemper}--text subheading`"> {{scoreForDailies.total}}</span><br> 
+        <span :class="`${dailyTemper}--text body-2`"> {{scoreForDailies.total}}</span><br> 
         Total
       </div>
     </v-layout>
@@ -100,6 +98,9 @@ export default {
       required: true
     }
   },
+  data: () => ({
+    hover: 0
+  }),
   computed: {
     scoreForTasks () {
       return this.memberScoreForTasks(this.member.id, this.project.id)

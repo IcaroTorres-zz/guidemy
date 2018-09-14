@@ -1,15 +1,14 @@
 <template>
   <v-app dark>
-    <v-content>
-      <v-toolbar flat fixed class="transparent">
-      <v-spacer v-if="smAndUp"/>
-      <v-toolbar-items app>
-        <v-btn flat small color="primary">Why {{apptitle}}?</v-btn>
-        <v-btn flat small color="primary">Examples</v-btn>
-        <v-btn flat small color="primary">About Us</v-btn>
-        <v-btn flat small color="primary">Find Projects</v-btn>
-      </v-toolbar-items>
+      <v-toolbar prominent fixed flat class="transparent">
+      <v-toolbar-title>{{apptitle}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+        <v-btn flat color="secondary">Why {{apptitle}}?</v-btn>
+        <v-btn flat color="secondary">Examples</v-btn>
+        <v-btn flat color="secondary">About Us</v-btn>
+        <v-btn flat color="secondary">Find Projects</v-btn>
     </v-toolbar>
+    <v-content>
       <section>
         <v-parallax
           :src="require('@/assets/hero.jpeg')" 
@@ -17,20 +16,20 @@
           class="pt-5"
           >
           <v-layout
-            :row="mdAndUp || $route.name === 'index'"
-            :wrap="mdAndUp || $route.name === 'index'"
-            :column="smAndDown && $route.name === 'signin'"
+            :row="mdAndUp || $route.name === 'signup'"
+            :wrap="mdAndUp || $route.name === 'signup'"
+            :column="smAndDown && $route.name === 'index'"
             align-center
             justify-center
             class="my-3"
             fill-height
-            :style="{'height':smAndUp || $route.name === 'signin' ? '600px' : '850px'}"
+            :style="{'height':smAndUp || $route.name === 'index' ? '600px' : '850px'}"
           >
             <div class="text-xs-center">
               <img src="../assets/logo1-alpha.png" alt="Guideme"
                 :style="{'height':smAndUp ? '100px' : '60px'}">
               <h1 :class="{'display-2': smAndUp, 'headline': !smAndUp, 'primary--text': true}">{{apptitle}}</h1>
-              <div :class="{'subheading': smAndUp, 'body-2': !smAndUp, 'secondary--text': true}">Lorem, ipsum dolor.</div>
+              <div :class="{'subheading': smAndUp, 'body-2': !smAndUp, 'secondary--text': true}">Agile Tracker.</div>
             </div>
             <v-flex xs12 sm7 md5 lg4 offset-md1 style="opacity: .8">
               <nuxt />
@@ -176,6 +175,7 @@
   </v-app>  
 </template>
 <script>
+// import results from '@/helpers/userbase.json'
 export default {
   data: () => ({
     promoColumns: [
@@ -204,19 +204,7 @@ export default {
               Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
       }
     ]
-  }),
-  watch: {
-    hasUserLogged (val, oldval) {
-      if (!oldval && val) {
-        this.$store.dispatch('generateusers', 150)
-      }
-    }
-  },
-  computed: {
-    hasUserLogged () {
-      return !!this.loggedUser
-    }
-  }
+  })
 }
 </script>
 

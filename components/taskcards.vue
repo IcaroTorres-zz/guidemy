@@ -16,9 +16,26 @@
 
         <v-flex xs12 :class="{'pl-0': true}">
           <v-layout row wrap align-center>
-            <v-flex style="max-width: 26px; transform: scaleY(1.2); margin-left: -6px;" class="pa-0">
+            <!-- <v-flex style="max-width: 26px; transform: scaleY(1.2); margin-left: -6px;" class="pa-0">
               <v-icon color="primary">drag_indicator</v-icon>
-            </v-flex>
+            </v-flex> -->
+            <v-menu 
+              top 
+              left 
+              offset-y
+              v-model="visionMap[task.id]">
+              <v-icon
+                slot="activator"        
+                @click.stop="openTaskMenu(task.id)"
+              >more_vert
+              </v-icon>
+              <v-list dense>
+                <v-list-tile v-for="block in taskMenuOptions(task)" :key="block.id">
+                  <!-- <v-list-tile-title >n {{task.block}}</v-list-tile-title> -->
+                  <v-list-tile-title :class="`${block.color}--text`">{{ block.text }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
             <v-flex class="pa-0 task-title">
               <span class="subheading">{{task.title}}</span>
               <div v-if="task.status === 1" :class="ratecolor(task) +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{task.finished | locale}}</div>
@@ -26,9 +43,14 @@
             <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
-                <dtaskdone :taskid="task.id" v-if="task.status !== 1" @task-finished="update($event)">
-                  <v-icon small color="success" slot="customactivator">done_outline</v-icon>
-                </dtaskdone>
+                <v-tooltip top>
+                  <dtaskdone :taskid="task.id" @task-finished="update($event)" slot="activator">
+                    <v-icon small :color="task.status === 1 ? 'warning' : 'success'" slot="customactivator">
+                      {{task.status === 1 ? 'settings_backup_restore' : 'check_circle'}}
+                    </v-icon>
+                  </dtaskdone>
+                  <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
+                </v-tooltip>
                 <dtaskdel :taskid="task.id" @task-deleted="update($event)">
                   <v-icon small color="error" v-if="canRemove(task)" slot="customactivator">delete</v-icon>
                 </dtaskdel>
@@ -112,6 +134,7 @@
 </template>
 
 <script lang="js">
+import Vue from 'vue'
 import { dtaskcomments, dtaskdone, dtaskdel } from '@/components/dialog'
 export default {
   name: 'taskcards',
@@ -119,7 +142,22 @@ export default {
   props: {
     value: { require: true, type: Array }
   },
+  data: () => ({
+    visionMap: {}
+  }),
   methods: {
+    openTaskMenu (tid) {
+      Vue.set(this.visionMap, tid, !this.visionMap[tid])
+      console.log(this.visionMap[tid])
+    },
+    taskMenuOptions (task) {
+      console.log(task, 1)
+      console.log(task.block, 2)
+      console.log(this.blocks, 3)
+      console.log(this.blocks[task.block], 4)
+      console.log(this.blocks[task.block].project, 5)
+      return this.projectBlocks(this.blocks[task.block].project)
+    },
     assigned (task) { return this.users[task.assigned] },
     color (task) {
       return (task.status === 0 && new Date(task.end).getTime() < new Date().getTime()) ||

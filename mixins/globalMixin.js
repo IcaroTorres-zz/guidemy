@@ -3,7 +3,7 @@ import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 export default {
   data () {
     return {
-      apptitle: 'app title'
+      apptitle: 'GuideMy'
     }
   },
   computed: {
@@ -22,13 +22,14 @@ export default {
     ]),
     ...mapGetters([
       'myProjects',
-      'filledProjects',
-      'filledUserProjects',
-      'filledProject',
       'loggedUserObj',
       'usernames',
       'username',
       'useravatar',
+      'userProjects',
+      'userTasks',
+      'userByName',
+      'projectBlocks',
       'projectTasks',
       'doneTasks',
       'delayedTasks',
@@ -69,7 +70,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'finishTask',
+      'toggleTask',
       'deleteTask',
       'postComment',
       'deleteComment',

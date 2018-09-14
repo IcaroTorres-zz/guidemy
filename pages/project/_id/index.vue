@@ -127,7 +127,7 @@
 </template>
 
 <script>
-import { dproject, dfinish, dblock, dinvite, dtask, dprojectdel, ddailies } from '@/components/dialog'
+import { dblock } from '@/components/dialog'
 import { projectPieChart, projectToolbar } from '@/components/project'
 import taskblock from '@/components/taskblock'
 import { Block } from '@/models'
@@ -138,16 +138,10 @@ export default {
     return !!store.state.projects[params.id] // Must be a valid project id
   },
   components: {
+    dblock,
     projectPieChart,
     projectToolbar,
-    taskblock,
-    dproject,
-    dtask,
-    dinvite,
-    dfinish,
-    dprojectdel,
-    dblock,
-    ddailies
+    taskblock
   },
   data: () => ({
     expand: true,

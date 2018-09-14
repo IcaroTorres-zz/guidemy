@@ -1,4 +1,4 @@
-import { increaseDays, generateDailies } from '../helpers'
+import { increaseDays, generateDailies } from '@/helpers'
 const generatedDailes = {}
 
 let p1u2Generated = generateDailies(generatedDailes,
@@ -39,7 +39,7 @@ export default () => ({
   },
   dictNamesToEmails: {
   },
-  loggedUser: 'u1',
+  loggedUser: undefined,
   users: {
     'u1': {
       username: 'icarotorres',
@@ -239,7 +239,7 @@ export default () => ({
     't4': {
       id: 't4',
       creator: 'u1',
-      block: 't7',
+      block: 'b7',
       assigned: 'u1',
       title: 'Dummy task title',
       description: 'task description',

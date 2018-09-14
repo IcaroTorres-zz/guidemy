@@ -4,8 +4,8 @@
       <slot name="customactivator" />
     </template>
     <v-card >
-      <v-card-title class="py-4 title success">
-        Confirm task as completed?
+      <v-card-title :class="{'py-4 title': true, 'warning': computedTask.status, 'success': !computedTask.status}">
+        {{cardText}}
       </v-card-title>
       <v-card-text>
         {{computedTask.title}}
@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="success" @click="onTaskFinished">confirm</v-btn>
+        <v-btn round small color="success" @click="onToggleTask">confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -30,11 +30,12 @@ export default {
     dialog: false
   }),
   computed: {
-    computedTask () { return this.task(this.taskid) }
+    computedTask () { return this.tasks[this.taskid] },
+    cardText () { return this.computedTask.status ? 'Re-open this task?' : 'Corfirme as done?' }
   },
   methods: {
-    onTaskFinished () {
-      this.finishTask(this.taskid)
+    onToggleTask () {
+      this.toggleTask(this.taskid)
       this.$emit('task-finished', this.computedTask)
       this.dialog = false
     }

@@ -1,3 +1,4 @@
+import { increaseDays } from '@/helpers'
 const dummyavatar = 'https://bit.ly/2CaX7sw'
 export class User {
   constructor (payload = {}) {
@@ -10,9 +11,15 @@ export class User {
     this.notifications = payload.notifications || []
   }
 }
+export const idGen = (prefix, suffix) => {
+  return prefix + Math.random().toFixed(4).toString() + '-' +
+    Math.random().toFixed(3).toString() + '-' +
+    Math.random().toFixed(5).toString() + '-' + suffix
+}
+
 export class Project {
   constructor (payload = {}) {
-    this.id = payload.id || 'p' + Date.now().toString()
+    this.id = payload.id || idGen('pjt', 'bls')
     this.creator = payload.creator
     this.manager = payload.manager || ''
     this.team = payload.team || []
@@ -28,7 +35,7 @@ export class Project {
 
 export class Block {
   constructor (payload = {}) {
-    this.id = payload.id || 'b' + Date.now().toString()
+    this.id = payload.id || idGen('bl', 'tks')
     this.project = payload.project || ''
     this.text = payload.text || ''
     this.color = payload.color || ''
@@ -38,7 +45,7 @@ export class Block {
 
 export class Task {
   constructor (payload = {}) {
-    this.id = payload.id || 't' + Date.now().toString()
+    this.id = payload.id || idGen('tks', 'cmm')
     this.creator = payload.creator
     this.block = payload.block || ''
     this.assigned = payload.assigned || payload.creator
@@ -52,9 +59,25 @@ export class Task {
   }
 }
 
+export class Daily {
+  constructor (payload = {}) {
+    this.id = payload.id || idGen('dl', 'mtt')
+    this.project = payload.project || ''
+    this.manager = payload.manager || ''
+    this.assigned = payload.assigned
+    this.r1 = payload.r1 || ''
+    this.r2 = payload.r2 || ''
+    this.r3 = payload.r3 || ''
+    this.created = payload.created || new Date()
+    this.end = increaseDays(payload.creted || new Date(), 1)
+    this.finished = payload.status || null
+    this.status = payload.status || 0
+  }
+}
+
 export class Comment {
   constructor (payload = {}) {
-    this.id = payload.id || 'cm' + Date.now().toString()
+    this.id = payload.id || idGen('cmm', 'lk')
     this.by = payload.by
     this.at = payload.at
     this.date = payload.date || new Date()
@@ -64,7 +87,7 @@ export class Comment {
 }
 export class Activity {
   constructor (payload = {}) {
-    this.id = 'atv' + Date.now().toString()
+    this.id = idGen('atv', 'log')
     this.text = payload.text || ''
     this.project = payload.project
     this.by = payload.by
@@ -75,7 +98,7 @@ export class Activity {
 const appTitle = 'App title'
 export default class Notification {
   constructor (payload = {}) {
-    const generatedId = 'nf' + Date.now().toString()
+    const generatedId = idGen('ntf', 'usr')
     this.id = generatedId
     this.receiverList = payload.receiverList || []
     this.from = payload.from || appTitle

@@ -139,13 +139,28 @@
         <router-link to="/" v-html="apptitle"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
-      <v-text-field     
+
+      <v-autocomplete
+        class="hidden-sm-and-down"
         hide-details
         solo-inverted
         prepend-inner-icon="search"
-        label="Search"
-        class="hidden-sm-and-down"
-      ></v-text-field>
+        label="search users"
+        :items="Object.values(users)"
+        item-text="username"
+        item-value="id"
+      >
+        <v-list-tile :to="{name: 'user-username', params: {username: data.item.username}}" slot="item" slot-scope="data"  class="pa-0">
+          <v-list-tile-avatar>
+            <img :src="useravatar(data.item.id)">
+          </v-list-tile-avatar>
+            <v-list-tile-content>
+            <v-list-tile-title v-html="data.item.displayName || data.item.username"></v-list-tile-title>
+            <v-list-tile-sub-title class="caption grey--text" v-html="data.item.username"></v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-autocomplete>
+
       <v-spacer></v-spacer>
       
       <v-toolbar-items>
@@ -243,17 +258,27 @@
       sidebarVisible (val) {
         this.toggleSidebar(val)
       },
-      loggedUser (val) {
+      hasUserLogged (val) {
         if (!val) {
           console.warn('User logged out')
-          this.$router.push('/signin')
+          this.$router.push('/')
+        } else {
+          // console.warn('User logged in')
+          // this.$store.dispatch('fetchAppData')
         }
       }
     },
     mounted () {
       this.sidebarVisible = this.sidebar
+      if (!this.hasUserLogged) {
+        console.warn('User logged out')
+        this.$router.push('/')
+      }
     },
     computed: {
+      hasUserLogged () {
+        return !!this.loggedUser
+      },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
@@ -264,11 +289,11 @@
       logUserOut () {
         this.$store.dispatch('logOut')
       },
-      ...mapMutations({
-        toggleSidebar (commit) { commit('toggleSidebar') },
-        toggleMini (commit) { commit('toggleMini') },
-        toggleLight (commit) { commit('toggleLight') }
-      })
+      ...mapMutations([
+        'toggleSidebar',
+        'toggleMini',
+        'toggleLight'
+      ])
     }
   }
 </script>

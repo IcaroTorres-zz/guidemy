@@ -65,10 +65,6 @@
       <v-flex
         slot="item"
         slot-scope="props"
-        xs12
-        sm6
-        md4
-        lg3
       >
         <memberResult
         :member="props.item" 

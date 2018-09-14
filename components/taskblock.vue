@@ -55,7 +55,7 @@ export default {
       return this.blocks[this.blockid]
     },
     blocktasks () {
-      return this.block.tasks.map(tid => this.task(tid))
+      return this.block.tasks.map(tid => this.tasks[tid])
     }
   },
   methods: {

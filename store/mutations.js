@@ -1,12 +1,33 @@
 import Vue from 'vue'
 import { User } from '@/models'
-// Vue.set(target, 'property', newValue) Obj
-// $set(target, index, newValue) Arr
 export const mutations = {
   generateusers (state, payload) {
     Vue.set(state, 'users', {
       ...state.users, ...payload
     })
+  },
+  generateProjectBlocks (state, payload) {
+    payload.forEach(block => {
+      Vue.set(state.blocks, block.id, block)
+    })
+  },
+  generateProjectDailies (state, payload) {
+    Vue.set(state, 'dailyMeetings', {
+      ...state.dailyMeetings,
+      ...payload.reduce((mapState, daily) => {
+        mapState[daily.id] = daily
+        return mapState
+      }, {})
+    })
+  },
+  generateprojects (state, payload) {
+    Object.entries(payload).forEach(([key, val]) => {
+      Vue.set(state.projects, key, { ...val })
+    })
+    // Vue.set(state, 'projects', {
+    //   ...state.projects,
+    //   ...payload
+    // })
   },
   signuser (state, payload) {
     Vue.set(state, 'loggedUser', payload.id)
@@ -51,12 +72,13 @@ export const mutations = {
 
     Vue.set(state.blocks, payload.id, { ...payload })
   },
+  moveTask(state, { tid, bid }) {
+    let removePosix = state.blocks[bid].tasks.indexOf(tid)
+    if (removePosix !== 0)state.blocks[bid].tasks.splice(removePosix, 1)
+    Vue.set(state.tasks[tid], 'block', bid)
+    Vue.set(state.tasks[tid], 'block', bid)
+  },
   saveTask (state, payload) {
-    let idxInUser = state.users[payload.assigned].tasks.indexOf(payload.id)
-    if (idxInUser === -1) {
-      state.users[payload.assigned].tasks.push(payload.id)
-    }
-
     let idxInBlock = state.blocks[payload.block].tasks.indexOf(payload.id)
     if (idxInBlock === -1) {
       state.blocks[payload.block].tasks.push(payload.id)
@@ -64,8 +86,12 @@ export const mutations = {
 
     Vue.set(state.tasks, payload.id, { ...payload })
   },
-  finishTask (state, payload) {
-    const task = { ...state.tasks[payload], status: 1, finished: new Date() }
+  toggleTask (state, payload) {
+    const task = {
+      ...state.tasks[payload],
+      status: Math.abs(state.tasks[payload].status - 1),
+      finished: new Date()
+    }
     Vue.set(state.tasks, payload, task)
   },
   deleteTask (state, payload) {

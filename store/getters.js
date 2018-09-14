@@ -27,7 +27,7 @@ export const getters = {
           .reduce((meetings, [uid, dllist]) => {
             return {
               ...meetings,
-              [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+              [uid]: dllist.map(dlid => state.dailyMeetings[dlid])
             }
           }, {})
       }))
@@ -47,7 +47,7 @@ export const getters = {
             .reduce((meetings, [uid, dllist]) => {
               return {
                 ...meetings,
-                [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+                [uid]: dllist.map(dlid => state.dailyMeetings[dlid])
               }
             }, {})
         }))
@@ -66,7 +66,7 @@ export const getters = {
         .reduce((meetings, [uid, dllist]) => {
           return {
             ...meetings,
-            [uid]: dllist.mal(dlid => state.dailyMeetings[dlid])
+            [uid]: dllist.map(dlid => state.dailyMeetings[dlid])
           }
         }, {})
     })
@@ -89,7 +89,7 @@ export const getters = {
     .reduce((projectTasklist, p) => p.blocks
       .map(bid => state.blocks[bid])
       .reduce((tasklist, b) => b.tasks
-        .map(tid => this.tasks[tid]).concat(tasklist)
+        .map(tid => state.tasks[tid]).concat(tasklist)
         , []).concat(projectTasklist)
       , []),
   myProjects: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]) : [],
@@ -97,7 +97,7 @@ export const getters = {
   // project states
   // project: state => pid => state.projects[pid],
   projectBlocks: state => pid => pid ? state.projects[pid].blocks.map(bid => state.blocks[bid]) : [],
-  task: state => taskid => taskid ? state.tasks[taskid] : {},
+  // task: state => taskid => taskid ? state.tasks[taskid] : {},
   projectTasks: state => pid => pid ? state.projects[pid].blocks.reduce((fullList, b) => fullList.concat(state.blocks[b].tasks), []).map(t => state.tasks[t]) : [],
   projectDailies: state => pid => pid
     ? Object.keys(state.projects[pid].dailyMeetings)
@@ -108,7 +108,7 @@ export const getters = {
           .map(daily => state.dailyMeetings[daily])
       }), {})
     : [],
-  temperColor: state => (max, value) => {
+  temperColor: () => (max, value) => {
     return value >= (4 * max / 5)
       ? 'success'
       : value >= (3 * max / 5)
@@ -119,7 +119,7 @@ export const getters = {
             ? 'warning'
             : 'deep-orange'
   },
-  temperColorInvert: state => (max, value) => {
+  temperColorInvert: () => (max, value) => {
     return value <= (4 * max / 5)
       ? 'success'
       : value <= (3 * max / 5)
@@ -130,7 +130,7 @@ export const getters = {
             ? 'warning'
             : 'deep-orange'
   },
-  daysBetween: state => (date1, date2) => Math.round(
+  daysBetween: () => (date1, date2) => Math.round(
     (new Date(date2).getTime() - new Date(date1).getTime()) /
     (1000 * 60 * 60 * 24) // day in milisseconds
   ),

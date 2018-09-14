@@ -1,10 +1,7 @@
 // helper functions and addapters
-export const alertFor = (actionName, value) => `Erro ao tentar a ação ${actionName} com o valor ${value.toString()}`
+import lorem from '@/helpers/lorem'
+import {Daily} from '@/models'
 
-export const snack = (commit, callback, timeout = 2000) => {
-  (() => callback)()
-  setTimeout(() => commit('snack', {active: false}), timeout)
-}
 export const increaseDays = (date, daysCount) => {
   let [ increased, daysInMilliseconds ] = [ new Date(date), daysCount * 24 * 60 * 60 * 1000 ]
   increased.setTime(increased.getTime() + daysInMilliseconds)
@@ -32,7 +29,7 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
       r1: status === 1 ? 'aaaaaa' : '',
       r2: status === 1 ? 'aaaaaa' : '',
       r3: status === 1 ? 'aaaaaa' : '',
-      start: increaseDays(startDate, i),
+      created: increaseDays(startDate, i),
       end: increaseDays(startDate, i + 1), // 24hr after
       finished: status === 1 ? increaseDays(startDate, i) : null,
       status: status
@@ -51,12 +48,42 @@ export const defaultBlockSetup = [
   {text: 'DONE', color: 'success'}
 ]
 
-export const spliceInManyStates = (modelPairs, toRemove, state) => modelPairs.forEach(pair => {
-  console.log('before splice', pair)
-  pair[0].tasks.splice(pair[0].tasks.findIndex(t => t === toRemove.id), 1)
-  console.log('after splice', pair)
-  state[pair[1]][pair.id] = { ...pair }
-})
+export const loremTitle = () => {
+  const parts = lorem.text.trim().split('. ')
+  const chosenPart = parts[Math.round(Math.random() * (parts.length) - 1)]
+  return chosenPart.split(' ')
+    .slice(0, Math.floor(Math.random() * (chosenPart.length - 2 + 2) + 2))
+    .join(' ')
+}
+
+export const loremDescription = () => {
+  const parts = lorem.text.trim().split('. ')
+  let start = Math.round(Math.random() * (parts.length) - 1)
+  let end = start + Math.round(Math.random() * 5)
+  return parts.slice(start, end).join('. ')
+}
+
+export const userProjectDailies = (p, a, m, startDate = new Date('2018-09-05')) => {
+  return Array.from(
+    Array(daysBetween(startDate, new Date())).keys()
+  ).map((i, idx, arr) => {
+    let status = i === arr.length - 1 ? 0 : randomStatus()
+    const answers = loremDescription().split('. ')
+    return new Daily({
+      // id: 'dl' + Date.now().toString() + '-' + (Math.random() * 200).toString(),
+      project: p,
+      manager: m,
+      assigned: a,
+      r1: status === 1 ? answers.slice(0, 3).join('. ') : '',
+      r2: status === 1 ? answers.slice(3, 4).join('. ') : '',
+      r3: status === 1 ? answers.slice(4, answers.length).join('. ') : '',
+      created: increaseDays(startDate, i),
+      end: increaseDays(startDate, i + 1), // 24hr after
+      finished: status === 1 ? increaseDays(startDate, i) : null,
+      status: status
+    })
+  })
+}
 
 export const colors = {
   'primary': '#607d8b',
