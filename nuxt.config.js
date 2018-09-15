@@ -1,8 +1,14 @@
+const routerBase = process.env.DEPLOY_ENV === 'GH_PAGES' ? {
+  router: {
+    base: '/guidemy/'
+  }
+} : {}
 
 module.exports = {
   /*
   ** Headers of the page
   */
+  ...routerBase,
   head: {
     title: 'apptitle',
     meta: [

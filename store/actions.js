@@ -1,83 +1,95 @@
-import { User, Project, Block } from '@/models'
-import userbase from '@/helpers/userbase'
+import { User, Project, Block, Task } from '@/models'
+import userbase from '@/helpers/userbase-250'
 import {
-  loremTitle, loremDescription, userProjectDailies, defaultBlockSetup
+  loremLittle, loremTitle, loremDescription, userProjectDailies, defaultBlockSetup, dateConfig, randomInRange
 } from '@/helpers'
 
 const snackTimeout = 6000
 const dailyResult = { 0: 'pending', 1: 'accepted', '-1': 'rejected' }
 export const actions = {
-  fetchAppData ({ dispatch, commit }) {
+  fetchAppData ({ dispatch, commit }, userlogin) {
     commit('setLoading', true)
     dispatch('generateusers')
-      .then((newUsers) => dispatch('generateprojects', newUsers))
-      .then((newProjects) => {
-        console.log(newProjects, 'generateprojects promise data')
+      .then(newUsers => dispatch('generateprojects', userlogin))
+      .then(newProjects => dispatch('generatetasks', newProjects))
+      .then(taskState => {
+        console.log(taskState, 'generatedtasks promise data')
         commit('setLoading', false)
         commit('toggleSnack', {
           message: `What can I say, except "You're Welcome!" ?`,
           color: 'success'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
-        return newProjects
+        return taskState
       }).catch(e => {
         commit('setLoading', false)
         console.warn(e.message)
         commit('setError', e.message)
         commit('toggleSnack', {
-          message: `Opps, placeholder data fails...!`,
+          message: `Opps, something wrong with data placeholder...!`,
           color: 'error'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
       })
   },
   generateusers ({ commit }) {
+    commit('setLoading', true)
     const myCustomUsers = userbase.results
       .reduce((usersState, u) => Object.assign(
         {},
         {
           ...usersState,
-          [u.login.uuid]: new User({
-            id: u.login.uuid,
-            email: u.email,
-            picture: u.picture.medium,
-            username: u.login.username,
-            displayName: Object.values(u.name)
-              .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
-              .slice(1)
-              .join(' ')
-          })
+          [u.login.uuid]: {
+            ...new User({
+              id: u.login.uuid,
+              email: u.email,
+              picture: u.picture.large,
+              username: u.login.username,
+              displayName: Object.values(u.name)
+                .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
+                .slice(1)
+                .join(' ')
+            })
+          }
         }
       ), {})
     commit('generateusers', myCustomUsers)
+    commit('setLoading', false)
     return myCustomUsers
   },
-  generateprojects ({ state, dispatch, commit }, usersState) {
+  generateprojects ({ state, dispatch, commit }, userlogin) {
+    commit('setLoading', true)
     const projectsState = {}
-    for (let i = 0; i < 10; i++) {
-      const tempUsers = Object.values(usersState || state.users)
+    for (let i = 0; i < 11; i++) {
+      const tempUsers = Object.values(state.users)
       let projectTeam = []
-      let teamsize = Math.round(Math.random() * (tempUsers.length / 50))
+      let teamsize = randomInRange(3, 8)
       for (let j = 0; j < teamsize; j++) {
-        let chosenIndex = Math.round(Math.random() * (tempUsers.length - 1))
+        let chosenIndex = Math.floor(Math.random() * tempUsers.length)
         let insertId = tempUsers[chosenIndex].id
-        if (projectTeam.indexOf(insertId) === -1) {
-          projectTeam.push(insertId)
-        } else {
-          j -= 1
+        console.log('for loop team assignment', chosenIndex, insertId)
+        if (state.users[insertId]) {
+          projectTeam = [...projectTeam, insertId]
+          console.log('team uids', projectTeam)
         }
       }
       const projectId = 'pjt' + Math.random().toFixed(4).toString() + '-' +
-        Math.random().toFixed(3).toString() + '-' +
-        Math.random().toFixed(5).toString() + '-' + 'bls'
-      let flatenDailies = []
+        (Math.random() * 2).toFixed(3).toString() + '-' +
+        (Math.random() * 3).toFixed(5).toString() + '-' + 'bls'
+      let dailiesAsObj = {}
       let projectDailies = projectTeam
+        .filter(uid => state.users[uid])
         .reduce((pDailies, uid) => {
-          pDailies[uid] = userProjectDailies(projectId, uid, state.loggedUser)
-          flatenDailies.concat(pDailies)
-          // console.log(pDailies[uid], uid, 'dailies aplyied to user')
+          let userDailies = userProjectDailies(projectId, uid, state.loggedUser)
+          pDailies[uid] = userDailies.map(d => {
+            dailiesAsObj[d.id] = d
+            return d.id
+          })
+          commit('pushProjectInUser', { uid: uid, pid: projectId })
+          console.log('bind for assigned')
           return pDailies
         }, {})
+
       let projectBlocks = defaultBlockSetup.map(b => new Block({
         ...b, project: projectId
       }))
@@ -85,27 +97,52 @@ export const actions = {
         id: projectId,
         title: loremTitle(),
         description: loremDescription(),
-        creator: state.loggedUser,
-        manager: state.loggedUser,
+        creator: userlogin,
+        manager: userlogin,
         team: projectTeam,
         blocks: projectBlocks.map(b => b.id),
-        dailyMeetings: {}
+        dailyMeetings: projectDailies
       })
-      Object.entries(projectDailies).forEach(([key, val]) => {
-        newProject.dailyMeetings[key] = val.map(dl => dl.id)
-      })
-      // console.log('new blocks', projectBlocks)
       commit('generateProjectBlocks', projectBlocks)
       // console.log(projectDailies, 'generateProjectDailies')
-      commit('generateProjectDailies', flatenDailies)
+      commit('generateProjectDailies', dailiesAsObj)
       // console.log(newProject, 'project created before commit')
-      projectsState[projectId] = newProject
+      commit('pushProjectInUser', { uid: userlogin, pid: projectId })
+      projectsState[projectId] = { ...newProject }
     }
     // console.log(projectsState, 'generateprojects')
     commit('generateprojects', projectsState)
+    commit('setLoading', false)
     return projectsState
   },
-  signin ({ commit, getters }, payload) {
+  generatetasks ({ commit, state }, projectsState) {
+    commit('setLoading', true)
+    let tempProjects = { ...projectsState, ...state.projects }
+    for (let pid in tempProjects) {
+      let { team, blocks } = tempProjects[pid]
+      if (blocks.length === 0) break
+      team.forEach(uid => {
+        let taskcount = randomInRange(5, 15)
+        for (let j = 0; j < taskcount; j++) {
+          let bid = blocks[Math.floor(Math.random() * blocks.length)]
+          // console.log(`ids used on task creation pid:${pid} uid:${uid} bid:${bid} loggedUser: ${state.loggedUser}`)
+          const newTask = new Task({
+            creator: Math.random() > 0.45 ? state.loggedUser : uid,
+            assigned: uid,
+            block: bid,
+            title: loremLittle(),
+            description: loremDescription(),
+            ...dateConfig('2018-08-25')
+          })
+          commit('saveTask', { ...newTask })
+        }
+      })
+    }
+    commit('setLoading', false)
+    // console.log(state.tasks, 'state.tasks after generate tasks')
+    return state.tasks
+  },
+  signin ({ commit, getters, dispatch }, payload) {
     const userFound = getters.userByName(payload.username)
     if (userFound) {
       const userSent = new User({ ...payload, ...userFound })
@@ -115,13 +152,15 @@ export const actions = {
       //   color: 'info'
       // })
       // setTimeout(() => commit('toggleSnack'), snackTimeout)
+      dispatch('fetchAppData', userSent.id)
+        .then(response => console.log(response))
       return userSent
     }
     const error = new Error('Invalid E-mail or Username!!')
     commit('setError', error)
     return error
   },
-  signup ({ commit }, payload) {
+  signup ({ commit, dispatch }, payload) {
     const userSent = new User(payload)
     commit('signuser', userSent)
     // commit('toggleSnack', {
@@ -129,6 +168,8 @@ export const actions = {
     //   color: 'info'
     // })
     // setTimeout(() => commit('toggleSnack'), snackTimeout)
+    dispatch('fetchAppData', userSent.id)
+      .then(response => console.log(response))
     return userSent
   },
   logOut ({ commit, getters }) {
@@ -138,6 +179,9 @@ export const actions = {
       message: `${userLogout} loggOut!`
     })
     setTimeout(() => commit('toggleSnack'), snackTimeout)
+  },
+  moveTask ({ commit }, payload) {
+    commit('moveTask', payload)
   },
   clearError ({ commit }) {
     commit('clearError')
@@ -189,48 +233,71 @@ export const actions = {
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
   },
+  invite ({ commit, state }, { pid, uids }) {
+    commit('invite', {pid: pid, uids: uids})
+    commit('toggleSnack', {
+      message: `invitation sent`
+    })
+    return uids.map(id => state.users[id])
+    // new Promise(resolve => resolve(setTimeout(() => { commit('toggleSnack') }, snackTimeout)))
+    //   .then(() => dispatch('inviteResponse'))
+  },
+  // inviteResponse ({ state, commit }, uid) {
+  //   commit('toggleSnack', {
+  //     message: `'${state.users[uid].username}' joined project`,
+  //     color: 'success'
+  //   })
+  //   setTimeout(() => { commit('toggleSnack') }, snackTimeout)
+  // },
+  toggleArchiving ({ commit, state }, pid) {
+    let status = state.projects[pid].status === 1 ? 're-opened' : 'archived'
+    commit('toggleArchiving', pid)
+    commit('toggleSnack', {
+      message: `project ${status}.`,
+      color: 'success'
+    })
+    setTimeout(() => { commit('toggleSnack') }, snackTimeout)
+    return pid
+  },
   toggleTask ({ commit, state }, payload) {
-    let tasktitle = state.tasks[payload].title
     let taskstatus = state.tasks[payload].status ? 're-opened' : 'finished'
     commit('toggleTask', payload)
     commit('toggleSnack', {
-      message: `task '${tasktitle}' ${taskstatus}.`,
+      message: `task ${taskstatus}.`,
       color: 'success'
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return payload
   },
   deleteTask ({ commit, state }, payload) {
-    const tasktitle = state.tasks[payload].title
     commit('deleteTask', payload)
     commit('toggleSnack', {
-      message: `task '${tasktitle}' deleted.`,
+      message: `task deleted.`,
       color: 'warning'
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return payload
   },
-  postComment ({ commit, state }, payload) {
+  postComment ({ commit }, payload) {
     commit('postComment', payload)
     commit('toggleSnack', {
-      message: `comment posted at ${state.tasks[payload.at].title}.`
+      message: `comment posted.`
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return payload
   },
-  deleteComment ({ commit, state }, payload) {
-    const tasktitle = state.tasks[state.comments[payload].at].title
+  deleteComment ({ commit }, payload) {
     commit('deleteComment', payload)
     commit('toggleSnack', {
-      message: `comment deleted from ${tasktitle}.`
+      message: `comment deleted.`
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return payload
   },
-  answerDaily ({ commit, state }, payload) {
+  answerDaily ({ commit }, payload) {
     commit('answerDaily', payload)
     commit('toggleSnack', {
-      message: `daily meeting for ${state.projects[payload.project].title} submitted.`,
+      message: `daily meeting submitted.`,
       color: 'success'
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)

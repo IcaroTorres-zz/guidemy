@@ -1,7 +1,7 @@
 <template>
   <v-container grid-list-xl>
     <v-layout column align-center justify-center class="pa-3">
-      <v-avatar size="130px">
+      <v-avatar size="150px">
         <img :src="useravatar(pageOwner.id)" :alt="pageOwner.username">
       </v-avatar>
       <div>
@@ -9,7 +9,7 @@
           <hr>
           <div class="subheading">{{pageOwner.username}}</div>
       </div>
-      <v-card tile flat max-width="900px" width="600px">
+      <v-card tile flat>
         <v-card-text>
           <v-flex>
             <v-layout row class="title" align-center justify-space-between>
@@ -23,7 +23,6 @@
             expand
           >
             <v-expansion-panel-content style="width: 250px"
-              :value="true"
               v-for="project in ownerProjects"
               :key="project.id"
             >
@@ -62,13 +61,9 @@
 
 <script>
 export default {
-  validate ({ params, store }) {
-    console.log(params.username, '_username')
-    return !!store.getters.userByName(params.username).id
-  },
   computed: {
     pageOwner () {
-      return this.userByName(this.$route.params.username)
+      return this.loggedUserObj
     },
     ownerProjects () {
       return this.userProjects(this.pageOwner.id)

@@ -1,67 +1,54 @@
 <template>
   <v-container fluid grid-list-xl>
-    <v-card max-width>
-      <v-toolbar card fixed flat color="primary">
-        <v-toolbar-title class="headline">
-        {{project.title}} Daily Meetings
-        </v-toolbar-title>
-        <v-spacer/>
-        <v-icon @click.stop="dialog = !dialog">close</v-icon>
-      </v-toolbar>
-      <div class="px-3">
-        <div class="mt-5 pt-4">Description: </div>
-        <p class="grey--text text-xs-justify">{{project.description}}</p>
-        <v-divider v-if="isManager"></v-divider>
-        <v-layout row justify-space-between align-center>
-        
-          <v-flex xs6 v-if="isManager">
+    <v-card tile class="elevation-5">
+      <projectToolbar :projectid="selectedProject"/>
+      <v-card-text>
+        <v-layout row justify-space-between align-center>     
+          <v-flex xs6>
             <v-select 
               dense
               hide-details
-              v-model="selectedWorker"
-              :items="team"
+              v-model="selectedProject"
+              :items="myProjects"
               item-value="id"
-              item-text="username"
-              label="project team">
+              item-text="title"
+              label="User projects">
               <v-list-tile slot="prepend-item" disabled>
                 <v-list-tile-avatar color="primary title">
-                  M
+                  <img :src="useravatar(loggedUser)" :alt="username(loggedUser)">
                 </v-list-tile-avatar>
                 <v-list-tile-content>
-                  <v-list-tile-title><span class="subheading primary--text">{{loggedUserObj.username}}</span> - {{selectionSentense[0]}}</v-list-tile-title>
+                  <v-list-tile-title><span class="subheading primary--text">{{loggedUserObj.displayName || loggedUserObj.username}}</span> - {{selectionSentense[0]}}</v-list-tile-title>
                   <v-list-tile-sub-title class="caption grey--text" v-text="selectionSentense[1]"/>
                 </v-list-tile-content>
               </v-list-tile>
               <template slot="item" slot-scope="data">
-                <template v-if="typeof data.item !== 'object'">
-                  <v-list-tile-content v-text="data.item"></v-list-tile-content>
-                </template>
-                <template v-else>
-                  <v-list-tile-avatar>
-                    <img :src="useravatar(data.item.id)">
-                  </v-list-tile-avatar>
-                  <v-list-tile-content>
-                    <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                    <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
-                  </v-list-tile-content>
-                </template>
+                <v-list-tile-avatar>
+                  {{ data.item.title | limitToSize(1) }}
+                </v-list-tile-avatar>
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
+                  <v-list-tile-sub-title class="caption grey--text">{{data.item.description | limitToSize(120)}}</v-list-tile-sub-title>
+                </v-list-tile-content>
               </template>
               <v-divider slot="prepend-item" class="my-1"></v-divider>
             </v-select>
           </v-flex>
-          <v-flex :xs6="isManager" :xs12="!isManager" class="caption text-xs-center">
-            <v-layout row :justify-end="isManager" :justify-center="!isManager" align-center>
-              <div :class="{'py-3 ml-5':isManager, 'px-4 py-3':!isManager }"><span :class="`${resultColor}--text title`"> {{coworkerResults.participation}}%</span><br> Participation</div>
-              <div :class="{'py-3 ml-5':isManager, 'px-4 py-3':!isManager }"><span :class="`${resultColor}--text title`"> {{coworkerResults.attended}}</span><br> Attended</div>
-              <div :class="{'py-3 ml-5':isManager, 'px-4 py-3':!isManager }"><span :class="`${resultColor}--text title`"> {{coworkerResults.missed}}</span><br> Missed</div>
-              <div :class="{'py-3 ml-5':isManager, 'px-4 py-3':!isManager }"><span :class="`${resultColor}--text title`"> {{coworkerResults.total}}</span><br> Total</div>
+          <v-flex xs6 class="caption text-xs-center mr-3">
+            <v-layout row justify-end align-center>
+              <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.participation}}%</span><br> Participation</div>
+              <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.attended}}</span><br> Attended</div>
+              <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.missed}}</span><br> Missed</div>
+              <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.total}}</span><br> Total</div>
             </v-layout>
           </v-flex>
-
         </v-layout>
-      </div>
+        <v-divider></v-divider>
+        <div>Description: </div>
+        <p class="grey--text text-xs-justify">{{openProject.description}}</p>
+      </v-card-text>
       <v-divider/>
-      <v-container grid-list-xl class="px-4 pt-4 pb-2 new-daily-container" v-if="newDaily">
+      <v-container fluid class="pa-4 new-daily-container" v-if="newDaily.status === 0">
         <v-layout row justify-center align-content-start >
           <v-flex>
             <v-layout row align-center>
@@ -70,7 +57,7 @@
               </v-avatar>
               <div class="ml-2">
                 <a class="primary--text subheading">{{loggedUserObj.username}}</a><br>
-                {{new Date(newDaily.created).toLocaleDateString()}} <span class="body-2 ml-2">TODAY!</span>
+                {{newDaily.created | locale}} <span class="body-2 ml-2">TODAY!</span>
               </div>
               <v-spacer></v-spacer>
               <v-icon @click="open = !open">{{open ? 'unfold_less' : 'unfold_more'}}</v-icon>
@@ -163,56 +150,52 @@
           </v-layout>
         </v-container>
       </v-card-text>
-      <v-card-actions class="pl-4">
+      <!-- <v-card-actions class="pl-4">
         <v-spacer></v-spacer>
-        <v-btn flat color="primary" @click="dialog = false">Back</v-btn>
-      </v-card-actions>
+        <v-btn flat color="primary" @click="backToTop">Back to top</v-btn>
+      </v-card-actions> -->
     </v-card>
   </v-container>
 </template>
 
 <script>
+import { projectToolbar } from '@/components/project'
 export default {
-  name: 'projectdailies',
-  props: {
-    projectid: {
-      type: [String, Number],
-      required: true
-    }
+  validate ({store}) {
+    console.log('adadewqdwd', store.state.loggedUser)
+    return !!store.state.loggedUser
   },
+  components: { projectToolbar },
   data () {
     return {
-      dialog: false,
       questions: ['What did you do yesterday?', 'What will you do today?', 'Are there any impediments in the way?'],
       icons: ['alarm_on', 'alarm_add', 'alarm_off'],
       selectionSentense: [
-        'you are the project manager',
-        'View project daily meetings and evaluate team progress.'
+        'you are Searching your projects daily meetings',
+        'Select one project to see it\'s daily participation.'
       ],
-      selectedWorker: undefined,
-      newDaily: undefined,
-      open: false
+      selectedProject: undefined,
+      open: true,
+      newDaily: {}
     }
   },
   created () {
-    this.selectedWorker = this.project.team[0]
+    this.selectedProject = this.myProjects[0].id
   },
   computed: {
-    project () { return this.projects[this.projectid] },
-    manager () { return this.users[this.project.manager] },
-    team () { return this.project.team.map(uid => this.users[uid]) },
-    assigned () { return this.selectedWorker ? this.users[this.selectedWorker] : this.loggedUserObj },
-    dailies () {
-      const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
-      let dailyList = (this.$store.getters.projectDailies(this.project.id)[uid] || [])
+    openProject () { return this.selectedProject ? this.projects[this.selectedProject] : this.myProjects[0] },
+    predailies () {
+      return (this.$store.getters.projectDailies(this.selectedProject)[this.loggedUser] || [])
         .sort(this.sortByStart)
+    },
+    dailies () {
+      let dailyList = this.predailies
 
       const iHaveNewDaily = (
         dailyList.length > 0 &&
         dailyList[0].created &&
         new Date(dailyList[0].created).getDate() === new Date().getDate() &&
-        dailyList[0].status === 0 &&
-        this.loggedUser === dailyList[0].assigned
+        dailyList[0].status === 0
       )
 
       if (iHaveNewDaily) {
@@ -223,10 +206,9 @@ export default {
         return dailyList
       }
     },
-    isManager () { return this.loggedUser === this.project.manager },
-    coworkerResults () {
-      const pendingDaily = this.newDaily && (this.loggedUser === this.selectedWorker) ? 1 : 0
-      let total = this.dailies.length + pendingDaily
+    isManager () { return this.loggedUser === this.openProject.manager },
+    myResults () {
+      let total = this.dailies.length + 1
       let attended = this.dailies.filter(d => d.status === 1).length
       let participation = (attended * 100 / total).toFixed(2)
       return {
@@ -237,7 +219,7 @@ export default {
       }
     },
     resultColor () {
-      return this.temperColor(this.coworkerResults.total, this.coworkerResults.attended)
+      return this.temperColor(this.myResults.total, this.myResults.attended)
     }
   },
   methods: {
@@ -248,6 +230,14 @@ export default {
     dailyColor (d) {
       return d.status === -1 ? 'error' : d.status === 0 ? 'warning' : 'success'
     }
+    // backToTop () {
+    //   let container = document.getElementById('topRef')
+    //   let event = new CustomEvent('scroll', {})
+    //   container.pageYOffset = 0
+    //   setTimeout(() => {
+    //     container.scrollTop = 0
+    //   }, 200)
+    //   container.dispatchEvent(event)
   }
 }
 </script>

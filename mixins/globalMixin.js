@@ -22,6 +22,7 @@ export default {
     ]),
     ...mapGetters([
       'myProjects',
+      'myArchive',
       'loggedUserObj',
       'usernames',
       'username',
@@ -54,6 +55,9 @@ export default {
     ])
   },
   filters: {
+    limitToSize (str, size) {
+      return str.length > size ? str.substring(0, size) + '...' : str
+    },
     locale (dateString) {
       return dateString ? new Date(dateString).toLocaleDateString('pt-BR') : ''
     },
@@ -71,11 +75,14 @@ export default {
   methods: {
     ...mapActions([
       'toggleTask',
+      'toggleArchiving',
+      'invite',
       'deleteTask',
       'postComment',
       'deleteComment',
       'answerDaily',
-      'judgeDaily'
+      'judgeDaily',
+      'moveTask'
     ]),
     ...mapMutations([
       'toggleSnack',

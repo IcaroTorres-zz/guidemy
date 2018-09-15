@@ -47,6 +47,7 @@
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
       content-tag="v-layout"
+      content-class="row align-center justify-center"
       search
       row
       wrap

@@ -92,22 +92,30 @@ export const getters = {
         .map(tid => state.tasks[tid]).concat(tasklist)
         , []).concat(projectTasklist)
       , []),
-  myProjects: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]) : [],
+  myProjects: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]).filter(p => p.status === 0) : [],
+  myArchive: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]).filter(p => p.status === 1) : [],
   userNotifications: state => uid => uid ? state.users[uid].notifications.map(nid => state.notifications[nid]) : [],
   // project states
   // project: state => pid => state.projects[pid],
   projectBlocks: state => pid => pid ? state.projects[pid].blocks.map(bid => state.blocks[bid]) : [],
   // task: state => taskid => taskid ? state.tasks[taskid] : {},
   projectTasks: state => pid => pid ? state.projects[pid].blocks.reduce((fullList, b) => fullList.concat(state.blocks[b].tasks), []).map(t => state.tasks[t]) : [],
-  projectDailies: state => pid => pid
-    ? Object.keys(state.projects[pid].dailyMeetings)
-      .reduce((dailyMap, uid) => Object.assign(dailyMap, {
-        ...dailyMap,
-        [uid]: state.projects[pid]
-          .dailyMeetings[uid]
-          .map(daily => state.dailyMeetings[daily])
-      }), {})
-    : [],
+  // projectDailies: state => pid => pid
+  //   ? Object.keys(state.projects[pid].dailyMeetings)
+  //     .reduce((dailyMap, uid) => Object.assign({}, {
+  //       ...dailyMap,
+  //       [uid]: state.projects[pid]
+  //         .dailyMeetings[uid]
+  //         .map(daily => state.dailyMeetings[daily])
+  //     }), {})
+  //   : {},
+  projectDailies: state => pid => {
+    let userDict = { ...state.projects[pid].dailyMeetings }
+    for (let key in userDict) {
+      userDict[key] = userDict[key].map(d => state.dailyMeetings[d])
+    }
+    return userDict || {}
+  },
   temperColor: () => (max, value) => {
     return value >= (4 * max / 5)
       ? 'success'
@@ -138,7 +146,6 @@ export const getters = {
     return getters.projectTasks(pid)
       .filter(t => t.assigned === uid)
       .reduce((member, t) => {
-        console.dir(t)
         // project credits value
         const taskcredits = getters.daysBetween(t.created, t.end)
 
@@ -151,7 +158,6 @@ export const getters = {
           // pending tasks
           innerCredits = getters.daysBetween(new Date(), t.end)
         }
-        console.log('task credits gained by member', innerCredits)
         // computed credits acumulation
         if (innerCredits > 0) {
           member.antecipatedCredits += innerCredits
@@ -192,7 +198,7 @@ export const getters = {
   taskComments: state => task => task ? task.comments.map(c => state.comments[c]) : [],
   delayedTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => getters.isDelayed(t)) : [],
   doneTasks: (state, getters) => pid => pid ? getters.projectTasks(pid).filter(t => t.status === 1) : [],
-  isDelayed: (state, getters) => t => t ? (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
+  isDelayed: () => t => t ? (t.status === 0 && new Date(t.end).getTime() < new Date().getTime()) ||
     (t.status === 1 && new Date(t.end).getTime() < new Date(t.finished).getTime()) : false,
   ...([
     'xlOnly',

@@ -4,7 +4,7 @@
       <v-btn small color="primary" @click="descending = !descending">
         <v-icon>sort</v-icon>{{sortButtonText}}
       </v-btn>
-      <v-btn small color="accent" @click="toggleAll">
+      <v-btn small color="accent" @click="toggleAll" disabled>
         <v-icon>{{expandAll ? 'unfold_less' : 'unfold_more'}}</v-icon>{{expandAll ? 'collapse all' : 'expand all'}}
       </v-btn>
       <v-btn small flat @click="printJSONState">
@@ -21,28 +21,21 @@
               <projectToolbar :projectid="project.id"/>
               <v-card-text>
                 <v-layout
-                row wrap
+                row
                 justify-space-between
               >
-                <v-flex  style="max-width: calc(100% - 520px); min-width: 500px;">
+                <v-flex>
                   <nuxt-link :to="{ name: 'project-id', params: {id: project.id} }" class="title">{{project.title}}</nuxt-link>
-                  <div>Created: 
-                    <span class="text-xs-justify primary--text">{{project.created | locale}}</span>
-                  </div>
                   <div>Manager: 
                     <nuxt-link :to="{ name: 'user-username', params: {username: username(project.manager) }}" class="info--text">@{{username(project.manager)}}</nuxt-link>
                   </div>
-                  <!-- <v-card class="transparent" flat>Team: 
-                  </v-card> -->
-                  <p class="pb-0">Team:
-                    <nuxt-link 
-                      :to="{ name: 'user-username', params: {username: username(coworker)}}" 
-                      class="pr-2" 
-                      v-for="coworker in project.team" 
-                      :key="coworker">@{{username(coworker)}}
-                    </nuxt-link>
-                  </p>
-                  <v-divider class="mb-2"></v-divider>
+                  <div>Team: 
+                    <nuxt-link :to="{ name: 'user-username', params: {username: username(coworker)}}" class="pr-2" v-for="coworker in project.team" :key="coworker">@{{username(coworker)}}</nuxt-link>
+                  </div>
+                  <div>Created: 
+                    <span class="text-xs-justify primary--text">{{project.created | locale}}</span>
+                  </div>
+                  <v-divider class="my-2"></v-divider>
                   <div class="layout row ml-0">
                     Description:
                     <v-spacer></v-spacer>
@@ -51,8 +44,9 @@
                         icon 
                         small 
                         flat 
-                        class="pa-0 mr-1 ml-0 my-0" 
-                        @click.stop="visionMap[project.id] = !visionMap[project.id]" 
+                        class="pa-0 mr-1 ml-0 my-0"
+                        disabled
+                        @click.stop="visionMap[project.id] = !visionMap[project.id]"
                         slot="activator">
                         <v-icon>{{visionMap[project.id] ? 'unfold_less' : 'unfold_more'}}</v-icon>
                       </v-btn>
@@ -72,63 +66,36 @@
 
         </v-layout>
         <template v-if="visionMap[project.id] && project.blocks.length == 0">
-          <dblock
-            :project="project"
+          <v-btn
             style="margin-left: -12px"
+            class="border-dashed-grey ma-0"
+            disabled
           >
-            <!-- @block-created="updateChart(project)" -->
-            <v-btn
-              class="border-dashed-grey ma-0"
-              slot="customactivator"
-            >
-              <v-icon small>add</v-icon>add block
-            </v-btn>
-          </dblock>
+            <v-icon small>add</v-icon>add block
+          </v-btn>
           <v-btn
             color="accent"
             style="font-size:10px"
             small
             flat
-            @click="defaultBlocks(project)"
+            disabled
           >
             default block setup ?
           </v-btn>
         </template>
         <v-layout
-          row v-if="visionMap[project.id] && project.blocks.length > 6"
-          class="mt-4"
-        >
-          <v-btn
-            icon
-            small
-            v-if="project.blocks.length > 0"
-          >
-            <v-icon>view_day</v-icon>
-          </v-btn>
-          <v-btn
-            class="border-dashed-grey ma-0"
-            block
-          >
-            <v-icon small>add</v-icon>split to new roll
-          </v-btn>
-        </v-layout>
-        <v-layout
           row
           align-content-start
           style="position: relative; margin-top: -4px;"
         >
-          <dblock
-            :project="project"
+          <div
+            disabled
             v-if="visionMap[project.id] && project.blocks.length > 0"
+            class="new-block__button border-dashed-grey"
+            slot="customactivator"
           >
-            <!-- @block-created="updateChart(project)" -->
-            <div
-              class="new-block__button border-dashed-grey"
-              slot="customactivator"
-            >
-              <v-icon small>add</v-icon>ADD BLOCK
-            </div>
-          </dblock>
+            <v-icon small>add</v-icon>ADD BLOCK
+          </div>
           <v-layout
             row
             align-content-start
@@ -136,8 +103,8 @@
             v-if="visionMap[project.id]"
             style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;"
           >            
-              <!-- @input="updateBlock($event)" -->
             <taskblock
+              :archived="true"
               :singleview="false"
               v-for="blockid in  project.blocks" :key="blockid"
               :blockid="blockid"/>
@@ -173,8 +140,8 @@ export default {
     sortButtonText () { return this.descending ? 'older first' : 'recent first' },
     userProjects () {
       return this.descending
-        ? this.myProjects.sort(this.sortByStart)
-        : this.myProjects.sort(this.sortByStart).reverse()
+        ? this.myArchive.sort(this.sortByStart)
+        : this.myArchive.sort(this.sortByStart).reverse()
     }
   },
   created () {
@@ -185,7 +152,6 @@ export default {
   methods: {
     printJSONState () {
       console.log(JSON.parse(this.$store.getters.JSONState))
-      console.log(this.$store.getters.JSONState)
     },
     toggleAll () {
       this.expandAll = !this.expandAll

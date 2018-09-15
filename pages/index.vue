@@ -42,7 +42,12 @@
         <v-btn color="success" block type="submit" :disabled="!valid">Sign in</v-btn>
       </v-form>
     </v-layout>
-    <hr class="primary my-1">
+    <hr class="primary my-1" v-show="!appLoading">
+    <v-progress-linear
+      color="info"
+      height="2"
+      v-show="!!appLoading"  
+      :indeterminate="true"/>
     <v-card-actions>
       <em>Not Registered yet?</em>
       <v-spacer></v-spacer>
@@ -62,17 +67,15 @@ export default {
       password: ''
     }
   }),
-  fetch ({ store, params }) {
-    return store.dispatch('fetchAppData')
-      .then((res) => {
-        console.warn(res)
-        // store.commit('setStars', res.data)
-      })
+  watch: {
+    appLoading (val, oldval) {
+      console.log(val, oldval, 'app loading state change')
+    }
   },
   methods: {
     signin () {
       if (this.valid) {
-        const emailOrUsername = this.newUser.emailOrUsername.trim().toLowerCase()
+        const emailOrUsername = this.newUser.emailOrUsername.toLowerCase()
         const emailPattern = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
         const payload = {
           email: emailPattern.test(emailOrUsername)
@@ -83,17 +86,24 @@ export default {
             : this.$store.getters.usernameByEmail(emailOrUsername),
           password: this.password
         }
+        this.setLoading(true)
         this.$store.dispatch('signin', payload)
           .then((result) => {
             if (result) {
               if (result.username) {
                 console.log(result)
                 console.warn(`User ${result.username} - ${result.email}: logged On sucessfully`)
-                this.$router.push('/dashboard')
+                this.$router.push('dashboard')
+                this.setLoading(false)
               } else throw new Error('Invalid E-mail or Username!!')
             } else throw Error('Request failed!!')
           })
-          .catch(error => console.warn(error))
+          .then(() => this.$store.dispatch('fetchAppData'))
+          .catch(error => {
+            console.warn(error)
+            this.$store.dispatch('setError', error.message || error)
+            this.setLoading(false)
+          })
       }
     }
   }

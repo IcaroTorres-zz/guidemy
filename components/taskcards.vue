@@ -140,7 +140,8 @@ export default {
   name: 'taskcards',
   components: {dtaskcomments, dtaskdone, dtaskdel},
   props: {
-    value: { require: true, type: Array }
+    value: { require: true, type: Array },
+    archived: [Boolean, Number]
   },
   data: () => ({
     visionMap: {}
@@ -148,14 +149,8 @@ export default {
   methods: {
     openTaskMenu (tid) {
       Vue.set(this.visionMap, tid, !this.visionMap[tid])
-      console.log(this.visionMap[tid])
     },
     taskMenuOptions (task) {
-      console.log(task, 1)
-      console.log(task.block, 2)
-      console.log(this.blocks, 3)
-      console.log(this.blocks[task.block], 4)
-      console.log(this.blocks[task.block].project, 5)
       return this.projectBlocks(this.blocks[task.block].project)
     },
     assigned (task) { return this.users[task.assigned] },
@@ -192,7 +187,9 @@ export default {
       return this.daysBetween(new Date(task.created), new Date(task.end))
     },
     canRemove (task) {
-      return task.creator === this.loggedUser || this.projects(task.project).manager === this.loggedUser
+      const block = this.blocks[task.block]
+      const taskProject = this.projects[block.project]
+      return task.creator === this.loggedUser || (taskProject || {}).manager === this.loggedUser
     },
     update (val) {
       this.$emit('input', val)

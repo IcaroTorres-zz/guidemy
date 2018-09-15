@@ -52,7 +52,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-        <v-btn round color="info" @click="dialog = false">
+        <v-btn round color="info" @click="onInvite">
           send invitation
         </v-btn>
       </v-card-actions>
@@ -76,6 +76,12 @@ export default {
   computed: {
     includedUsers () { return this.project.team },
     searchableUsers () { return Object.values(this.users).filter(u => this.includedUsers.indexOf(u.id) === -1) }
+  },
+  methods: {
+    onInvite ({pid, uid}) {
+      this.invite({pid, uids: this.invitable})
+      this.dialog = false
+    }
   }
 }
 </script>

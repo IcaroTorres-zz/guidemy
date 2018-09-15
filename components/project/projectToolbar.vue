@@ -34,20 +34,6 @@
         </v-btn>
       </dproject>
       <v-divider vertical></v-divider>
-      <dunarchive :project="toolbarProject" >
-        <v-btn 
-           class="ma-0"
-          flat 
-          :icon="!lgAndUp" 
- 
-          color="error" 
-          slot="customactivator"  
-          :disabled="toolbarProject.manager !== loggedUser">
-          <v-icon >delete</v-icon>
-          <span class="hidden-md-and-down">backup</span>
-        </v-btn>
-      </dunarchive>
-      <v-divider vertical></v-divider>
       <dinvite :project="toolbarProject" class="pa-0" >
         <v-btn 
            
@@ -79,15 +65,6 @@
       </v-btn>
       <v-divider vertical></v-divider>
       <v-btn 
-        class="ma-0" 
-        flat 
-        :icon="!lgAndUp"  
-        disabled>
-        <v-icon >delete</v-icon>
-        <span class="hidden-md-and-down">remove</span>
-      </v-btn>
-      <v-divider vertical></v-divider>
-      <v-btn 
          
         icon 
         class="pa-0" 
@@ -114,7 +91,7 @@
         :icon="!lgAndUp"  
         color="info" 
         slot="customactivator">
-        <span class="hidden-md-and-down">view dailes</span>
+        <span class="hidden-md-and-down">project dailes</span>
         <v-icon >supervised_user_circle</v-icon>
       </v-btn>
     </ddailies>
@@ -132,10 +109,10 @@
 </template>
 
 <script>
-import { dproject, darchive, dunarchive, dblock, dinvite, dtask, ddailies } from '@/components/dialog'
+import { dproject, darchive, dblock, dinvite, dtask, ddailies } from '@/components/dialog'
 export default {
   name: 'toolbarproject',
-  components: { dproject, dtask, dinvite, darchive, dunarchive, dblock, ddailies },
+  components: { dproject, dtask, dinvite, darchive, dblock, ddailies },
   props: {
     projectid: { required: true, type: [String, Number] }
   },

@@ -12,15 +12,15 @@ export class User {
   }
 }
 export const idGen = (prefix, suffix) => {
-  return prefix + Math.random().toFixed(4).toString() + '-' +
-    Math.random().toFixed(3).toString() + '-' +
-    Math.random().toFixed(5).toString() + '-' + suffix
+  return (prefix || '') + Math.random().toFixed(4).toString() + '-' +
+  (Math.random() * 3).toFixed(3).toString() + '-' +
+  (Math.random() * 2).toFixed(5).toString() + '-' + (suffix || '')
 }
 
 export class Project {
   constructor (payload = {}) {
     this.id = payload.id || idGen('pjt', 'bls')
-    this.creator = payload.creator
+    this.creator = payload.creator || ''
     this.manager = payload.manager || ''
     this.team = payload.team || []
     this.title = payload.title || ''
@@ -28,7 +28,7 @@ export class Project {
     this.blocks = payload.blocks || []
     this.dailyMeetings = payload.dailyMeetings || {}
     this.created = payload.created || new Date()
-    this.archieved = payload.finished || null
+    this.archived = payload.archived || null
     this.status = payload.status || 0
   }
 }

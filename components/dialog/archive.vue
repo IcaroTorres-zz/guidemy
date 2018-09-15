@@ -4,8 +4,8 @@
       <slot name="customactivator" />
     </template>
     <v-card >
-      <v-card-title class="py-4 title primary">
-        Archive project and stop activities?
+      <v-card-title :class="'py-4 title ' + project.status === 0 ? 'warning' : 'info'">
+        {{project.status === 1 ? 'Unarchive' : 'Archive'}} project and {{project.status === 1 ? 're-open' : 'stop'}} activities?
       </v-card-title>
       <v-card-text>
         {{project.title}}
@@ -14,7 +14,7 @@
       <v-card-actions>
         <v-btn flat small color="primary" @click="dialog = false">Cancel</v-btn>
         <v-spacer></v-spacer>
-        <v-btn round small color="success" @click="dialog = false">confirm</v-btn>
+        <v-btn round small color="success" @click="onToggleArchiving">confirm</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -28,6 +28,12 @@ export default {
   },
   data: () => ({
     dialog: false
-  })
+  }),
+  methods: {
+    onToggleArchiving () {
+      this.toggleArchiving(this.project.id)
+      this.dialog = false
+    }
+  }
 }
 </script>

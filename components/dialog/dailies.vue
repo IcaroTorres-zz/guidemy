@@ -205,11 +205,14 @@ export default {
     manager () { return this.users[this.project.manager] },
     team () { return this.project.team.map(uid => this.users[uid]) },
     assigned () { return this.selectedWorker ? this.users[this.selectedWorker] : this.loggedUserObj },
-    dailies () {
+    predailes () {
       const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
-      let dailyList = (this.$store.getters.projectDailies(this.project.id)[uid] || [])
+      return (this.$store.getters.projectDailies(this.project.id)[uid] || [])
         .sort(this.sortByStart)
-
+    },
+    dailies () {
+      // const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
+      let dailyList = this.predailes
       const iHaveNewDaily = (
         dailyList.length > 0 &&
         dailyList[0].created &&

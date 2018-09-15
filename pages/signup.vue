@@ -84,7 +84,12 @@
           </v-flex>
         </v-layout>
       </v-form>
-      <hr class="primary my-1">
+      <v-progress-linear
+        color="info"
+        height="2"
+        v-show="!!appLoading"
+        :indeterminate="true"/>
+      <hr class="primary my-1" v-show="!appLoading">
     <v-card-actions>
       <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
@@ -138,10 +143,11 @@ export default {
         })
           .then((responseUser) => {
             console.log(responseUser)
-            this.$router.push('/dashboard')
+            this.$router.push('dashboard')
           })
           .catch(error => {
-            this.$store.dispatch('setError', { message: error.message })
+            console.warn(error)
+            this.$store.dispatch('setError', { message: error.message || error })
           })
       }
     }

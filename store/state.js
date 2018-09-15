@@ -43,31 +43,31 @@ export default () => ({
   users: {
     'u1': {
       username: 'icarotorres',
-      userdisplayNamename: 'icarotorres',
+      userdisplayNamename: 'Ícaro "Stuart" da Silva Torres',
       id: 'u1',
       email: 'icaro.stuart@gmail.com',
       picture: 'https://icarotorres.github.io/images/perfil1.jpg',
-      tasks: ['t2', 't4'],
+      // tasks: ['t2', 't4'],
       projects: ['p1', 'p2', 'p3'],
       notifications: ['n1', 'n2', 'n3', 'n4']
     },
     'u3': {
       username: 'outro',
-      displayName: 'outro',
+      displayName: 'Outro Nome sem importancia',
       id: 'u3',
       email: 'outro@gmail.com',
       picture: '',
-      tasks: [],
+      // tasks: [],
       projects: ['p3'],
       notifications: []
     },
     'u2': {
       username: 'giltonsilva',
-      displayName: 'giltonsilva',
+      displayName: 'Orientador Gilton Ferreira',
       id: 'u2',
       email: 'gilton.ferreira@dcomp.ufs.br',
       picture: '',
-      tasks: ['t1', 't3', 't0'],
+      // tasks: ['t1', 't3', 't0'],
       projects: ['p1', 'p2'],
       notifications: []
     }
@@ -87,7 +87,7 @@ export default () => ({
       },
       created: new Date('07/14/2018'),
       end: null,
-      finished: null,
+      archived: null,
       status: 0
     },
     'p2': {
@@ -104,7 +104,7 @@ export default () => ({
       },
       created: new Date('08/18/2018'),
       end: null,
-      finished: null,
+      archived: null,
       status: 0
     },
     'p3': {
@@ -121,7 +121,7 @@ export default () => ({
       },
       created: new Date('08/30/2018'),
       end: null,
-      finished: null,
+      archived: null,
       status: 0
     }
   },
@@ -292,7 +292,7 @@ export default () => ({
       likes: ['u1']
     }
   },
-  dailyMeetings: generatedDailes,
+  dailyMeetings: generatedDailes, // generatedDailes,
   // {
   // 'd1': {
   //  project: 'p1',

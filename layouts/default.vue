@@ -164,8 +164,8 @@
       <v-spacer></v-spacer>
       
       <v-toolbar-items>
-        <v-btn flat small nuxt :to="{ name: 'home' }">
-          <v-icon >home</v-icon>
+        <v-btn flat small nuxt :to="{ name: 'dailymeetings' }">
+          <v-icon >update</v-icon>my dailies
         </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
           <v-icon >dashboard</v-icon>Dashboard
@@ -244,7 +244,7 @@
           children: [
             { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
             { icon: 'view_stream', text: 'Dashboard', action: () => vm.$router.push('dashboard') },
-            { icon: 'archiev', text: 'Archived', action: () => vm.$router.push('archieved') }
+            { icon: 'archive', text: 'Archived', action: () => vm.$router.push('archived') }
           ]
         },
         { groupHeading: 'General settings' },
@@ -258,27 +258,21 @@
       sidebarVisible (val) {
         this.toggleSidebar(val)
       },
-      hasUserLogged (val) {
+      loggedUser (val) {
         if (!val) {
-          console.warn('User logged out')
+          console.warn('User logged out', val)
           this.$router.push('/')
-        } else {
-          // console.warn('User logged in')
-          // this.$store.dispatch('fetchAppData')
         }
       }
     },
     mounted () {
       this.sidebarVisible = this.sidebar
-      if (!this.hasUserLogged) {
+      if (!this.loggedUser) {
         console.warn('User logged out')
         this.$router.push('/')
       }
     },
     computed: {
-      hasUserLogged () {
-        return !!this.loggedUser
-      },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {

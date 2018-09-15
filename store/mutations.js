@@ -13,21 +13,22 @@ export const mutations = {
   },
   generateProjectDailies (state, payload) {
     Vue.set(state, 'dailyMeetings', {
-      ...state.dailyMeetings,
-      ...payload.reduce((mapState, daily) => {
-        mapState[daily.id] = daily
-        return mapState
-      }, {})
+      ...state.dailyMeetings, ...payload
     })
+    // console.log(state.dailyMeetings, 'pos commmit project dailies')
   },
   generateprojects (state, payload) {
-    Object.entries(payload).forEach(([key, val]) => {
-      Vue.set(state.projects, key, { ...val })
+    Vue.set(state, 'projects', {
+      ...state.projects,
+      ...payload
     })
-    // Vue.set(state, 'projects', {
-    //   ...state.projects,
-    //   ...payload
-    // })
+    // console.log(state.projects, 'pos generated project commit')
+  },
+  pushProjectInUser (state, { pid, uid }) {
+    console.log('pushProjectin user mutation user', state.users[uid])
+    if (state.users[uid]) {
+      Vue.set(state.users[uid], 'projects', [...(state.users[uid].projects || []), pid])
+    }
   },
   signuser (state, payload) {
     Vue.set(state, 'loggedUser', payload.id)
@@ -56,35 +57,47 @@ export const mutations = {
   saveProject (state, payload) {
     Vue.set(state.projects, payload.id, { ...payload })
     payload.team.forEach(uid => {
-      if (state.users[uid].projects.indexOf(payload.id) === -1) {
-        state.users[uid].projects.push(payload.id)
-      }
-
-      Vue.set(state.users[uid].dailyMeetings, payload.id, [])
+      Vue.set(state.users[uid], 'projects', [
+        ...(state.users[uid].projects || []), payload.id
+      ])
       Vue.set(state.projects[payload.id].dailyMeetings, uid, [])
     })
   },
   saveBlock (state, payload) {
-    let idx = state.projects[payload.project].blocks.indexOf(payload.id)
-    if (idx === -1) {
-      state.projects[payload.project].blocks.push(payload.id)
-    }
-
+    Vue.set(state.projects[payload.project], 'blocks', [
+      ...(state.projects[payload.project].blocks || []), payload.id
+    ])
     Vue.set(state.blocks, payload.id, { ...payload })
   },
-  moveTask(state, { tid, bid }) {
-    let removePosix = state.blocks[bid].tasks.indexOf(tid)
-    if (removePosix !== 0)state.blocks[bid].tasks.splice(removePosix, 1)
+  moveTask (state, { tid, bid }) {
+    Vue.set(state.blocks[bid], 'tasks', state.blocks[bid].tasks.filter(t => t.id !== tid))
     Vue.set(state.tasks[tid], 'block', bid)
-    Vue.set(state.tasks[tid], 'block', bid)
+    state.blocks[bid].tasks.push(tid)
   },
   saveTask (state, payload) {
-    let idxInBlock = state.blocks[payload.block].tasks.indexOf(payload.id)
-    if (idxInBlock === -1) {
-      state.blocks[payload.block].tasks.push(payload.id)
-    }
+    console.log('on saveask mutation')
+    console.log(payload)
+    console.log(state.blocks[payload.block])
+    // console.log(payload.block)
+    // console.log(state.blocks[payload.block])
 
+    Vue.set(state.blocks[payload.block], 'tasks', [...(state.blocks[payload.block].tasks || []), payload.id])
     Vue.set(state.tasks, payload.id, { ...payload })
+  },
+  invite (state, { pid, uids }) {
+    uids.forEach(uid => {
+      Vue.set(state.projects[pid], 'team', [
+        ...(state.projects[pid].team || []), uid
+      ])
+    })
+  },
+  toggleArchiving (state, payload) {
+    const project = {
+      ...state.projects[payload],
+      status: Math.abs(state.projects[payload].status - 1),
+      archived: new Date()
+    }
+    Vue.set(state.tasks, payload, project)
   },
   toggleTask (state, payload) {
     const task = {
@@ -96,10 +109,6 @@ export const mutations = {
   },
   deleteTask (state, payload) {
     let task = state.tasks[payload]
-    state.users[task.assigned].tasks
-      .splice(state.users[task.assigned].tasks
-        .findIndex(t => t === task.id), 1)
-
     state.blocks[task.block].tasks
       .splice(state.blocks[task.block].tasks
         .findIndex(t => t === task.id), 1)
@@ -108,14 +117,24 @@ export const mutations = {
     // delete state.tasks[payload]
   },
   judgeDaily (state, payload) {
-    Vue.set(state.dailyMeetings, payload.id, { ...state.dailyMeetings[payload.id], ...payload })
+    Vue.set(state.dailyMeetings, payload.id, {
+      ...state.dailyMeetings[payload.id],
+      ...payload
+    })
   },
   answerDaily (state, payload) {
-    Vue.set(state.dailyMeetings, payload.id, { ...state.dailyMeetings[payload.id], ...payload, status: 1 })
+    Vue.set(state.dailyMeetings, payload.id, {
+      ...state.dailyMeetings[payload.id],
+      ...payload,
+      status: 1
+    })
   },
   postComment (state, payload) {
     state.tasks[payload.at].comments.push(payload.id)
-    Vue.set(state.comments, payload.id, { ...state.comments[payload.id], ...payload })
+    Vue.set(state.comments, payload.id, {
+      ...state.comments[payload.id],
+      ...payload
+    })
   },
   deleteComment (state, payload) {
     let comment = state.comments[payload]

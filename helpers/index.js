@@ -18,6 +18,20 @@ export const randomStatus = () => {
   return rand <= 0.25 ? -1 : rand <= 0.4 ? 0 : 1
 }
 
+export const dateConfig = (lower) => {
+  const lowerDate = new Date(lower)
+  const limit = daysBetween(lowerDate, increaseDays(new Date(), -7))
+  const random = Math.random() * limit
+
+  const genstatus = Math.round(Math.random())
+  return {
+    created: increaseDays(lowerDate, random),
+    finished: genstatus ? increaseDays(lowerDate, Math.floor(Math.random() * (limit + random))) : null,
+    end: increaseDays(lowerDate, Math.floor(Math.random() * (limit + random))),
+    status: genstatus
+  }
+}
+
 export const generateDailies = (target, { startDate, endDate = new Date() }, p, a, m) => {
   return Array.from(Array(daysBetween(startDate, endDate)).keys()).map((i, idx, arr) => {
     let status = i === arr.length - 1 ? 0 : randomStatus()
@@ -49,17 +63,30 @@ export const defaultBlockSetup = [
 ]
 
 export const loremTitle = () => {
-  const parts = lorem.text.trim().split('. ')
-  const chosenPart = parts[Math.round(Math.random() * (parts.length) - 1)]
-  return chosenPart.split(' ')
-    .slice(0, Math.floor(Math.random() * (chosenPart.length - 2 + 2) + 2))
+  const parts = lorem.text.trim().split('.')
+  const chosenPart = parts[Math.floor(Math.random() * parts.length)].trim()
+  let splitted = chosenPart.split(' ')
+  return splitted
+    .slice(0, randomInRange(1, splitted.length))
     .join(' ')
+}
+export const randomInRange = (min, max) => {
+  // min = Math.ceil(min)
+  // max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
+}
+
+export const loremLittle = () => {
+  let allparts = lorem.text.trim().split(' ')
+  let left = Math.floor(Math.random() * allparts.length - 5)
+  let right = left + Math.floor(Math.random() * 3)
+  return lorem.text.trim().split(' ').slice(left, right).join(' ').trim()
 }
 
 export const loremDescription = () => {
   const parts = lorem.text.trim().split('. ')
-  let start = Math.round(Math.random() * (parts.length) - 1)
-  let end = start + Math.round(Math.random() * 5)
+  let start = Math.floor(Math.random() * (parts.length) - 1)
+  let end = start + Math.ceil(Math.random() * 5)
   return parts.slice(start, end).join('. ')
 }
 
