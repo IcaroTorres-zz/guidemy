@@ -1,4 +1,5 @@
 import { increaseDays, generateDailies } from '@/helpers'
+// import prestate from '@/helpers/pre-state.json'
 const generatedDailes = {}
 
 let p1u2Generated = generateDailies(generatedDailes,
@@ -25,7 +26,7 @@ let p3u3Generated = generateDailies(generatedDailes,
   { startDate: new Date('08/30/2018') },
   'p3', 'u3', 'u3'
 )
-
+// export default () => ({ ...prestate })
 export default () => ({
   mini: false,
   lightOut: true,

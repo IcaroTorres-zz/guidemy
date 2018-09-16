@@ -26,16 +26,18 @@ a {
 .project-block {
   margin: 0 auto;
   max-height: 450px;
+  width: 340px;
   overflow-y: auto;
   overflow-x: hidden;
 }
-.project-block-container {
+/* .project-block-container {
   min-width: 500px;
   max-width: 650px;
-}
+} */
 .project-block.singleview {
   margin: 0 auto;
   max-height: 700px;
+  min-width: 280px;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -290,7 +292,7 @@ text.highcharts-credits {
 
 .control-buttons{
   position: sticky;
-  top: 48px;
+  top: 64px;
   width: 100%;
   /* text-align: right; */
   z-index: 3;
@@ -317,3 +319,25 @@ pre {
   white-space: pre-wrap;
   max-width: 100%;
 }
+
+.no-padding div.v-expansion-panel__header,
+.no-padding div.v-list__tile {
+  padding-top: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  display: block !important;
+  }
+  .task-action-block-left {
+    max-width: 24px !important;
+    position: absolute;
+    left: -8px;
+    margin: auto;
+  }
+  .task-action-block-right {
+    max-width: 24px !important;
+    position: absolute;
+    right: -8px;
+    top: -10px;
+    /* transform: tanslateY(-100%); */
+  }

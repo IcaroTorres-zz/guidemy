@@ -20,7 +20,7 @@
               :items="searchableUsers"
               v-model="invitable" 
               item-text="username"
-              :item-value="item => item"
+              :item-value="item => item.id"
               multiple
             >
               <template slot="item" slot-scope="data"  class="pa-0">
@@ -52,7 +52,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn flat color="primary" @click="dialog = false">Cancel</v-btn>
-        <v-btn round color="info" @click="onInvite">
+        <v-btn round color="info" @click.stop="onInvite">
           send invitation
         </v-btn>
       </v-card-actions>
@@ -78,9 +78,12 @@ export default {
     searchableUsers () { return Object.values(this.users).filter(u => this.includedUsers.indexOf(u.id) === -1) }
   },
   methods: {
-    onInvite ({pid, uid}) {
-      this.invite({pid, uids: this.invitable})
-      this.dialog = false
+    onInvite () {
+      this.invite({pid: this.project.id, uids: this.invitable})
+        .then(response => {
+          console.log(response)
+          this.dialog = false
+        })
     }
   }
 }

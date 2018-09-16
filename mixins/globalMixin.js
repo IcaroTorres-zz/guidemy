@@ -68,8 +68,8 @@ export default {
       return new Date(date).toISOString().split('T')[0]
     },
     postFormat (date = new Date()) {
-      let d = new Date(date)
-      return d.toLocaleDateString() + ' - ' + d.toLocaleTimeString()
+      let d = (date instanceof Date) ? date : new Date(date)
+      return d.toLocaleString()
     }
   },
   methods: {

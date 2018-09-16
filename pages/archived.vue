@@ -27,10 +27,10 @@
                 <v-flex>
                   <nuxt-link :to="{ name: 'project-id', params: {id: project.id} }" class="title">{{project.title}}</nuxt-link>
                   <div>Manager: 
-                    <nuxt-link :to="{ name: 'user-username', params: {username: username(project.manager) }}" class="info--text">@{{username(project.manager)}}</nuxt-link>
+                    <nuxt-link :to="{ name: 'user', params: {user: username(project.manager) }}" class="info--text">@{{username(project.manager)}}</nuxt-link>
                   </div>
                   <div>Team: 
-                    <nuxt-link :to="{ name: 'user-username', params: {username: username(coworker)}}" class="pr-2" v-for="coworker in project.team" :key="coworker">@{{username(coworker)}}</nuxt-link>
+                    <nuxt-link :to="{ name: 'user', params: {user: username(coworker)}}" class="pr-2" v-for="coworker in project.team" :key="coworker">@{{username(coworker)}}</nuxt-link>
                   </div>
                   <div>Created: 
                     <span class="text-xs-justify primary--text">{{project.created | locale}}</span>

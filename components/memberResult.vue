@@ -2,7 +2,7 @@
   <!-- <v-card :class="{'pa-4 mx-2 mt-5 text-xs-center': true, 'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}" -->
   <v-card class="pa-4 mx-2 mt-5 text-xs-center" width="360px">
     <v-layout column align-center justify-center style="margin-top: -64px">
-        <nuxt-link :to="{name: 'user-username', params: {username: member.username}}">
+        <nuxt-link :to="{name: 'user', params: {user: member.username}}">
           <v-avatar size="80px" :class="`elevation-${hover}`" @mouseover="hover = 15" @mouseout="hover = 0">
             <img :src="useravatar(member.id)" :alt="member.username">
           </v-avatar>

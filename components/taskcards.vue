@@ -5,7 +5,7 @@
       v-for="(task, index) in value"
       :key="task.id"
       hide-actions :class="{'task-delayed': isDelayed(task), 'mt-1': index !== 0}">
-      <template slot="header" row :class="{'mt-1': index !== 0 }">
+      <div slot="header" row :class="{'mt-1': index !== 0, 'pa-0': true }">
           <v-progress-linear
             style="left: 0; right:0; top: 0;position: absolute; transform: translateY(-14px)"
             background-color="transparent"
@@ -14,11 +14,58 @@
             :value="rating(task) * (100 / slidemax(task))"
           ></v-progress-linear>
 
-        <v-flex xs12 :class="{'pl-0': true}">
-          <v-layout row wrap align-center>
-            <!-- <v-flex style="max-width: 26px; transform: scaleY(1.2); margin-left: -6px;" class="pa-0">
-              <v-icon color="primary">drag_indicator</v-icon>
-            </v-flex> -->
+        <!-- <v-flex xs12 class="pa-0"> -->
+          <!-- <v-list dense class="pa-0 no-padding"> -->
+            <ul class="pa-0">
+            <v-list-tile tag="li" class="pa-0">
+              <v-list-tile-action class="task-action-block-left">
+                <v-menu 
+                  top 
+                  left 
+                  offset-y
+                  v-model="visionMap[task.id]">
+                  <v-icon
+                    slot="activator"        
+                    @click.stop="openTaskMenu(task.id)"
+                  >more_vert
+                  </v-icon>
+                  <v-list dense subheader>
+                    <v-subheader>Move to block</v-subheader>
+                    <v-list-tile v-for="block in taskMenuOptions(task)" :key="block.id" @click="moveTask({tid: task.id, bid: block.id})">
+                      <!-- <v-list-tile-title >n {{task.block}}</v-list-tile-title> -->
+                      <v-list-tile-title :class="`${block.color}--text`">{{ block.text }}</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+              </v-list-tile-action>
+
+              <v-list-tile-content>
+                <v-list-tile-title class="body-1">{{task.title}} </v-list-tile-title>
+                <v-list-tile-sub-title 
+                  :class="ratecolor(task) +'--text'"
+                  style="font-size: 11px;"
+                  v-if="task.status === 1">
+                  done on: {{task.finished | locale}}
+                </v-list-tile-sub-title >
+              </v-list-tile-content>
+
+              <v-list-tile-action class="task-action-block-right">
+                <v-tooltip top>
+                  <dtaskdone :taskid="task.id" @task-finished="update($event)" slot="activator">
+                    <v-icon small :color="task.status === 1 ? 'warning' : 'success'" slot="customactivator">
+                      {{task.status === 1 ? 'settings_backup_restore' : 'check_circle'}}
+                    </v-icon>
+                  </dtaskdone>
+                  <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
+                </v-tooltip>
+                <dtaskdel :taskid="task.id" @task-deleted="update($event)">
+                  <v-icon small color="error" v-if="canRemove(task)" slot="customactivator">delete</v-icon>
+                </dtaskdel>
+              </v-list-tile-action>
+            </v-list-tile>
+          </ul>
+          <!-- </v-list> -->
+          <!-- <v-layout row wrap align-center justify-center>
             <v-menu 
               top 
               left 
@@ -30,17 +77,15 @@
               >more_vert
               </v-icon>
               <v-list dense>
-                <v-list-tile v-for="block in taskMenuOptions(task)" :key="block.id">
-                  <!-- <v-list-tile-title >n {{task.block}}</v-list-tile-title> -->
+                <v-list-tile v-for="block in taskMenuOptions(task)" :key="block.id" @click="moveTask({tid: task.id, bid: block.id})">
                   <v-list-tile-title :class="`${block.color}--text`">{{ block.text }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
             <v-flex class="pa-0 task-title">
-              <span class="subheading">{{task.title}}</span>
+              <div class="body-1">{{task.title}} aoisdj9qiwndpuiqnfpiu qnfipu nq fipuqnw fpqi unfp qinf pqwfn qpfinq wpfjqnp</div>
               <div v-if="task.status === 1" :class="ratecolor(task) +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{task.finished | locale}}</div>
             </v-flex>
-            <v-spacer/>
             <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
               <v-layout column>
                 <v-tooltip top>
@@ -56,10 +101,10 @@
                 </dtaskdel>
               </v-layout>
             </v-flex>
-          </v-layout>
-        </v-flex>
+          </v-layout> -->
+        <!-- </v-flex> -->
 
-      </template>
+      </div>
       <v-card tile flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
         <v-card-text class="px-2 pt-2 pb-0">
           <div class="body-1 grey--text">
@@ -151,7 +196,7 @@ export default {
       Vue.set(this.visionMap, tid, !this.visionMap[tid])
     },
     taskMenuOptions (task) {
-      return this.projectBlocks(this.blocks[task.block].project)
+      return this.projectBlocks(this.blocks[task.block].project).filter(b => b.id !== task.block)
     },
     assigned (task) { return this.users[task.assigned] },
     color (task) {
@@ -201,6 +246,27 @@ export default {
 .task-delayed {
   background-color: rgba(255, 0, 0, 0.3) !important;
 }
+.no-padding div.v-expansion-panel__header,
+.no-padding div.v-list__tile {
+  padding-top: 0px !important;
+  padding-right: 0px !important;
+  padding-bottom: 0px !important;
+  padding-left: 0px !important;
+  display: block !important;
+  }
+  .task-action-block-left {
+    max-width: 24px !important;
+    position: absolute;
+    left: -8px;
+    margin: auto;
+  }
+  .task-action-block-right {
+    max-width: 24px !important;
+    position: absolute;
+    right: -8px;
+    top: -10px;
+    /* transform: tanslateY(-100%); */
+  }
 </style>
 
 

@@ -205,14 +205,6 @@ export default {
       }
     ]
   })
-  // watch: {
-  //   loggedUser (val) {
-  //     if (val) {
-  //       console.warn('User logged in', val)
-  //       this.$store.dispatch('fetchAppData', val)
-  //     }
-  //   }
-  // }
 }
 </script>
 

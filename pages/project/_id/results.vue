@@ -47,10 +47,10 @@
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
       content-tag="v-layout"
-      content-class="row align-center justify-center"
       search
       row
       wrap
+      align-center justify-center
     >
       <v-toolbar
         slot="header"
@@ -63,7 +63,7 @@
         <v-toolbar-title>Team progress</v-toolbar-title>
       </v-toolbar>
 
-      <v-flex
+      <template
         slot="item"
         slot-scope="props"
       >
@@ -71,7 +71,7 @@
         :member="props.item" 
         :project="resultProject" 
         :weight="weight"/>
-      </v-flex>
+      </template>
 
       <v-toolbar
         slot="footer"

@@ -11,6 +11,7 @@
         <v-icon>print</v-icon>log json state
       </v-btn>
     </div>
+    
       <v-container grid-list-xl v-for="(project, pidx) in userProjects" :key="project.id" class="pt-1">
         
         <v-layout row justify-center align-center>
@@ -30,13 +31,13 @@
                     <span class="text-xs-justify primary--text">{{project.created | locale}}</span>
                   </div>
                   <div>Manager: 
-                    <nuxt-link :to="{ name: 'user-username', params: {username: username(project.manager) }}" class="info--text">@{{username(project.manager)}}</nuxt-link>
+                    <nuxt-link :to="{ name: 'user', params: {user: username(project.manager) }}" class="info--text">@{{username(project.manager)}}</nuxt-link>
                   </div>
                   <!-- <v-card class="transparent" flat>Team: 
                   </v-card> -->
                   <p class="pb-0">Team:
                     <nuxt-link 
-                      :to="{ name: 'user-username', params: {username: username(coworker)}}" 
+                      :to="{ name: 'user', params: {user: username(coworker)}}" 
                       class="pr-2" 
                       v-for="coworker in project.team" 
                       :key="coworker">@{{username(coworker)}}

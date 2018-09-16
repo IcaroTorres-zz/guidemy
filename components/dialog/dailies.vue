@@ -73,7 +73,7 @@
               </v-avatar>
               <div class="ml-2">
                 <a class="primary--text subheading">{{loggedUserObj.username}}</a><br>
-                {{new Date(newDaily.created).toLocaleDateString()}} <span class="body-2 ml-2">TODAY!</span>
+                {{newDaily.created | locale}} <span class="body-2 ml-2">TODAY!</span>
               </div>
               <v-spacer></v-spacer>
               <v-icon @click="open = !open">{{open ? 'unfold_less' : 'unfold_more'}}</v-icon>
@@ -82,17 +82,19 @@
             <v-layout row wrap align-start class="px-2 pt-2">
               <v-flex xs12 v-for="n in 3" :key="n" class="pa-0 ma-0" v-if="open">
                 <v-textarea
+                  color="black"
+                  box
+                  placeholder="Question was not responded"
                   rows="2"
                   row-height="16"
                   :background-color="dailyColor(newDaily)"
-                  outline
-                  :append-outer-icon="icons[n-1]"
-                  class="text-xs-right"
+                  :append-icon="icons[n-1]"
+                  class="text-xs-right black--text"
                   :hint="`Answer for question r${n}`"
                   persistent-hint
                   :label="questions[n-1]"
                   v-model="newDaily['r'+(n)]"
-                  :auto-grow="true"
+                  auto-grow
                 ></v-textarea>
               </v-flex>
             </v-layout>
@@ -116,7 +118,7 @@
                         <div class="ml-2">
                           <a class="primary--text subheading">{{username(daily.assigned)}}</a><br>
                           <div v-if="daily.finished" class="caption grey--text mr-2">
-                            responded at: {{daily.finished | postFormat}}
+                            responded: {{daily.finished | postFormat}}
                           </div>
                         </div>
                         <v-spacer></v-spacer>
@@ -124,22 +126,28 @@
                     </div>
                     <v-layout row wrap align-start class="pa-2">
                       <v-flex xs12 v-for="n in 3" :key="n" class="pa-0 ma-0">
-                        <v-textarea
-                          rows="2"
+                        <!-- <v-textarea
                           row-height="16"
                           :background-color="dailyColor(daily)"
-                          outline
-                          :disabled="daily.status === -1"
-                          :readonly="daily.status !== -1"
+                          color="black"
+                          box
+                          disabled
                           :append-outer-icon="icons[n-1]"
                           class="text-xs-right"
                           :hint="`Answer for question r${n}`"
-                          :placeholder="daily.status === -1 ? 'Question was not responded' : ''"
+                          :placeholder="daily.status === -1 ? 'Question was not accepted' : 'Question was not responded'"
                           persistent-hint
                           :label="questions[n-1]"
-                          :value="daily['r'+(n)]"
-                          :auto-grow="true"
-                        ></v-textarea>
+                          v-model="daily['r'+(n)]"
+                          auto-grow
+                          ></v-textarea> -->
+                        <div >                          
+                          <span class="caption primary--text">{{questions[n-1]}}</span>
+                          <span class="error--text pl-2" style="font-size: 10px" v-if="daily.status === -1">(Question was not accepted)</span>
+                        </div>
+                        <p :class="dailyColor(daily) + '--text'">
+                          {{daily['r'+n] || 'Question was not responded'}}
+                        </p>
                       </v-flex>
                     </v-layout>
                   </v-flex>
@@ -147,16 +155,16 @@
                     <v-layout column fill-height align-center justify-start style="position: relative;">
                       <div style="transform: translateY(-18px)" class="caption">
                         <span v-if="didx === 0 && new Date(daily.created).getDate() === new Date().getDate()">TODAY!</span>
-                        <span v-else>{{new Date(daily.created).toLocaleDateString()}}</span>
+                        <span v-else>{{daily.created | locale}}</span>
                       </div>
-                        <v-icon :class="{'success--text':daily.status === 1,  'action-middle-1': true}"
-                          :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === 1 ? 0 : 1})">
-                          done_outline
-                        </v-icon>
-                        <v-icon :class="{'error--text':daily.status === -1,  'action-middle-2': true}"
-                          :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === -1 ? 0 : -1})">
-                          gavel
-                        </v-icon>
+                      <v-icon :class="{'success--text':daily.status === 1,  'action-middle-1': true}"
+                        :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === 1 ? 0 : 1})">
+                        done_outline
+                      </v-icon>
+                      <v-icon :class="{'error--text':daily.status === -1,  'action-middle-2': true}"
+                        :disabled="!isManager" @click.stop="judgeDaily({id: daily.id, status: daily.status === -1 ? 0 : -1})">
+                        gavel
+                      </v-icon>
                     </v-layout>
                   </v-flex>
                 </v-layout>

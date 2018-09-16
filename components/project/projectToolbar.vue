@@ -10,13 +10,12 @@
         <v-btn 
           class="ma-0"
           flat 
-          :icon="!lgAndUp" 
- 
-          color="primary" 
+          :icon="!lgAndUp"
+          :color="toolbarProject.status === 0 ? 'error' : 'info'" 
           slot="customactivator"
           :disabled="toolbarProject.manager !== loggedUser">
-          <v-icon>archive</v-icon>
-          <span class="hidden-md-and-down">archive</span>
+          <v-icon>{{toolbarProject.status === 0 ? 'archive' : 'publish'}}</v-icon>
+          <span class="hidden-md-and-down">{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</span>
         </v-btn>
       </darchive>
       <v-divider vertical></v-divider>
@@ -101,7 +100,7 @@
       flat 
       :icon="!lgAndUp" 
       color="accent" 
-      slot="" >
+      disabled >
       <span class="hidden-md-and-down">contributions</span>
       <v-icon >update</v-icon>
     </v-btn>

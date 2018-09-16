@@ -39,7 +39,7 @@
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             append-icon="">
             <v-subheader style="font-size: 10px;" class="grey--text text--darken-2" v-text="item.heading" />
-            <v-list-tile slot="activator">
+            <v-list-tile slot="activator" :disabled="!!item.soon">
               <v-list-tile-content>
                 <v-list-tile-title class="layout row justify-space-between align-center">
                   {{ item.text }}
@@ -83,7 +83,7 @@
                   @click="child.action ? child.action() : ''"
                   style="width: 100%;"
                   :slot="child.slot" 
-                  :disabled="canCreateTask">
+                  :disabled="!!child.soon">
                     <v-list-tile-action v-if="child.icon">
                       <v-icon>{{ child.icon }}</v-icon>
                     </v-list-tile-action>
@@ -100,6 +100,7 @@
               </dtask>
               <v-list-tile v-else
                 :key="i"
+                :disabled="!!child.soon"
                 @click="child.action ? child.action() : ''">
                 <v-list-tile-action v-if="child.icon">
                   <v-icon>{{ child.icon }}</v-icon>
@@ -115,6 +116,7 @@
           </v-list-group>
           <v-list-tile
             v-else
+            :disabled="!!item.soon"
             :key="item.text"
             @click="item.action ? item.action() : ''">
             <v-list-tile-action v-if="item.icon">
@@ -145,12 +147,13 @@
         hide-details
         solo-inverted
         prepend-inner-icon="search"
+        :menu-props="{'closeOnClick':true, 'closeOnContentClick': true}"
         label="search users"
         :items="Object.values(users)"
         item-text="username"
         item-value="id"
       >
-        <v-list-tile :to="{name: 'user-username', params: {username: data.item.username}}" slot="item" slot-scope="data"  class="pa-0">
+        <v-list-tile :to="{name: 'user', params: {user: data.item.username}}" slot="item" slot-scope="data"  class="pa-0">
           <v-list-tile-avatar>
             <img :src="useravatar(data.item.id)">
           </v-list-tile-avatar>
@@ -185,7 +188,13 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
+    <v-progress-linear
+      color="info"
+      height="3"
+      v-if="!!appLoading"
+      :indeterminate="true"/>
     <v-content>
+      <h1 class="display-1 text-xs-center">{{routeLabel}}</h1>
       <v-container align-center class="py-0">
         <nuxt/>
       </v-container>
@@ -193,16 +202,15 @@
      <v-snackbar
       bottom
       left
-      v-model="snack.active"
+      v-model="visibleSnack"
       :color="snack.color"
       :multi-line="!lgAndUp"
     >
-      <!-- :timeout="snack.timeout" -->
       {{ snack.message }}
       <v-btn
         dark
         flat
-        @click="toggleSnack()"
+        @click="dissmissSnack"
       >
         dismiss
       </v-btn>
@@ -228,6 +236,7 @@
   export default {
     components: { dproject, dtask },
     data: (vm) => ({
+      visibleSnack: false,
       sidebarVisible: true,
       items: [
         { groupHeading: 'User' },
@@ -263,6 +272,14 @@
           console.warn('User logged out', val)
           this.$router.push('/')
         }
+      },
+      snack: {
+        deep: true,
+        handler (val, oldval) {
+          if (val) {
+            this.visibleSnack = val.active
+          }
+        }
       }
     },
     mounted () {
@@ -273,6 +290,14 @@
       }
     },
     computed: {
+      routeLabel () {
+        let params = this.$route.params
+        let suffix = ''
+        for (let key in params) {
+          suffix += ` - ${params[key]}`
+        }
+        return (this.$route.name || '').toUpperCase() + suffix || this.loggedUserObj.username
+      },
       miniIcon () { return this.mini ? 'chevron_right' : 'chevron_left' },
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
@@ -286,8 +311,12 @@
       ...mapMutations([
         'toggleSidebar',
         'toggleMini',
-        'toggleLight'
-      ])
+        'toggleLight',
+        'toggleSnack'
+      ]),
+      dissmissSnack () {
+        this.visibleSnack = false
+      }
     }
   }
 </script>

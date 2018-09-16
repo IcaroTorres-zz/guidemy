@@ -15,19 +15,35 @@ export const isDelayed = t => (t.status === 0 && new Date(t.end).getTime() < new
 
 export const randomStatus = () => {
   let rand = Math.random()
-  return rand <= 0.25 ? -1 : rand <= 0.4 ? 0 : 1
+  return rand <= 0.20 ? -1 : rand <= 0.35 ? 0 : 1
+}
+
+export function randomDate (start, end) {
+  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+}
+
+export function uniq () {
+  let items = (Array.from(arguments))
+  let flat = []
+  items.forEach(i => {
+    if (i !== null && i !== undefined) { i instanceof Array ? flat.push(...i) : flat.push(i) }
+  })
+  return [...new Set(flat)].filter(i => i !== null && i !== undefined)
 }
 
 export const dateConfig = (lower) => {
   const lowerDate = new Date(lower)
-  const limit = daysBetween(lowerDate, increaseDays(new Date(), -7))
-  const random = Math.random() * limit
+  // const limit = daysBetween(lowerDate, increaseDays(new Date(), -7))
+  // const random = Math.random() * limit
 
-  const genstatus = Math.round(Math.random())
+  const genstatus = Math.random() <= 0.80 ? 1 : 0
+  let created = randomDate(lowerDate, increaseDays(lowerDate, 10))
+  let end = randomDate(lowerDate, new Date())
+  let finished = genstatus === 1 ? randomDate(lowerDate, increaseDays(new Date(), 7)) : null
   return {
-    created: increaseDays(lowerDate, random),
-    finished: genstatus ? increaseDays(lowerDate, Math.floor(Math.random() * (limit + random))) : null,
-    end: increaseDays(lowerDate, Math.floor(Math.random() * (limit + random))),
+    created: created,
+    end: end,
+    finished: finished,
     status: genstatus
   }
 }
@@ -35,8 +51,7 @@ export const dateConfig = (lower) => {
 export const generateDailies = (target, { startDate, endDate = new Date() }, p, a, m) => {
   return Array.from(Array(daysBetween(startDate, endDate)).keys()).map((i, idx, arr) => {
     let status = i === arr.length - 1 ? 0 : randomStatus()
-    let newDaily = {
-      id: 'dl' + Date.now().toString() + 'dif' + (Math.random() * 200).toString(),
+    let newDaily = new Daily({
       project: p,
       manager: m,
       assigned: a,
@@ -45,9 +60,9 @@ export const generateDailies = (target, { startDate, endDate = new Date() }, p, 
       r3: status === 1 ? 'aaaaaa' : '',
       created: increaseDays(startDate, i),
       end: increaseDays(startDate, i + 1), // 24hr after
-      finished: status === 1 ? increaseDays(startDate, i) : null,
+      finished: status === 1 ? randomDate(increaseDays(startDate, i), increaseDays(startDate, i + 1)) : null,
       status: status
-    }
+    })
     target[newDaily.id] = newDaily
     return newDaily.id
   }).reverse()
@@ -63,12 +78,11 @@ export const defaultBlockSetup = [
 ]
 
 export const loremTitle = () => {
-  const parts = lorem.text.trim().split('.')
-  const chosenPart = parts[Math.floor(Math.random() * parts.length)].trim()
-  let splitted = chosenPart.split(' ')
-  return splitted
-    .slice(0, randomInRange(1, splitted.length))
-    .join(' ')
+  const parts = lorem.text.split(' ')
+  let index = parts[Math.floor(Math.random() * parts.length)]
+  let wordsCount = randomInRange(3, 10)
+  const chosenPart = parts.slice(index, wordsCount).join(' ').trim()
+  return chosenPart
 }
 export const randomInRange = (min, max) => {
   // min = Math.ceil(min)
@@ -77,10 +91,10 @@ export const randomInRange = (min, max) => {
 }
 
 export const loremLittle = () => {
-  let allparts = lorem.text.trim().split(' ')
-  let left = Math.floor(Math.random() * allparts.length - 5)
-  let right = left + Math.floor(Math.random() * 3)
-  return lorem.text.trim().split(' ').slice(left, right).join(' ').trim()
+  let allparts = lorem.text.trim().split(' ').slice(0, 10)
+  let left = Math.floor(Math.random() * 5)
+  let right = left + randomInRange(2, 4)
+  return allparts.slice(left, right).join(' ').trim()
 }
 
 export const loremDescription = () => {
@@ -97,7 +111,6 @@ export const userProjectDailies = (p, a, m, startDate = new Date('2018-09-05')) 
     let status = i === arr.length - 1 ? 0 : randomStatus()
     const answers = loremDescription().split('. ')
     return new Daily({
-      // id: 'dl' + Date.now().toString() + '-' + (Math.random() * 200).toString(),
       project: p,
       manager: m,
       assigned: a,
@@ -106,7 +119,7 @@ export const userProjectDailies = (p, a, m, startDate = new Date('2018-09-05')) 
       r3: status === 1 ? answers.slice(4, answers.length).join('. ') : '',
       created: increaseDays(startDate, i),
       end: increaseDays(startDate, i + 1), // 24hr after
-      finished: status === 1 ? increaseDays(startDate, i) : null,
+      finished: status === 1 ? randomDate(increaseDays(startDate, i), increaseDays(startDate, i + 1)) : null,
       status: status
     })
   })

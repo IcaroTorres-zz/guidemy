@@ -63,12 +63,12 @@
 <script>
 export default {
   validate ({ params, store }) {
-    console.log(params.username, '_username')
-    return !!store.getters.userByName(params.username).id
+    console.log(params.user, '_user')
+    return !!store.getters.userByName(params.user).id
   },
   computed: {
     pageOwner () {
-      return this.userByName(this.$route.params.username)
+      return this.userByName(this.$route.params.user)
     },
     ownerProjects () {
       return this.userProjects(this.pageOwner.id)

@@ -86,7 +86,6 @@ export default {
             : this.$store.getters.usernameByEmail(emailOrUsername),
           password: this.password
         }
-        this.setLoading(true)
         this.$store.dispatch('signin', payload)
           .then((result) => {
             if (result) {
@@ -99,9 +98,10 @@ export default {
             } else throw Error('Request failed!!')
           })
           .then(() => this.$store.dispatch('fetchAppData'))
+          .then(response => console.log(response))
           .catch(error => {
             console.warn(error)
-            this.$store.dispatch('setError', error.message || error)
+            this.setError(error.message || error)
             this.setLoading(false)
           })
       }
