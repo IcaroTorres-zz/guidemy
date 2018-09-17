@@ -7,19 +7,22 @@
       'secondary--text': !lightOut,
       'grey--text text--lighten-3': lightOut }">
       <div class="pa-3">
-        <span class="title error--text">{{delayedTasks(projectid).length}}</span><br> 
+        <span class="title error--text">{{delayedTasks(chartProject.id).length}}</span><br> 
         <small>delayed</small>
       </div>
       <div class="pa-3">
-        <span class="title">{{projectTasks(projectid).length}}</span><br>
+        <span class="title">{{projectTasks(chartProject.id).length}}</span><br>
         <small>tasks</small>
       </div>
       <div class="pa-3">
-        <span class="title success--text">{{doneTasks(projectid).length}}</span><br> 
+        <span class="title success--text">{{doneTasks(chartProject.id).length}}</span><br> 
         <small>done</small>
       </div>
     </v-layout>
-    <div :id="`${projectid}-piechart`" :ref="`${projectid}-piechart`" v-if="mdAndUp"></div>
+    <div
+      :id="`${chartProject.id}-piechart`"
+      :ref="`${chartProject.id}-piechart`"
+      v-if="mdAndUp"></div>
   </div>
 </template>
 
@@ -47,61 +50,62 @@ export default {
     Vue.set(this, 'piechart', this.drawPiechart(this.chartProject))
   },
   computed: {
-    chartProject () { return this.projects[this.projectid] }
-  },
-  watch: {
-    chartProject: {
-      deep: true,
-      handler (val, oldval) {
-        console.log('values changes for piechart project component', val, oldval)
-        if (val && val !== oldval && this.piechart) {
-          this.piechart.destroy()
-        }
-        Vue.set(this, 'piechart', this.drawPiechart(this.chartProject))
+    chartProject () {
+      const project = this.$store.getters.filledProject(this.projectid)
+      Vue.set(project, 'blocks', project.blocks)
+      if (this.piechart) {
+        this.updatePiechart(project)
+      } else {
+        this.drawPiechart(project)
       }
+      return project
+    },
+    chartOptions () {
+      return (p) => ({
+        chart: {
+          type: 'pie',
+          height: '180px',
+          margin: 0,
+          backgroundColor: 'rgba(255, 255, 255, 0.0)'
+        },
+        title: {
+          text: null
+        },
+        plotOptions: {
+          pie: {
+            discrete: true,
+            allowPointSelect: true,
+            cursor: 'pointer',
+            colors: pieColors(p.blocks),
+            dataLabels: {
+              enabled: false
+            },
+            width: '100%',
+            innerSize: '60%',
+            height: '100%'
+          }
+        },
+        series: [{
+          type: 'pie',
+          name: 'Tasks per block',
+          data: pieSeries(p.blocks)
+        }]
+      })
+      // },
+      // set (val) {
+      //   this.piechart.update(val)
+      // }
     }
   },
   methods: {
     drawPiechart (p) {
       return p && this.$refs[`${p.id}-piechart`] && this.mdAndUp
-        ? Highcharts.chart(`${p.id}-piechart`, {
-          chart: {
-            type: 'pie',
-            height: '180px',
-            margin: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.0)'
-          },
-          title: {
-            text: null
-          },
-          plotOptions: {
-            pie: {
-              discrete: true,
-              allowPointSelect: true,
-              cursor: 'pointer',
-              colors: pieColors(this.projects[p.id]
-                .blocks.map(b => this.blocks[b])),
-              dataLabels: {
-                enabled: false
-                // format: '{point.name} {point.y}'
-              },
-              width: '100%',
-              innerSize: '60%',
-              height: '100%'
-            }
-          },
-          series: [{
-            type: 'pie',
-            name: 'Tasks per block',
-            data: pieSeries(this.projects[p.id]
-              .blocks.map(b => this.blocks[b]))
-          }]
-        }) : undefined
+        ? Highcharts.chart(`${p.id}-piechart`, this.chartOptions(p)) : undefined
+    },
+    updatePiechart (p) {
+      return p && this.$refs[`${p.id}-piechart`] && this.mdAndUp
+        ? this.piechart.update(`${p.id}-piechart`, this.chartOptions(p)) : undefined
     }
   }
 }
 </script>
-
-<style>
-
-</style>

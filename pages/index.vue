@@ -67,11 +67,6 @@ export default {
       password: ''
     }
   }),
-  watch: {
-    appLoading (val, oldval) {
-      console.log(val, oldval, 'app loading state change')
-    }
-  },
   methods: {
     signin () {
       if (this.valid) {
@@ -90,15 +85,16 @@ export default {
           .then((result) => {
             if (result) {
               if (result.username) {
-                console.log(result)
+                // console.log(result)
                 console.warn(`User ${result.username} - ${result.email}: logged On sucessfully`)
                 this.$router.push('dashboard')
-                this.setLoading(false)
               } else throw new Error('Invalid E-mail or Username!!')
             } else throw Error('Request failed!!')
           })
           .then(() => this.$store.dispatch('fetchAppData'))
-          .then(response => console.log(response))
+          .then(response => {
+            // console.log(response)
+          })
           .catch(error => {
             console.warn(error)
             this.setError(error.message || error)

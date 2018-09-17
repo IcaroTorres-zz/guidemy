@@ -56,6 +56,9 @@ export const mutations = {
   updateBlockText (state, payload) {
     Vue.set(state.blocks[payload.id], 'text', payload.text)
   },
+  updateBlockColor (state, payload) {
+    Vue.set(state.blocks[payload.id], 'color', payload.color)
+  },
   updateBlockPosition (state, { block, movetype }) {
     let project = state.projects[block.project]
     let index = project.blocks.findIndex(b => b === block.id)

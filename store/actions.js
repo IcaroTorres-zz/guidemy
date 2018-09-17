@@ -15,7 +15,6 @@ const snackTimeout = 6000
 const dailyResult = { 0: 'pending', 1: 'accepted', '-1': 'rejected' }
 export const actions = {
   generateData ({ state, commit }) {
-    commit('setLoading', true)
     const tempUsers = userbase.results.map(u => {
       const newUser = {
         ...new User({
@@ -79,21 +78,20 @@ export const actions = {
         }
       })
     }
-    commit('setLoading', false)
     return state
   },
   fetchAppData ({ dispatch, commit, state }) {
+    commit('setLoading', true)
     return dispatch('generateData')
       .then(newState => {
-        commit('setLoading', false)
         commit('toggleSnack', {
           message: `What can I say, except "You're Welcome!" ?`,
           color: 'success'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
+        commit('setLoading', false)
         return newState || state
       }).catch(e => {
-        commit('setLoading', false)
         console.warn(e.message)
         commit('setError', e.message)
         commit('toggleSnack', {
@@ -101,9 +99,10 @@ export const actions = {
           color: 'error'
         })
         setTimeout(() => commit('toggleSnack'), snackTimeout)
+        commit('setLoading', false)
       })
   },
-  signin ({ commit, getters, dispatch }, payload) {
+  signin ({ commit, getters }, payload) {
     const userFound = getters.userByName(payload.username)
     if (userFound) {
       const userSent = new User({ ...payload, ...userFound })
@@ -183,6 +182,14 @@ export const actions = {
   },
   updateBlockText ({ commit, state }, payload) {
     commit('updateBlockText', payload)
+    commit('toggleSnack', {
+      message: 'block updated'
+    })
+    setTimeout(() => { commit('toggleSnack') }, snackTimeout)
+    return state.blocks[payload.id]
+  },
+  updateBlockColor ({ commit, state }, payload) {
+    commit('updateBlockColor', payload)
     commit('toggleSnack', {
       message: 'block updated'
     })

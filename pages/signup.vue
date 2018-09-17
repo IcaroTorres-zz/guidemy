@@ -142,7 +142,7 @@ export default {
           password: this.password
         })
           .then((responseUser) => {
-            console.log(responseUser)
+            // console.log(responseUser)
             this.$router.push('dashboard')
           })
           .catch(error => {

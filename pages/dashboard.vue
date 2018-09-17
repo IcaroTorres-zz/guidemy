@@ -110,7 +110,7 @@
             class="border-dashed-grey ma-0"
             block
           >
-            <v-icon small>add</v-icon>split to new roll
+            <v-icon small>add</v-icon>split to new row
           </v-btn>
         </v-layout>
         <v-layout
@@ -136,9 +136,9 @@
             class="scroller-horiz"
             v-if="visionMap[project.id]"
             style="margin-right: 0; margin-bottom: -16px; margin-left: 44px;"
-          >            
-              <!-- @input="updateBlock($event)" -->
+          >
             <taskblock
+              @block-update="updateChart($event)"
               :singleview="false"
               v-for="blockid in  project.blocks" :key="blockid"
               :blockid="blockid"/>
@@ -197,14 +197,14 @@ export default {
     toggleProject (pid) {
       this.visionMap[pid] = !this.visionMap[pid]
     },
+    updateChart (block) {
+      const projectToEmit = this.projects[block.project]
+      this.$emit('updatechart', projectToEmit)
+    },
     defaultBlocks (p) {
       this.defaultBlockSetup.forEach(b => {
         let block = new Block({...b, project: p.id})
         this.$store.dispatch('saveBlock', block)
-          .then((data) => {
-            console.log('success applyied data: ')
-            console.dir(data)
-          })
       })
     }
   }

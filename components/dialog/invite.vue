@@ -81,7 +81,7 @@ export default {
     onInvite () {
       this.invite({pid: this.project.id, uids: this.invitable})
         .then(response => {
-          console.log(response)
+          // console.log(response)
           this.dialog = false
         })
     }

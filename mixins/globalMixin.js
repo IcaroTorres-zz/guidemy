@@ -97,7 +97,10 @@ export default {
       return new Date(b.created).getTime() - new Date(a.created).getTime()
     },
     stringToDateddmmYYYY (dateString) {
-      return (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
+      if (!dateString) return ''
+      return dateString instanceof String
+        ? (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
+        : dateString.toLocaleDateString()
     }
   }
 }

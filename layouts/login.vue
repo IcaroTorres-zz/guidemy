@@ -56,9 +56,9 @@
               </v-flex>
               <v-flex xs12>
                 <v-container grid-list-xl>
-                  <v-layout row :wrap="smAndDown" justify-center align-center>
+                  <v-layout row justify-center align-center>
                     <template v-for="(column, i) in promoColumns">
-                      <v-flex xs12 :key="column.title">
+                      <v-flex :xs12="!mdAndUp" :key="column.title">
                         <v-card :color="column.color" class="elevation-20">
                           <v-card-text class="text-xs-center">
                             <v-icon medium v-html="column.icon"/>
@@ -67,7 +67,7 @@
                           <v-card-text v-text="column.text" class="grey--text caption"/>
                         </v-card>
                       </v-flex>
-                      <v-divider :vertical="$vuetify.breakpoint.mdAndUp" :key="i" v-if="i !== promoColumns.length - 1"></v-divider>
+                      <v-divider :vertical="!$vuetify.breakpoint.smAndDown" :key="i" v-if="i !== promoColumns.length - 1"></v-divider>
                     </template>
                   </v-layout>
                 </v-container>
@@ -204,7 +204,15 @@ export default {
               Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
       }
     ]
-  })
+  }),
+  watch: {
+    appLoading (val, oldval) {
+      // console.log(val, oldval, 'app loading state change')
+      if (val) {
+        this.$nuxt.$loading.start()
+      } else this.$nuxt.$loading.finish()
+    }
+  }
 }
 </script>
 

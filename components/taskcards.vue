@@ -40,7 +40,20 @@
               </v-list-tile-action>
 
               <v-list-tile-content>
-                <v-list-tile-title class="body-1">{{task.title}} </v-list-tile-title>
+                <v-list-tile-title class="body-1">
+                  {{task.title}}
+                  <dtask
+                    v-if="task.status !== 1"
+                    :taskid="task.id"
+                    :blockid="task.block"
+                  >
+                    <v-icon 
+                      small 
+                      class="ml-1" 
+                      slot="customactivator"
+                      v-text="'edit'"/>
+                  </dtask>
+                </v-list-tile-title>
                 <v-list-tile-sub-title 
                   :class="ratecolor(task) +'--text'"
                   style="font-size: 11px;"
@@ -51,14 +64,14 @@
 
               <v-list-tile-action class="task-action-block-right">
                 <v-tooltip top>
-                  <dtaskdone :taskid="task.id" @task-finished="update($event)" slot="activator">
+                  <dtaskdone :taskid="task.id" slot="activator">
                     <v-icon small :color="task.status === 1 ? 'warning' : 'success'" slot="customactivator">
                       {{task.status === 1 ? 'settings_backup_restore' : 'check_circle'}}
                     </v-icon>
                   </dtaskdone>
                   <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
                 </v-tooltip>
-                <dtaskdel :taskid="task.id" @task-deleted="update($event)">
+                <dtaskdel :taskid="task.id">
                   <v-icon small color="error" v-if="canRemove(task)" slot="customactivator">delete</v-icon>
                 </dtaskdel>
               </v-list-tile-action>
@@ -180,10 +193,10 @@
 
 <script lang="js">
 import Vue from 'vue'
-import { dtaskcomments, dtaskdone, dtaskdel } from '@/components/dialog'
+import { dtaskcomments, dtaskdone, dtaskdel, dtask } from '@/components/dialog'
 export default {
   name: 'taskcards',
-  components: {dtaskcomments, dtaskdone, dtaskdel},
+  components: {dtaskcomments, dtaskdone, dtaskdel, dtask},
   props: {
     value: { require: true, type: Array },
     archived: [Boolean, Number]

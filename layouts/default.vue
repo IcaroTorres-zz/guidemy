@@ -273,6 +273,14 @@
           this.$router.push('/')
         }
       },
+      watch: {
+        appLoading (val, oldval) {
+          // console.log(val, oldval, 'app loading state change')
+          if (val) {
+            this.$nuxt.$loading.start()
+          } else this.$nuxt.$loading.finish()
+        }
+      },
       snack: {
         deep: true,
         handler (val, oldval) {
