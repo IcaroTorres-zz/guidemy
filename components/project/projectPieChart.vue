@@ -28,6 +28,7 @@
 
 <script>
 import Vue from 'vue'
+import { mapGetters, mapState } from 'vuex'
 import { colors } from '@/helpers'
 import Highcharts from 'highcharts'
 
@@ -50,9 +51,18 @@ export default {
     Vue.set(this, 'piechart', this.drawPiechart(this.chartProject))
   },
   computed: {
+    ...mapGetters([
+      'delayedTasks',
+      'projectTasks',
+      'doneTasks',
+      'filledProject',
+      'mdAndUp',
+      'lgAndUp'
+    ]),
+    ...mapState(['lightOut']),
     chartProject () {
-      const project = this.$store.getters.filledProject(this.projectid)
-      Vue.set(project, 'blocks', project.blocks)
+      const project = this.filledProject(this.projectid)
+      // Vue.set(project, 'blocks', project.blocks)
       if (this.piechart) {
         this.updatePiechart(project)
       } else {
@@ -91,10 +101,6 @@ export default {
           data: pieSeries(p.blocks)
         }]
       })
-      // },
-      // set (val) {
-      //   this.piechart.update(val)
-      // }
     }
   },
   methods: {

@@ -31,7 +31,7 @@ export default {
   }),
   methods: {
     onToggleArchiving () {
-      this.toggleArchiving(this.project.id)
+      this.$store.dispatch('toggleArchiving', this.project.id)
       this.dialog = false
     }
   }

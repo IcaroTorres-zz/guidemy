@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: 'dialogdone',
   props: {
@@ -30,12 +31,13 @@ export default {
     dialog: false
   }),
   computed: {
+    ...mapState(['tasks']),
     computedTask () { return this.tasks[this.taskid] },
     cardText () { return this.computedTask.status ? 'Re-open this task?' : 'Corfirme as done?' }
   },
   methods: {
     onToggleTask () {
-      this.toggleTask(this.taskid)
+      this.$store.dispatch('toggleTask', this.taskid)
       this.$emit('task-finished', this.computedTask)
       this.dialog = false
     }

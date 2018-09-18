@@ -108,6 +108,7 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex'
 import { dproject, darchive, dblock, dinvite, dtask, ddailies } from '@/components/dialog'
 export default {
   name: 'toolbarproject',
@@ -116,6 +117,12 @@ export default {
     projectid: { required: true, type: [String, Number] }
   },
   computed: {
+    ...mapState([
+      'loggedUser',
+      'projects',
+      'lightOut'
+    ]),
+    ...mapGetters(['lgAndUp']),
     toolbarProject () {
       return this.projects[this.projectid]
     }

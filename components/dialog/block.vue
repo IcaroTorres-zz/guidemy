@@ -3,12 +3,12 @@
       <template slot="activator" @click.stop="dialog = !dialog">
         <slot name="customactivator" />
       </template>
+      <v-form ref="blockform_dialog" v-model="valid" @submit.prevent="saveBlock">
       <v-card >
         <v-card-title :class="{'py-4 title': true, 'primary': !!project, 'warning': !project }">
           {{dialogtitle}}
         </v-card-title>
         <v-container fluid grid-list-md>
-          <v-form ref="blockform_dialog" @submit.prevent="saveBlock">
             <v-layout row wrap align-content-start justify-center>
               <v-flex  xs12 md7>
                 <v-text-field
@@ -41,7 +41,6 @@
                 </v-autocomplete>
               </v-flex>
             </v-layout>
-          </v-form>
         </v-container>
         <v-card-actions class="px-4">
           <v-spacer></v-spacer>
@@ -49,6 +48,7 @@
           <v-btn small color="success" type="submit">save</v-btn>
         </v-card-actions>
       </v-card>
+      </v-form>
     </v-dialog>
 </template>
 
@@ -66,6 +66,7 @@ export default {
   },
   data () {
     return {
+      valid: false,
       dialog: false,
       editing: new Block({...this.block, project: this.project.id})
     }
@@ -76,12 +77,14 @@ export default {
   },
   methods: {
     saveBlock () {
-      this.$store.dispatch('saveBlock', this.editing)
-        .then((data) => {
-          this.$emit('block-created')
-          this.editing = new Block({project: this.project.id})
-          this.dialog = false
-        })
+      if (this.valid && this.$refs.blockform_dialog.validate()) {
+        this.$store.dispatch('saveBlock', this.editing)
+          .then((data) => {
+            this.$emit('block-created')
+            this.editing = new Block({project: this.project.id})
+            this.dialog = false
+          })
+      }
     }
   }
 }

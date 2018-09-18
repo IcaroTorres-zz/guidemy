@@ -1,4 +1,4 @@
-import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
+// import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -7,52 +7,53 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      'sidebar',
-      'mini',
-      'lightOut',
-      'appLoading',
-      'appError',
-      'loggedUser',
-      'users',
-      'projects',
-      'blocks',
-      'tasks',
-      'snack'
-    ]),
-    ...mapGetters([
-      'myProjects',
-      'myArchive',
-      'loggedUserObj',
-      'usernames',
-      'username',
-      'useravatar',
-      'userProjects',
-      'userTasks',
-      'userByName',
-      'projectBlocks',
-      'projectTasks',
-      'doneTasks',
-      'delayedTasks',
-      'isDelayed',
-      'temperColor',
-      'temperColorInvert',
-      'memberScoreForTasks',
-      'memberScoreForDailies',
-      'daysBetween',
-      'task',
-      'xlOnly',
-      'lgAndUp',
-      'lgAndDown',
-      'lgOnly',
-      'mdAndUp',
-      'mdAndDown',
-      'mdOnly',
-      'smAndUp',
-      'smAndDown',
-      'smOnly',
-      'xsOnly'
-    ])
+    // ...mapState([
+    //   'sidebar',
+    //   'mini',
+    //   'lightOut',
+    //   'appLoading',
+    //   'appError',
+    //   'loggedUser',
+    //   'users',
+    //   'projects',
+    //   'blocks',
+    //   'tasks',
+    //   'dailyMeetings',
+    //   'snack'
+    // ]),
+    // ...mapGetters([
+    //   'myProjects',
+    //   'myArchive',
+    //   'loggedUserObj',
+    //   'usernames',
+    //   'username',
+    //   'useravatar',
+    //   'userProjects',
+    //   'userTasks',
+    //   'userByName',
+    //   'projectBlocks',
+    //   'projectTasks',
+    //   'doneTasks',
+    //   'delayedTasks',
+    //   'isDelayed',
+    //   'temperColor',
+    //   'temperColorInvert',
+    //   'memberScoreForTasks',
+    //   'memberScoreForDailies',
+    //   'daysBetween',
+    //   'task',
+    //   'xlOnly',
+    //   'lgAndUp',
+    //   'lgAndDown',
+    //   'lgOnly',
+    //   'mdAndUp',
+    //   'mdAndDown',
+    //   'mdOnly',
+    //   'smAndUp',
+    //   'smAndDown',
+    //   'smOnly',
+    //   'xsOnly'
+    // ])
   },
   filters: {
     limitToSize (str, size) {
@@ -73,23 +74,23 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-      'toggleTask',
-      'toggleArchiving',
-      'invite',
-      'deleteTask',
-      'postComment',
-      'deleteComment',
-      'answerDaily',
-      'judgeDaily',
-      'moveTask'
-    ]),
-    ...mapMutations([
-      'toggleSnack',
-      'setError',
-      'clearError',
-      'setLoading'
-    ]),
+    // ...mapActions([
+    //   'toggleTask',
+    //   'toggleArchiving',
+    //   'invite',
+    //   'deleteTask',
+    //   'postComment',
+    //   'deleteComment',
+    //   'answerDaily',
+    //   'judgeDaily',
+    //   'moveTask'
+    // ]),
+    // ...mapMutations([
+    //   'toggleSnack',
+    //   'setError',
+    //   'clearError',
+    //   'setLoading'
+    // ]),
     nuxtFromClick (route) {
       this.$router.push(route)
     },
@@ -97,10 +98,10 @@ export default {
       return new Date(b.created).getTime() - new Date(a.created).getTime()
     },
     stringToDateddmmYYYY (dateString) {
-      if (!dateString) return ''
-      return dateString instanceof String
-        ? (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
-        : dateString.toLocaleDateString()
+      // console.warn('datestring got', dateString)
+      return dateString instanceof Date
+        ? dateString.toLocaleDateString('pt-BR')
+        : (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
     }
   }
 }

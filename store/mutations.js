@@ -80,12 +80,10 @@ export const mutations = {
     Vue.set(state.projects[block.project], 'blocks', project.blocks)
   },
   moveTask (state, { tid, bid }) {
-    let index = state.blocks[bid].tasks.findIndex(t => t.id === tid)
-    if (index !== 1) {
-      state.blocks[bid].tasks.splice(index, 1)
-      Vue.set(state.tasks[tid], 'block', bid)
-      state.blocks[bid].tasks.push(tid)
-    }
+    let blocktasks = state.blocks[state.tasks[tid].block].tasks.filter(t => t !== tid)
+    Vue.set(state.blocks[state.tasks[tid].block], 'tasks', blocktasks)
+    Vue.set(state.tasks[tid], 'block', bid)
+    state.blocks[bid].tasks.push(tid)
   },
   saveTask (state, payload) {
     Vue.set(state.tasks, payload.id, { ...payload })

@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: 'dialogtaskdel',
   props: {
@@ -30,11 +31,12 @@ export default {
     dialog: false
   }),
   computed: {
+    ...mapState(['tasks']),
     computedTask () { return this.tasks[this.taskid] }
   },
   methods: {
     onTaskDeleted () {
-      this.deleteTask(this.taskid)
+      this.$store.dispatch('deleteTask', this.taskid)
       this.$emit('task-deleted')
       this.dialog = false
     }

@@ -50,17 +50,19 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
   validate ({ params, store }) {
     console.log(params.user, '_user')
     return !!store.getters.userByName(params.user).id
   },
   computed: {
+    ...mapGetters(['username', 'useravatar', 'userByName', 'userTasks']),
     pageOwner () {
       return this.userByName(this.$route.params.user)
     },
     ownerProjects () {
-      return this.userProjects(this.pageOwner.id)
+      return this.$store.getters.userProjects(this.pageOwner.id)
     },
     ownerTasks () {
       return this.userTasks(this.pageOwner.id)

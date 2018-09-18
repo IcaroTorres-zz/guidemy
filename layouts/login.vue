@@ -20,8 +20,8 @@
             :wrap="mdAndUp || $route.name === 'signup'"
             :column="smAndDown && $route.name === 'index'"
             align-center
-            justify-center
             class="my-3"
+            justify-center
             fill-height
             :style="{'height':smAndUp || $route.name === 'index' ? '600px' : '850px'}"
           >
@@ -31,7 +31,8 @@
               <h1 :class="{'display-2': smAndUp, 'headline': !smAndUp, 'primary--text': true}">{{apptitle}}</h1>
               <div :class="{'subheading': smAndUp, 'body-2': !smAndUp, 'secondary--text': true}">Agile Tracker.</div>
             </div>
-            <v-flex xs12 sm7 md5 lg4 offset-md1 style="opacity: .8">
+            <v-flex xs1></v-flex>
+            <v-flex xs12 sm7 md5 lg4 style="opacity: .8">
               <nuxt />
             </v-flex>
           </v-layout>
@@ -49,16 +50,17 @@
           <v-flex xs12 sm10 md8>
             <v-layout column>
               <v-flex xs12 sm4 class="my-2 text-xs-center">
-                <h2 class="headline">Keep your developing feedbacks flowing</h2>
+                <h2 class="headline primary--text">Track your progress easily</h2>
                 <em class="subheading">
                   Completely Open Sourced
                 </em>
               </v-flex>
               <v-flex xs12>
                 <v-container grid-list-xl>
-                  <v-layout row justify-center align-center>
+                  <v-layout row wrap justify-center align-center>
                     <template v-for="(column, i) in promoColumns">
-                      <v-flex :xs12="!mdAndUp" :key="column.title">
+                      <v-flex xs12 sm4 :key="column.title"
+                      :class="{'left-border': i !== 0 && smAndUp, 'top-border': xsOnly && i !== 0}">
                         <v-card :color="column.color" class="elevation-20">
                           <v-card-text class="text-xs-center">
                             <v-icon medium v-html="column.icon"/>
@@ -67,7 +69,8 @@
                           <v-card-text v-text="column.text" class="grey--text caption"/>
                         </v-card>
                       </v-flex>
-                      <v-divider :vertical="!$vuetify.breakpoint.smAndDown" :key="i" v-if="i !== promoColumns.length - 1"></v-divider>
+                      <!-- <v-divider vertical class="hidden-xs-only" :key="i" v-if="i !== promoColumns.length - 1"></v-divider> -->
+                      <!-- <v-divider class="hidden-sm-and-up" :key="i" v-if="i !== promoColumns.length - 1"></v-divider> -->
                     </template>
                   </v-layout>
                 </v-container>
@@ -175,7 +178,7 @@
   </v-app>  
 </template>
 <script>
-// import results from '@/helpers/userbase.json'
+import { mapGetters } from 'vuex'
 export default {
   data: () => ({
     promoColumns: [
@@ -205,19 +208,30 @@ export default {
       }
     ]
   }),
-  watch: {
-    appLoading (val, oldval) {
-      // console.log(val, oldval, 'app loading state change')
-      if (val) {
-        this.$nuxt.$loading.start()
-      } else this.$nuxt.$loading.finish()
-    }
-  }
+  // watch: {
+  //   appLoading (val, oldval) {
+  //     // console.log(val, oldval, 'app loading state change')
+  //     if (val) {
+  //       this.$nuxt.$loading.start()
+  //     } else this.$nuxt.$loading.finish()
+  //   }
+  // },
+  computed: mapGetters([
+    'mdAndUp',
+    'smAndUp',
+    'smAndDown',
+    'xsOnly'
+  ])
 }
 </script>
 
 <style scoped>
-
+.left-border {
+  border-left: .75px solid #555;
+}
+.top-border {
+  border-top: .75px solid #555;
+}
 .v-toolbar {
   z-index: 99;
 }

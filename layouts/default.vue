@@ -138,7 +138,7 @@
     <v-toolbar clipped-left color="primary" app fixed flat :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.native="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
-        <router-link to="/" v-html="apptitle"
+        <router-link to="/dashboard" v-html="apptitle"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
 
@@ -168,7 +168,7 @@
       
       <v-toolbar-items>
         <v-btn flat small nuxt :to="{ name: 'dailymeetings' }">
-          <v-icon >update</v-icon>my dailies
+          <v-icon>supervised_user_circle</v-icon>my dailies
         </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
           <v-icon >dashboard</v-icon>Dashboard
@@ -194,8 +194,8 @@
       v-if="!!appLoading"
       :indeterminate="true"/>
     <v-content>
-      <h1 class="display-1 text-xs-center">{{routeLabel}}</h1>
-      <v-container align-center class="py-0">
+      <!-- <h1 class="display-1 text-xs-center">{{routeLabel}}</h1> -->
+      <v-container align-center>
         <nuxt/>
       </v-container>
     </v-content>
@@ -232,7 +232,7 @@
 
 <script>
   import { dproject, dtask } from '@/components/dialog'
-  import { mapMutations } from 'vuex'
+  import { mapMutations, mapState, mapGetters } from 'vuex'
   export default {
     components: { dproject, dtask },
     data: (vm) => ({
@@ -243,7 +243,7 @@
         { icon: 'portrait', text: 'Profile settings', soon: '( future feature )' },
         { icon: 'arrow_back', text: 'LogOut', action: vm.logUserOut },
         { groupHeading: 'Management' },
-        { icon: 'update', text: 'Dailies', action: () => vm.$router.push('dailymeetings') },
+        { icon: 'supervised_user_circle', text: 'Dailies', action: () => vm.$router.push('/dailymeetings') },
         {
           heading: 'Manage project activities and handle tasks',
           icon: 'table_chart',
@@ -252,8 +252,8 @@
           model: false,
           children: [
             { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
-            { icon: 'view_stream', text: 'Dashboard', action: () => vm.$router.push('dashboard') },
-            { icon: 'archive', text: 'Archived', action: () => vm.$router.push('archived') }
+            { icon: 'view_stream', text: 'Dashboard', action: () => vm.$router.push('/dashboard') },
+            { icon: 'archive', text: 'Archived', action: () => vm.$router.push('/archived') }
           ]
         },
         { groupHeading: 'General settings' },
@@ -298,6 +298,17 @@
       }
     },
     computed: {
+      ...mapGetters(['loggedUserObj', 'lgAndUp', 'useravatar']),
+      ...mapState([
+        'sidebar',
+        'mini',
+        'lightOut',
+        'appLoading',
+        'appError',
+        'loggedUser',
+        'users',
+        'snack'
+      ]),
       routeLabel () {
         let params = this.$route.params
         let suffix = ''
@@ -328,3 +339,4 @@
     }
   }
 </script>
+<style src="@/assets/style/style.css"></style>

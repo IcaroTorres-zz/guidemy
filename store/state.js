@@ -48,7 +48,6 @@ export default () => ({
       id: 'u1',
       email: 'icaro.stuart@gmail.com',
       picture: 'https://icarotorres.github.io/images/perfil1.jpg',
-      // tasks: ['t2', 't4'],
       projects: ['p1', 'p2', 'p3'],
       notifications: ['n1', 'n2', 'n3', 'n4']
     },
@@ -58,7 +57,6 @@ export default () => ({
       id: 'u3',
       email: 'outro@gmail.com',
       picture: '',
-      // tasks: [],
       projects: ['p3'],
       notifications: []
     },
@@ -68,7 +66,6 @@ export default () => ({
       id: 'u2',
       email: 'gilton.ferreira@dcomp.ufs.br',
       picture: '',
-      // tasks: ['t1', 't3', 't0'],
       projects: ['p1', 'p2'],
       notifications: []
     }

@@ -11,7 +11,7 @@
         <v-spacer/>
         <v-icon @click.stop="dialog = !dialog">close</v-icon>
       </v-toolbar>
-      <div class="px-3">
+      <v-container grid-list-xl class="px-3">
         <div class="mt-5 pt-4">Description: </div>
         <p class="grey--text text-xs-justify">{{project.description}}</p>
         <v-divider v-if="isManager"></v-divider>
@@ -60,9 +60,8 @@
               <div :class="{'py-3 ml-5':isManager, 'px-4 py-3':!isManager }"><span :class="`${resultColor}--text title`"> {{coworkerResults.total}}</span><br> Total</div>
             </v-layout>
           </v-flex>
-
         </v-layout>
-      </div>
+      </v-container>
       <v-divider/>
       <v-container grid-list-xl class="px-4 pt-4 pb-2 new-daily-container" v-if="newDaily">
         <v-layout row justify-center align-content-start >
@@ -87,7 +86,7 @@
                   placeholder="Question was not responded"
                   rows="2"
                   row-height="16"
-                  :background-color="dailyColor(newDaily)"
+                  :background-color="dailyColor(newDaily) + ' darken-2'"
                   :append-icon="icons[n-1]"
                   class="text-xs-right black--text"
                   :hint="`Answer for question r${n}`"
@@ -116,7 +115,11 @@
                           <img :src="useravatar(daily.assigned)" alt="avatar">
                         </v-avatar>
                         <div class="ml-2">
-                          <a class="primary--text subheading">{{username(daily.assigned)}}</a><br>
+                          <nuxt-link
+                            :to="{name: 'daily-id', params: {id: daily.id}}"
+                            class="primary--text subheading">
+                            {{username(daily.assigned)}}
+                          </nuxt-link><br>
                           <div v-if="daily.finished" class="caption grey--text mr-2">
                             responded: {{daily.finished | postFormat}}
                           </div>
@@ -183,6 +186,7 @@
 </template>
 
 <script>
+import { mapGetters, mapState, mapActions } from 'vuex'
 export default {
   name: 'projectdailies',
   props: {
@@ -209,13 +213,21 @@ export default {
     this.selectedWorker = this.project.team[0]
   },
   computed: {
+    ...mapState(['projects', 'users', 'loggedUser']),
+    ...mapGetters([
+      'temperColor',
+      'username',
+      'useravatar',
+      'projectDailies',
+      'loggedUserObj'
+    ]),
     project () { return this.projects[this.projectid] },
     manager () { return this.users[this.project.manager] },
     team () { return this.project.team.map(uid => this.users[uid]) },
     assigned () { return this.selectedWorker ? this.users[this.selectedWorker] : this.loggedUserObj },
     predailes () {
       const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
-      return (this.$store.getters.projectDailies(this.project.id)[uid] || [])
+      return (this.projectDailies(this.project.id)[uid] || [])
         .sort(this.sortByStart)
     },
     dailies () {
@@ -255,6 +267,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['answerDaily', 'judgeDaily']),
     onAnswerDaily () {
       this.answerDaily(this.newDaily)
       this.newDaily = undefined

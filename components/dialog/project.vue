@@ -13,7 +13,7 @@
         <v-card-text class="pa-0" height="800">
           <v-container grid-list-sm class="pa-4">
             <v-layout row wrap>
-              <v-flex xs12>
+              <v-flex xs12 sm8>
                 <v-text-field
                   label="Project Name"
                   required
@@ -21,28 +21,7 @@
                   v-model="editing.title"
                 ></v-text-field>
               </v-flex>
-              <v-flex xs12 align-center justify-space-between>
-                <v-textarea
-                  outline
-                  label="Description"
-                  :rows="1"
-                  row-height="16"
-                  auto-grow
-                  required
-                  :rules="[v => !!v || 'field required']"
-                  v-model="editing.description"
-                ></v-textarea>
-              </v-flex>
-              <v-flex xs6>
-                <v-text-field
-                  prepend-icon="business"
-                  label="Company"
-                  required
-                  :rules="[v => !!v || 'field required']"
-                  v-model="editing.company"
-                ></v-text-field>
-              </v-flex>
-              <v-flex xs6>
+              <v-flex xs12 sm4>
                 <v-autocomplete
                   prepend-icon="account_box"
                   label="manager"
@@ -80,6 +59,8 @@
                   :items="Object.values(users)"
                   v-model="editing.team"
                   clearable
+                  required
+                  :rules="[v => !!v || 'field required']"
                   dense
                   item-text="username"
                   multiple
@@ -102,6 +83,15 @@
                   </template>
                 </v-autocomplete>
               </v-flex>
+              <v-flex xs12 align-center justify-space-between>
+                <v-textarea
+                  outline
+                  label="Description"
+                  row-height="16"
+                  auto-grow
+                  v-model="editing.description"
+                ></v-textarea>
+              </v-flex>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -117,7 +107,8 @@
 </template>
 
 <script>
-import {Project} from '../../models'
+import {Project} from '@/models'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'dialogproject',
   props: {
@@ -130,7 +121,11 @@ export default {
     }
   },
   created () {
-    this.editing = new Project({...this.project, creator: this.$store.getters.loggedUser})
+    this.editing = new Project({...this.project, creator: this.loggedUser})
+  },
+  computed: {
+    ...mapState(['loggedUser', 'users']),
+    ...mapGetters(['useravatar'])
   },
   methods: {
     saveProject () {
@@ -138,7 +133,7 @@ export default {
         this.$store.dispatch('saveProject', this.editing)
           .then(() => {
             this.$emit('project-created')
-            this.editing = new Project({creator: this.$store.getters.loggedUser})
+            this.editing = new Project({creator: this.loggedUser})
             this.dialog = false
           })
       }

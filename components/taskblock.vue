@@ -1,5 +1,5 @@
 <template>
-  <v-flex :class="'px-0 mr-2 project-block-container ' + singleview ? 'singleview' : ''">
+  <v-flex class="mr-2 project-block-container">
     <v-card light :class=" block.color + ' block-card'">
       <v-card-actions>
         <v-flex class="pa-0">
@@ -65,7 +65,7 @@
       </v-card-actions>
     </v-card>
     <v-card
-      :class="`transparent project-block scroller scroller__${block.color} ${singleview ? 'singleview' : ''}`"
+      :class="`transparent project-block scroller scroller__${block.color}`"
       flat
       style="position: relative;"
     >
@@ -120,12 +120,12 @@ import taskcards from '@/components/taskcards'
 import dragarea from '@/components/dragarea'
 import { dtask } from '@/components/dialog'
 import { colors } from '@/helpers'
+import { mapState } from 'vuex'
 export default {
   name: 'taskblock',
   components: {taskcards, dtask, dragarea},
   props: {
-    blockid: { required: true, type: [String, Number] },
-    singleview: Boolean
+    blockid: { required: true, type: [String, Number] }
   },
   data: () => ({
     blocktext: '',
@@ -138,6 +138,7 @@ export default {
     this.blocktext = this.block.text
   },
   computed: {
+    ...mapState(['blocks', 'tasks']),
     block: {
       get () {
         return this.blocks[this.blockid]

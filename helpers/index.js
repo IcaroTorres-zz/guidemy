@@ -19,7 +19,8 @@ export const randomStatus = () => {
 }
 
 export function randomDate (start, end) {
-  return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()))
+  let [ dStart, dEnd ] = [new Date(start).getTime(), new Date(end).getTime()]
+  return new Date(dStart + Math.random() * (dEnd - dStart))
 }
 
 export function uniq () {
@@ -31,20 +32,17 @@ export function uniq () {
   return [...new Set(flat)].filter(i => i !== null && i !== undefined)
 }
 
-export const dateConfig = (lower) => {
-  const lowerDate = new Date(lower)
+export const dateConfig = (start) => {
   // const limit = daysBetween(lowerDate, increaseDays(new Date(), -7))
   // const random = Math.random() * limit
-
-  const genstatus = Math.random() <= 0.80 ? 1 : 0
-  let created = randomDate(lowerDate, increaseDays(lowerDate, 10))
-  let end = randomDate(lowerDate, new Date())
-  let finished = genstatus === 1 ? randomDate(lowerDate, increaseDays(new Date(), 7)) : null
+  let created = randomDate(start, increaseDays(start, 10))
+  let end = randomDate(created, new Date())
+  let finished = randomDate(created, increaseDays(new Date(), 4))
   return {
     created: created,
     end: end,
     finished: finished,
-    status: genstatus
+    status: 1
   }
 }
 

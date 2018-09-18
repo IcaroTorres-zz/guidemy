@@ -101,41 +101,44 @@
         </v-container>
       </v-card-text>
       <v-divider></v-divider>
-      <v-card-actions class="pl-4">
-        <v-avatar
-          size="48px"
-          color="grey lighten-4"
-        >
-          <img :src="loggedUserObj.picture" alt="avatar">
-        </v-avatar>
-        <v-flex>
-          <v-form 
-            v-model="valid" 
-            ref="newcomment" 
-            @submit.prevent="post"
-            @keydown.prevent.enter>
-            <v-textarea
-              required
-              :rules="[v => !!v || 'type your comment']"
-              class="px-2"
-              autofocus
-              flat
-              row-height="16"
-              rows="2"
-              auto-grow
-              placeholder="Leave your comment"
-              v-model="comment.text"
-            ></v-textarea>
-          </v-form>
-        </v-flex>
-        <v-icon class="pr-2" color="primary" @click="valid ? submit() : ''">send</v-icon>
-      </v-card-actions>
+      <v-form 
+        v-model="valid" 
+        ref="newcomment" 
+        @submit.prevent="post"
+        @keydown.prevent.enter>
+        <v-card-actions class="pl-4">
+          <v-avatar
+            size="48px"
+            color="grey lighten-4"
+          >
+            <img :src="loggedUserObj.picture" alt="avatar">
+          </v-avatar>
+          <v-flex>
+              <v-textarea
+                required
+                :rules="[v => !!v || 'type your comment']"
+                class="px-2"
+                autofocus
+                flat
+                row-height="16"
+                rows="2"
+                auto-grow
+                placeholder="Leave your comment"
+                v-model="comment.text"
+              ></v-textarea>
+          </v-flex>
+          <v-btn flat icon class="pr-2" color="primary" type="submit">
+            <v-icon >send</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
 import {Comment} from '@/models'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'taskcomments',
   props: {
@@ -150,12 +153,14 @@ export default {
     }
   },
   created () {
-    this.comment = Object(new Comment({
+    this.comment = new Comment({
       at: this.taskid,
       by: this.loggedUser
-    }))
+    })
   },
   computed: {
+    ...mapState(['tasks', 'loggedUser']),
+    ...mapGetters(['useravatar', 'username', 'loggedUserObj']),
     computedTask () { return this.tasks[this.taskid] },
     comments () {
       return this.$store.getters.taskComments(this.computedTask)
@@ -164,17 +169,17 @@ export default {
   },
   methods: {
     post () {
-      this.postComment(Object(new Comment({
-        ...this.comment,
-        date: new Date()
-      })))
-      this.comment = Object(new Comment({ at: this.taskid, by: this.loggedUser }))
-    },
-    submit () {
-      if (this.$refs.newcomment.validate()) this.post()
+      if (this.valid && this.$refs.newcomment.validate()) {
+        this.$store.dispatch('postComment', new Comment({
+          ...this.comment,
+          date: new Date()
+        })).then(() => {
+          this.comment = new Comment({ at: this.taskid, by: this.loggedUser })
+        })
+      }
     },
     onDeleteComment (cid) {
-      this.deleteComment(cid)
+      this.$store.dispatch('deleteComment', cid)
       this.sheet = false
     }
   }

@@ -47,32 +47,6 @@
                   ></v-date-picker>
                 </v-menu>
               </v-flex>
-              <!-- <v-flex xs12>
-              <v-autocomplete
-                dense
-                prepend-icon="view_quilt"
-                label="project"
-                v-model="editing.project"
-                :items="myProjects"
-                item-text="title"
-                :item-value="item => item.id"
-                required
-                :rules="[v => !!v || 'field required']"
-                :menu-props="{'closeOnClick':true, 'closeOnContentClick': true}"
-              >
-                <template slot="item" slot-scope="data" >
-                  <template v-if="typeof data.item !== 'object'">
-                    <v-list-tile-content v-text="data.item"></v-list-tile-content>
-                  </template>
-                  <template v-else>
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="data.item.title"></v-list-tile-title>
-                    </v-list-tile-content>
-                  </template>
-                </template>
-              </v-autocomplete>
-
-              </v-flex> -->
               <v-flex xs6>
                 <v-autocomplete
                   prepend-icon="account_circle"
@@ -97,7 +71,7 @@
                       </v-list-tile-avatar>
                       <v-list-tile-content>
                         <v-list-tile-title v-html="data.item.username"></v-list-tile-title>
-                        <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName"></v-list-tile-sub-title>
+                        <v-list-tile-sub-title class="caption grey--text" v-html="data.item.displayName || data.item.username"></v-list-tile-sub-title>
                       </v-list-tile-content>
                     </template>
                   </template>
@@ -136,7 +110,7 @@
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn flat color="primary" @click.stop="dialog = false">Cancel</v-btn>
-            <v-btn round color="success" type="submit">create</v-btn>
+            <v-btn round color="success" type="submit">save</v-btn>
           </v-card-actions>
         </v-card>
       </v-form>
@@ -144,7 +118,8 @@
 </template>
 
 <script>
-import {Task} from '../../models'
+import {Task} from '@/models'
+import { mapState, mapGetters } from 'vuex'
 export default {
   name: 'dialogtask',
   props: {
@@ -158,25 +133,19 @@ export default {
       editing: new Task({
         creator: this.loggedUser,
         block: this.blockid
-      })
+      }),
+      pickerdate: new Date().toISOString().split('T')[0]
     }
   },
   mounted () {
     if (this.taskid) {
       this.editing = new Task({...this.tasks[this.taskid]})
+      this.pickerdate = new Date(this.editing.end).toISOString().split('T')[0]
     }
   },
-  // watch: {
-  //   computedTask: {
-  //     get () {
-  //       return this.editing
-  //     },
-  //     set (val) {
-  //       this.editing = val
-  //     }
-  //   }
-  // },
   computed: {
+    ...mapState(['tasks', 'blocks', 'users', 'projects']),
+    ...mapGetters(['loggedUserObj', 'useravatar']),
     computedTask () {
       return this.tasks[this.taskid]
     },
@@ -186,20 +155,8 @@ export default {
     assignable () {
       return this.projects[this.taskblock.project].team.map(uid => this.users[uid]) || []
     },
-    pickerdate: {
-      get () {
-        return new Date(this.editing.end).toISOString().split('T')[0]
-      },
-      set (val) {
-        this.editing.end = new Date(val)
-      }
-    },
     computedDate () {
-      if (this.editing.end instanceof Date) {
-        return this.editing.end.toLocaleDateString()
-      } else { // (this.editing.end instanceof String) {
-        return this.stringToDateddmmYYYY(this.editing.end)
-      }
+      return this.stringToDateddmmYYYY(this.editing.end)
     }
   },
   methods: {

@@ -15,12 +15,13 @@
         {{appError.message}}
       </v-alert>
     </v-card-text>
-      <v-form 
-        v-model="valid" 
-        ref="form" 
-        @submit.prevent="signup"
-        @keydown.prevent.enter>
-        <v-layout row wrap justify-space-around>
+    <v-form 
+      v-model="valid" 
+      ref="form" 
+      @submit.prevent="signup"
+      @keydown.prevent.enter>
+      <v-card-text>
+        <v-layout row wrap justify-space-between align-center>
           <v-flex xs10 sm5>
             <v-text-field
               label="User Name"
@@ -43,7 +44,7 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex xs10>
+          <v-flex xs12>
             <v-text-field
               label="Email"
               name="email"
@@ -53,7 +54,7 @@
               required>
             </v-text-field>
           </v-flex>
-          <v-flex xs10 sm5>
+          <v-flex xs12 sm5>
             <v-text-field
               label="Password"
               name="password"
@@ -76,20 +77,24 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex xs11>
+          <!-- <v-flex xs11>
             <v-layout>
-              <v-spacer></v-spacer>
-              <v-btn color="success" type="submit" :disabled="!valid" >Register</v-btn>
+              
             </v-layout>
-          </v-flex>
+          </v-flex> -->
         </v-layout>
-      </v-form>
-      <v-progress-linear
-        color="info"
-        height="2"
-        v-show="!!appLoading"
-        :indeterminate="true"/>
-      <hr class="primary my-1" v-show="!appLoading">
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="success" type="submit" :disabled="!valid" >Register</v-btn>
+      </v-card-actions>
+    </v-form>
+    <v-progress-linear
+      color="info"
+      height="2"
+      v-show="!!appLoading"
+      :indeterminate="true"/>
+    <hr class="primary my-1" v-show="!appLoading">
     <v-card-actions>
       <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
@@ -99,6 +104,7 @@
 </template>
 <script>
 import { routeMixin } from '@/mixins'
+import { mapMutations, mapState } from 'vuex'
 export default {
   layout: 'login',
   mixins: [routeMixin],
@@ -124,6 +130,7 @@ export default {
     ]
   }),
   computed: {
+    ...mapState(['appLoading', 'appError']),
     confirmRule () {
       return this.newUser.password === this.newUser.confirmPassword
     },
@@ -135,16 +142,16 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setError', 'clearError']),
     signup () {
       if (this.$refs.form.validate()) {
         this.$store.dispatch('signup', {
           ...this.newUser,
           password: this.password
-        })
-          .then((responseUser) => {
-            // console.log(responseUser)
-            this.$router.push('dashboard')
-          })
+        }).then((responseUser) => {
+          // console.log(responseUser)
+        }).then(() => this.$store.dispatch('fetchAppData'))
+          .then((data) => this.$router.push('/dashboard'))
           .catch(error => {
             console.warn(error)
             this.$store.dispatch('setError', { message: error.message || error })

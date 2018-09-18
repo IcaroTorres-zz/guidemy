@@ -33,15 +33,6 @@
         </v-card-title>
       </v-card>
     </v-layout>
-    <!-- <v-layout row align-content-start justify-center>
-      <div v-for="member in team" :key="member.id">
-        <memberResult
-          :member="member" 
-          :project="resultProject" 
-          :weight="weight"/>
-      </div>
-    </v-layout> -->
-
     <v-data-iterator
       :items="team"
       :rows-per-page-items="rowsPerPageItems"
@@ -90,6 +81,7 @@
 </template>
 
 <script>
+import {mapState, mapGetters} from 'vuex'
 import { projectPieChart, projectToolbar } from '@/components/project'
 import memberResult from '@/components/memberResult'
 export default {
@@ -99,12 +91,21 @@ export default {
   },
   data: () => ({
     deliveryWeight: 50,
-    rowsPerPageItems: [4, 5, 6, 7, 8, 9, 10, 11, 12],
+    rowsPerPageItems: [2, 4, 6, 8],
     pagination: {
       rowsPerPage: 4
     }
   }),
   computed: {
+    ...mapState([
+      'loggedUser',
+      'users',
+      'projects',
+      'dailyMeetings'
+    ]),
+    ...mapGetters([
+      'temperColor'
+    ]),
     dailyWeight: {
       get () {
         return 100 - this.deliveryWeight

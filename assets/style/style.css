@@ -22,19 +22,22 @@ a {
   max-width: 100%; */
   text-overflow: ellipsis;
 }
-
+.project-block-container,
 .project-block {
   margin: 0 auto;
   max-height: 450px;
-  width: 340px;
+  width: 300px;
+  min-width: 300px;
   overflow-y: auto;
   overflow-x: hidden;
 }
-/* .project-block-container {
-  min-width: 500px;
-  max-width: 650px;
-} */
-.project-block.singleview {
+.project-block-container {
+  /* min-width: 500px; */
+  /* max-width: 650px; */
+  max-height: 700px;
+  width: 300px;
+}
+/* .project-block.singleview {
   margin: 0 auto;
   max-height: 700px;
   min-width: 280px;
@@ -44,7 +47,7 @@ a {
 .project-block-container.singleview {
   min-width: 500px;
   max-width: 800px;
-}
+} */
 
 .block-toolbar {
   position: sticky;
@@ -79,17 +82,17 @@ a {
 }
   /* width */
 *::-webkit-scrollbar {
-  height: 4px;
+  height: 8px;
 }
 
   /* width */
 *::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 /* Track */
 *::-webkit-scrollbar-track { /*, *::-webkit-scrollbar-track, {*/
-  background: rgba(50,50,50,0.4);
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
@@ -99,19 +102,19 @@ a {
 
 /* Handle on hover */
 *::-webkit-scrollbar-thumb:hover { /*,, *::-webkit-scrollbar-thumb:hover { */
-  background: #000; 
+  background: #000;
 }
 
 
 
 /* Track */
 .scroller__primary::-webkit-scrollbar-track {
-  background: #607d8b
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__primary::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #607d8b
 }
 
 /* Handle on hover */
@@ -122,12 +125,12 @@ a {
 
 /* Track */
 .scroller__warning::-webkit-scrollbar-track {
-  background: #deb51f
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__warning::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #deb51f
 }
 
 /* Handle on hover */
@@ -138,12 +141,12 @@ a {
 
 /* Track */
 .scroller__info::-webkit-scrollbar-track {
-  background: #03a9f4
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__info::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #03a9f4
 }
 
 /* Handle on hover */
@@ -154,12 +157,12 @@ a {
 
 /* Track */
 .scroller__accent::-webkit-scrollbar-track {
-  background: #2ce6d5
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__accent::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #2ce6d5
 }
 
 /* Handle on hover */
@@ -170,12 +173,12 @@ a {
 
 /* Track */
 .scroller__success::-webkit-scrollbar-track {
-  background: #5bce60
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__success::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #5bce60
 }
 
 /* Handle on hover */
@@ -186,12 +189,12 @@ a {
 
 /* Track */
 .scroller__error::-webkit-scrollbar-track {
-  background: #af1613
+  background: rgba(200,200,200,0.2);
 }
 
 /* Handle */
 .scroller__error::-webkit-scrollbar-thumb {
-  background: rgba(50,50,50,0.4);
+  background: #af1613
 }
 
 /* Handle on hover */
@@ -237,12 +240,12 @@ g.highcharts-data-labels {
   border-right: 2px solid #607d8b;
   bottom: 0px;
   transform-origin: bottom right;
-} */
+} 
 
 .flat-link:hover::before, .flat-link:hover::after{
   transform: scaleX(1);
 }
-
+*/
 .chart--total {
   color: white;
   /* font-size: 18px; */
@@ -268,9 +271,9 @@ text.highcharts-credits {
   background: transparent !important;
   border: 1.5px dashed #777;
 }
-.border-dashed-grey i{
-  /* color: #777; */
-}
+/* .border-dashed-grey i{
+  color: #777; 
+}*/
 .border-dashed-grey:hover {
   /* background: rgba(255,255,255,0.2); */
   background: rgba(255,255,255,0.1) !important;
@@ -300,12 +303,11 @@ text.highcharts-credits {
 }
 .new-block__button {
   position: absolute;
-  top: -4px;
+  top: 0px;
   left: 0;
-  /* left: -3px; */
   bottom: 0;
   width: 36px;
-  margin: 16px 0 0;
+  margin: 0;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   text-align: center;

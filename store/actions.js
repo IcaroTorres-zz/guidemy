@@ -7,34 +7,34 @@ import {
   loremDescription,
   userProjectDailies,
   defaultBlockSetup,
-  dateConfig,
-  randomInRange
+  dateConfig
 } from '@/helpers'
 
 const snackTimeout = 6000
 const dailyResult = { 0: 'pending', 1: 'accepted', '-1': 'rejected' }
 export const actions = {
   generateData ({ state, commit }) {
-    const tempUsers = userbase.results.map(u => {
-      const newUser = {
-        ...new User({
-          id: u.login.uuid,
-          email: u.email,
-          picture: u.picture.large,
-          username: u.login.username,
-          displayName: Object.values(u.name)
-            .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
-            .slice(1)
-            .join(' ')
-        })
-      }
-      commit('saveuser', newUser)
-      return newUser
-    })
-    for (let i = 0; i < 11; i++) {
-      let projectTeam = []
-      let teamsize = randomInRange(1, 5)
-      for (let j = 0; j < teamsize; j++) {
+    const tempUsers = userbase.results
+      .slice(5, 20)
+      .map(u => {
+        const newUser = {
+          ...new User({
+            id: u.login.uuid,
+            email: u.email,
+            picture: u.picture.large,
+            username: u.login.username,
+            displayName: Object.values(u.name)
+              .map(namepart => namepart.charAt(0).toUpperCase() + namepart.substr(1))
+              .slice(1)
+              .join(' ')
+          })
+        }
+        commit('saveuser', newUser)
+        return newUser
+      })
+    for (let i = 0; i < 3; i++) {
+      let projectTeam = [state.loggedUser]
+      for (let j = 0; j < 3; j++) {
         let chosenIndex = Math.floor(Math.random() * tempUsers.length)
         let insertId = tempUsers[chosenIndex].id
         projectTeam = uniq(projectTeam, insertId)
@@ -64,15 +64,15 @@ export const actions = {
             commit('saveDaily', daily)
           })
         // task creation
-        for (let j = 0; j < randomInRange(5, 10); j++) {
+        for (let j = 0; j < 5; j++) {
           let bid = projectBlocks[Math.floor(Math.random() * projectBlocks.length)].id
           const newTask = new Task({
-            creator: Math.random() > 0.30 ? state.loggedUser : uid,
+            creator: state.loggedUser,
             assigned: uid,
             block: bid,
             title: loremLittle(),
             description: loremDescription(),
-            ...dateConfig('2018-08-15')
+            ...dateConfig('2018-09-01')
           })
           commit('saveTask', { ...newTask })
         }
@@ -118,7 +118,7 @@ export const actions = {
     commit('setError', error)
     return error
   },
-  signup ({ commit, dispatch }, payload) {
+  signup ({ commit }, payload) {
     const userSent = new User(payload)
     commit('signuser', userSent)
     // commit('toggleSnack', {
@@ -219,22 +219,14 @@ export const actions = {
       message: `invitation sent`
     })
     return uids.map(id => state.users[id])
-    // new Promise(resolve => resolve(setTimeout(() => { commit('toggleSnack') }, snackTimeout)))
-    //   .then(() => dispatch('inviteResponse'))
   },
-  // inviteResponse ({ state, commit }, uid) {
-  //   commit('toggleSnack', {
-  //     message: `'${state.users[uid].username}' joined project`,
-  //     color: 'success'
-  //   })
-  //   setTimeout(() => { commit('toggleSnack') }, snackTimeout)
-  // },
   toggleArchiving ({ commit, state }, pid) {
     let status = state.projects[pid].status === 1 ? 're-opened' : 'archived'
+    let color = state.projects[pid].status === 1 ? 'success' : 'warning'
     commit('toggleArchiving', pid)
     commit('toggleSnack', {
       message: `project ${status}.`,
-      color: 'success'
+      color: color
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return pid

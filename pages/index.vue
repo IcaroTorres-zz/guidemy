@@ -56,6 +56,7 @@
   </v-card>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { routeMixin } from '@/mixins'
 export default {
   layout: 'login',
@@ -67,38 +68,52 @@ export default {
       password: ''
     }
   }),
+  computed: mapState([
+    'appLoading',
+    'appError'
+  ]),
   methods: {
+    ...mapMutations([
+      'setError',
+      'clearError'
+    ]),
     signin () {
       if (this.valid) {
         const emailOrUsername = this.newUser.emailOrUsername.toLowerCase()
-        const emailPattern = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
-        const payload = {
-          email: emailPattern.test(emailOrUsername)
-            ? emailOrUsername
-            : this.$store.getters.emailByUsername(emailOrUsername),
-          username: !this.$store.getters.available(emailOrUsername)
-            ? emailOrUsername
-            : this.$store.getters.usernameByEmail(emailOrUsername),
-          password: this.password
+        // const emailPattern = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
+        // const payload = {
+        //   email: emailPattern.test(emailOrUsername)
+        //     ? emailOrUsername
+        //     : this.$store.getters.emailByUsername(emailOrUsername),
+        //   username: !this.$store.getters.available(emailOrUsername)
+        //     ? emailOrUsername
+        //     : this.$store.getters.usernameByEmail(emailOrUsername),
+        //   password: this.password
+        // }
+
+        const dummyPayload = {
+          username: emailOrUsername,
+          email: emailOrUsername + '.dummy@guidemy.io',
+          displayName: emailOrUsername.toUpperCase()
         }
-        this.$store.dispatch('signin', payload)
+        // this.$store.dispatch('signin', payload)
+        this.$store.dispatch('signup', dummyPayload)
           .then((result) => {
             if (result) {
               if (result.username) {
                 // console.log(result)
                 console.warn(`User ${result.username} - ${result.email}: logged On sucessfully`)
-                this.$router.push('dashboard')
               } else throw new Error('Invalid E-mail or Username!!')
             } else throw Error('Request failed!!')
           })
           .then(() => this.$store.dispatch('fetchAppData'))
           .then(response => {
             // console.log(response)
+            this.$router.push('/dashboard')
           })
           .catch(error => {
             console.warn(error)
             this.setError(error.message || error)
-            this.setLoading(false)
           })
       }
     }

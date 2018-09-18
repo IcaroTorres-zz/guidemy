@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     member: {
@@ -102,6 +103,13 @@ export default {
     hover: 0
   }),
   computed: {
+    ...mapGetters([
+      'memberScoreForTasks',
+      'memberScoreForDailies',
+      'username',
+      'useravatar',
+      'temperColor'
+    ]),
     scoreForTasks () {
       return this.memberScoreForTasks(this.member.id, this.project.id)
     },

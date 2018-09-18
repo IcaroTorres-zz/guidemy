@@ -193,6 +193,7 @@
 
 <script lang="js">
 import Vue from 'vue'
+import { mapGetters, mapState, mapActions } from 'vuex'
 import { dtaskcomments, dtaskdone, dtaskdel, dtask } from '@/components/dialog'
 export default {
   name: 'taskcards',
@@ -204,7 +205,25 @@ export default {
   data: () => ({
     visionMap: {}
   }),
+  computed: {
+    ...mapState([
+      'blocks',
+      'users',
+      'loggedUser',
+      'projects',
+      'lightOut'
+    ]),
+    ...mapGetters([
+      'isDelayed',
+      'projectBlocks',
+      'username',
+      'useravatar',
+      'daysBetween',
+      'temperColorInvert'
+    ])
+  },
   methods: {
+    ...mapActions(['moveTask']),
     openTaskMenu (tid) {
       Vue.set(this.visionMap, tid, !this.visionMap[tid])
     },
