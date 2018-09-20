@@ -79,6 +79,11 @@ export const mutations = {
     }
     Vue.set(state.projects[block.project], 'blocks', project.blocks)
   },
+  deleteBlock (state, bid) {
+    let project = state.projects[state.blocks[bid].project]
+    Vue.set(state.projects[project.id], 'blocks', project.blocks.filter(b => b !== bid))
+    Vue.set(state.blocks, bid, undefined)
+  },
   moveTask (state, { tid, bid }) {
     let blocktasks = state.blocks[state.tasks[tid].block].tasks.filter(t => t !== tid)
     Vue.set(state.blocks[state.tasks[tid].block], 'tasks', blocktasks)

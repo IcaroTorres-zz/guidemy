@@ -29,15 +29,16 @@ export function uniq () {
   items.forEach(i => {
     if (i !== null && i !== undefined) { i instanceof Array ? flat.push(...i) : flat.push(i) }
   })
-  return [...new Set(flat)].filter(i => i !== null && i !== undefined)
+  const result = [...new Set(flat)].filter(i => i !== null && i !== undefined)
+  return result
 }
 
 export const dateConfig = (start) => {
   // const limit = daysBetween(lowerDate, increaseDays(new Date(), -7))
   // const random = Math.random() * limit
-  let created = randomDate(start, increaseDays(start, 10))
+  let created = randomDate(start, increaseDays(start, 5))
   let end = randomDate(created, new Date())
-  let finished = randomDate(created, increaseDays(new Date(), 4))
+  let finished = randomDate(created, increaseDays(end, 5))
   return {
     created: created,
     end: end,
@@ -45,27 +46,6 @@ export const dateConfig = (start) => {
     status: 1
   }
 }
-
-export const generateDailies = (target, { startDate, endDate = new Date() }, p, a, m) => {
-  return Array.from(Array(daysBetween(startDate, endDate)).keys()).map((i, idx, arr) => {
-    let status = i === arr.length - 1 ? 0 : randomStatus()
-    let newDaily = new Daily({
-      project: p,
-      manager: m,
-      assigned: a,
-      r1: status === 1 ? 'aaaaaa' : '',
-      r2: status === 1 ? 'aaaaaa' : '',
-      r3: status === 1 ? 'aaaaaa' : '',
-      created: increaseDays(startDate, i),
-      end: increaseDays(startDate, i + 1), // 24hr after
-      finished: status === 1 ? randomDate(increaseDays(startDate, i), increaseDays(startDate, i + 1)) : null,
-      status: status
-    })
-    target[newDaily.id] = newDaily
-    return newDaily.id
-  }).reverse()
-}
-
 export const defaultBlockSetup = [
   {text: 'TO-DO', color: 'primary'},
   {text: 'DOING', color: 'accent'},
@@ -103,11 +83,15 @@ export const loremDescription = () => {
 }
 
 export const userProjectDailies = (p, a, m, startDate = new Date('2018-09-05')) => {
+  let endDate = increaseDays(new Date(), 1)
   return Array.from(
-    Array(daysBetween(startDate, new Date())).keys()
+    Array(daysBetween(startDate, endDate)).keys()
   ).map((i, idx, arr) => {
     let status = i === arr.length - 1 ? 0 : randomStatus()
-    const answers = loremDescription().split('. ')
+    let answers = loremDescription().split('. ')
+    let created = increaseDays(startDate, i)
+    let end = increaseDays(created, 1)
+    let finished = status === 1 ? randomDate(created, end) : null
     return new Daily({
       project: p,
       manager: m,
@@ -115,9 +99,9 @@ export const userProjectDailies = (p, a, m, startDate = new Date('2018-09-05')) 
       r1: status === 1 ? answers.slice(0, 3).join('. ') : '',
       r2: status === 1 ? answers.slice(3, 4).join('. ') : '',
       r3: status === 1 ? answers.slice(4, answers.length).join('. ') : '',
-      created: increaseDays(startDate, i),
-      end: increaseDays(startDate, i + 1), // 24hr after
-      finished: status === 1 ? randomDate(increaseDays(startDate, i), increaseDays(startDate, i + 1)) : null,
+      created: created,
+      end: end, // 24hr after
+      finished: finished,
       status: status
     })
   })

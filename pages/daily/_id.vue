@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="new-daily-container">
     <h2 class="headline text-xs-center">
-      Project: <nuxt-link :to="{name: 'project', params: {id: dailyProject.id}}">
+      Project: <nuxt-link :to="{name: 'project-id', params: {id: dailyProject.id}}">
         {{dailyProject.title}}
       </nuxt-link>
     </h2>
@@ -71,6 +71,7 @@
 </template>
 
 <script>
+import {mapState, mapGetters, mapActions} from 'vuex'
 export default {
   validate ({store, params}) {
     console.log('daily', store.state.dailyMeetings[params.id], params)
@@ -91,6 +92,16 @@ export default {
     }
   },
   computed: {
+    ...mapState([
+      'loggedUser',
+      'projects',
+      'dailyMeetings'
+    ]),
+    ...mapGetters([
+      'username',
+      'useravatar',
+      'loggedUserObj'
+    ]),
     daily () {
       return this.dailyMeetings[this.$route.params.id]
     },
@@ -116,6 +127,7 @@ export default {
     // }
   },
   methods: {
+    ...mapActions(['answerDaily']),
     onAnswerDaily () {
       this.answerDaily(this.newDaily)
       this.newDaily = undefined

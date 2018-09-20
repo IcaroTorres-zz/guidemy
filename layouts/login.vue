@@ -1,38 +1,33 @@
 <template>
   <v-app dark>
-      <v-toolbar prominent fixed flat class="transparent">
+    <v-toolbar prominent fixed flat class="transparent hidden-sm-and-down">
       <v-toolbar-title>{{apptitle}}</v-toolbar-title>
       <v-spacer></v-spacer>
-        <v-btn flat color="secondary">Why {{apptitle}}?</v-btn>
-        <v-btn flat color="secondary">Examples</v-btn>
+        <v-btn flat color="secondary">user guide</v-btn>
+        <v-btn flat color="secondary">Objetives</v-btn>
         <v-btn flat color="secondary">About Us</v-btn>
-        <v-btn flat color="secondary">Find Projects</v-btn>
     </v-toolbar>
     <v-content>
       <section>
         <v-parallax
-          :src="require('@/assets/hero.jpeg')" 
-          :style="{ 'height': 'auto'}"
-          class="pt-5"
+          :src="require('@/assets/hero.jpeg')"
+          style="min-height: 80vh; height: auto;"
           >
           <v-layout
-            :row="mdAndUp || $route.name === 'signup'"
-            :wrap="mdAndUp || $route.name === 'signup'"
-            :column="smAndDown && $route.name === 'index'"
+            row
+            wrap
             align-center
-            class="my-3"
             justify-center
             fill-height
-            :style="{'height':smAndUp || $route.name === 'index' ? '600px' : '850px'}"
+            style="min-height: 80vh; height: auto;"
           >
-            <div class="text-xs-center">
-              <img src="../assets/logo1-alpha.png" alt="Guideme"
-                :style="{'height':smAndUp ? '100px' : '60px'}">
-              <h1 :class="{'display-2': smAndUp, 'headline': !smAndUp, 'primary--text': true}">{{apptitle}}</h1>
-              <div :class="{'subheading': smAndUp, 'body-2': !smAndUp, 'secondary--text': true}">Agile Tracker.</div>
+            <div class="text-xs-center hidden-sm-and-down" >
+              <img src="../assets/logo1-alpha.png" alt="Guideme" height="150px">
+              <h1 class="display-2 primary--text">{{apptitle}}</h1>
+              <div class="subheading secondary--text">Agile Tracker.</div>
             </div>
-            <v-flex xs1></v-flex>
-            <v-flex xs12 sm7 md5 lg4 style="opacity: .8">
+            <v-flex xs1 class="hidden-sm-and-down"></v-flex>
+            <v-flex xs12 sm6 md4 lg3 style="opacity: .85">
               <nuxt />
             </v-flex>
           </v-layout>
@@ -60,7 +55,7 @@
                   <v-layout row wrap justify-center align-center>
                     <template v-for="(column, i) in promoColumns">
                       <v-flex xs12 sm4 :key="column.title"
-                      :class="{'left-border': i !== 0 && smAndUp, 'top-border': xsOnly && i !== 0}">
+                      :class="{'left-border': i !== 0 && !xsOnly, 'top-border': !smAndUp && i !== 0}">
                         <v-card :color="column.color" class="elevation-20">
                           <v-card-text class="text-xs-center">
                             <v-icon medium v-html="column.icon"/>
@@ -208,14 +203,6 @@ export default {
       }
     ]
   }),
-  // watch: {
-  //   appLoading (val, oldval) {
-  //     // console.log(val, oldval, 'app loading state change')
-  //     if (val) {
-  //       this.$nuxt.$loading.start()
-  //     } else this.$nuxt.$loading.finish()
-  //   }
-  // },
   computed: mapGetters([
     'mdAndUp',
     'smAndUp',

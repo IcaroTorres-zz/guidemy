@@ -32,7 +32,7 @@ export const actions = {
         commit('saveuser', newUser)
         return newUser
       })
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       let projectTeam = [state.loggedUser]
       for (let j = 0; j < 3; j++) {
         let chosenIndex = Math.floor(Math.random() * tempUsers.length)
@@ -203,6 +203,15 @@ export const actions = {
     })
     setTimeout(() => { commit('toggleSnack') }, snackTimeout)
     return state.blocks[block.id]
+  },
+  deleteBlock ({ commit, state }, payload) {
+    const block = state.blocks[payload]
+    commit('deleteBlock', payload)
+    commit('toggleSnack', {
+      message: `block ${block.text} removed!`
+    })
+    setTimeout(() => { commit('toggleSnack') }, snackTimeout)
+    return state.projects[block.project]
   },
   saveTask ({ commit }, payload) {
     // console.log(payload)

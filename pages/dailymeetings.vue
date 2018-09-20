@@ -2,15 +2,15 @@
   <v-card class="elevation-5">
     <projectToolbar :projectid="selectedProject"/>
     <v-card-text>
-      <v-layout row justify-space-between align-center>     
-        <v-flex xs6>
+      <v-layout row wrap align-center>     
+        <v-flex xs12 sm6 class="pa-2">
           <v-select 
             dense
             hide-details
             v-model="selectedProject"
             :items="myProjects"
             item-value="id"
-            item-text="title"
+            :item-text="item => item.title | limitToSize(40)"
             label="User projects">
             <v-list-tile slot="prepend-item" disabled>
               <v-list-tile-avatar color="primary title">
@@ -33,12 +33,12 @@
             <v-divider slot="prepend-item" class="my-1"></v-divider>
           </v-select>
         </v-flex>
-        <v-flex xs6 class="caption text-xs-center mr-3">
-          <v-layout row justify-end align-center>
-            <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.participation}}%</span><br> Participation</div>
-            <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.attended}}</span><br> Attended</div>
-            <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.missed}}</span><br> Missed</div>
-            <div class="py-3 ml-5"><span :class="`${resultColor}--text title`"> {{myResults.total}}</span><br> Total</div>
+        <v-flex xs12 sm6 class="caption text-xs-center py-2">
+          <v-layout row justify-space-around align-center>
+            <div><span :class="`${resultColor}--text title`"> {{myResults.participation}}%</span><br> Participation</div>
+            <div><span :class="`${resultColor}--text title`"> {{myResults.attended}}</span><br> Attended</div>
+            <div><span :class="`${resultColor}--text title`"> {{myResults.missed}}</span><br> Missed</div>
+            <div><span :class="`${resultColor}--text title`"> {{myResults.total}}</span><br> Total</div>
           </v-layout>
         </v-flex>
       </v-layout>
@@ -166,14 +166,11 @@
         </v-layout>
       </v-container>
     </v-card-text>
-    <!-- <v-card-actions class="pl-4">
-      <v-spacer></v-spacer>
-      <v-btn flat color="primary" @click="backToTop">Back to top</v-btn>
-    </v-card-actions> -->
   </v-card>
 </template>
 
 <script>
+import {mapState, mapGetters, mapActions} from 'vuex'
 import { projectToolbar } from '@/components/project'
 export default {
   validate ({store}) {
@@ -198,9 +195,21 @@ export default {
     this.selectedProject = this.myProjects[0].id
   },
   computed: {
+    ...mapState([
+      'loggedUser',
+      'projects'
+    ]),
+    ...mapGetters([
+      'loggedUserObj',
+      'username',
+      'useravatar',
+      'myProjects',
+      'projectDailies',
+      'temperColor'
+    ]),
     openProject () { return this.selectedProject ? this.projects[this.selectedProject] : this.myProjects[0] },
     predailies () {
-      return (this.$store.getters.projectDailies(this.selectedProject)[this.loggedUser] || [])
+      return (this.projectDailies(this.selectedProject)[this.loggedUser] || [])
         .sort(this.sortByStart)
     },
     dailies () {
@@ -238,6 +247,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['answerDaily', 'judgeDaily']),
     onAnswerDaily () {
       this.answerDaily(this.newDaily)
       this.newDaily = undefined
@@ -245,14 +255,6 @@ export default {
     dailyColor (d) {
       return d.status === -1 ? 'error' : d.status === 0 ? 'warning' : 'success'
     }
-    // backToTop () {
-    //   let container = document.getElementById('topRef')
-    //   let event = new CustomEvent('scroll', {})
-    //   container.pageYOffset = 0
-    //   setTimeout(() => {
-    //     container.scrollTop = 0
-    //   }, 200)
-    //   container.dispatchEvent(event)
   }
 }
 </script>

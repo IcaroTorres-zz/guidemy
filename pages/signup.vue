@@ -1,8 +1,14 @@
 <template>
-  <v-card class="elevation-10">
-    <v-card-title class="layout justify-center">
-      <div class="display-2 primary--text">Welcome to {{apptitle}}</div>
-    </v-card-title>
+  <v-card tile class="elevation-10">
+    <v-card-text class="layout column justify-center">
+      <div class="text-xs-center hidden-md-and-up">
+        <img src="../assets/logo1-alpha.png" alt="Guideme" height="60px">
+        <h1 class="headline primary--text">{{apptitle}}</h1>
+        <div class="body-2 grey--text">Agile Tracker.</div>
+      </div>
+      <div class="display-1 primary--text text-xs-center">Sign <u>Up</u></div>
+    </v-card-text>
+    <v-divider></v-divider>
     <v-card-text class="caption text-xs-center">
       <b>Sign Up</b> below and try {{apptitle}} on your new projects.
       <hr class="primary my-1">
@@ -77,11 +83,6 @@
             >
             </v-text-field>
           </v-flex>
-          <!-- <v-flex xs11>
-            <v-layout>
-              
-            </v-layout>
-          </v-flex> -->
         </v-layout>
       </v-card-text>
       <v-card-actions>
@@ -92,9 +93,9 @@
     <v-progress-linear
       color="info"
       height="2"
-      v-show="!!appLoading"
+      v-show="!!isLoading"
       :indeterminate="true"/>
-    <hr class="primary my-1" v-show="!appLoading">
+    <hr class="primary my-1" v-show="!isLoading">
     <v-card-actions>
       <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
@@ -115,7 +116,8 @@ export default {
       displayName: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      isLoading: false
     },
     usernameRules: [
       v => !!v || 'Name is required',
@@ -144,6 +146,7 @@ export default {
   methods: {
     ...mapMutations(['setError', 'clearError']),
     signup () {
+      this.isLoading = true
       if (this.$refs.form.validate()) {
         this.$store.dispatch('signup', {
           ...this.newUser,
@@ -157,6 +160,7 @@ export default {
             this.$store.dispatch('setError', { message: error.message || error })
           })
       }
+      this.isLoading = false
     }
   }
 }

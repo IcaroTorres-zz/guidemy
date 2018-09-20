@@ -71,7 +71,7 @@ export class Daily {
     this.r2 = payload.r2 || ''
     this.r3 = payload.r3 || ''
     this.created = payload.created || new Date()
-    this.end = increaseDays(payload.creted || new Date(), 1)
+    this.end = increaseDays(payload.created || new Date(), 1)
     this.finished = payload.finished || null
     this.status = payload.status || 0
   }

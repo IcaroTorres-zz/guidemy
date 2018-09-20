@@ -96,7 +96,6 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn flat color="primary"><v-icon>info</v-icon> More</v-btn>
           <v-spacer></v-spacer>
           <v-btn flat color="primary" @click.stop="dialog = false">Cancel</v-btn>
           <v-btn round color="success" type="submit">Save</v-btn>

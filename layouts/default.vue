@@ -8,7 +8,7 @@
       app
     >
       <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}">
-        <v-list-tile @click.stop="toggleMini">
+        <v-list-tile @click.stop.prevent="toggleMini">
           <v-list-tile-action>
             <v-icon>{{miniIcon}}</v-icon>
           </v-list-tile-action>
@@ -166,12 +166,17 @@
 
       <v-spacer></v-spacer>
       
-      <v-toolbar-items>
+      <v-toolbar-items class="hidden-xs-only">
+        <v-btn flat small nuxt :to="{ name: 'detailedsearch' }">
+          <v-icon small>info</v-icon>
+        </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dailymeetings' }">
-          <v-icon>supervised_user_circle</v-icon>my dailies
+          <v-icon>supervised_user_circle</v-icon>
+          <span class="hidden-sm-and-down">my dailies</span>
         </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
-          <v-icon >dashboard</v-icon>Dashboard
+          <v-icon >dashboard</v-icon>
+          <span class="hidden-sm-and-down">dashboard</span>
         </v-btn>
       </v-toolbar-items>
       <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>

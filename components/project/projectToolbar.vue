@@ -12,8 +12,7 @@
           flat 
           :icon="!lgAndUp"
           :color="toolbarProject.status === 0 ? 'error' : 'info'" 
-          slot="customactivator"
-          :disabled="toolbarProject.manager !== loggedUser">
+          slot="customactivator">
           <v-icon>{{toolbarProject.status === 0 ? 'archive' : 'publish'}}</v-icon>
           <span class="hidden-md-and-down">{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</span>
         </v-btn>
@@ -23,23 +22,19 @@
         <v-btn 
            class="ma-0"
           flat 
-          :icon="!lgAndUp" 
- 
+          :icon="!lgAndUp"
           color="warning" 
-          slot="customactivator"  
-          :disabled="toolbarProject.manager !== loggedUser">
+          slot="customactivator">
           <v-icon >edit</v-icon>
           <span class="hidden-md-and-down">edit</span>
         </v-btn>
       </dproject>
       <v-divider vertical></v-divider>
       <dinvite :project="toolbarProject" class="pa-0" >
-        <v-btn 
-           
+        <v-btn
           icon 
-          slot="customactivator" 
-          class="pa-0" 
-          :disabled="toolbarProject.manager !== loggedUser">
+          slot="customactivator"
+          class="pa-0" >
           <v-icon>person_add</v-icon>
         </v-btn>
       </dinvite>                
@@ -72,9 +67,34 @@
       </v-btn>
     </template>
     <v-spacer/>
+    <v-btn
+      nuxt
+      exact
+      :to="`/project/${toolbarProject.id}/activities`"
+      class="ma-0" 
+      flat 
+      :icon="!lgAndUp" 
+      color="accent">
+      <span class="hidden-md-and-down">activities</span>
+      <v-icon >receipt</v-icon>
+    </v-btn>
+    <v-divider vertical></v-divider>
+    <v-btn
+      nuxt
+      exact
+      :to="`/project/${toolbarProject.id}/dailies`"
+      class="ma-0" 
+      flat 
+      :icon="!lgAndUp"  
+      color="info">
+      <span class="hidden-md-and-down">project dailes</span>
+      <v-icon >supervised_user_circle</v-icon>
+    </v-btn>
+    <v-divider vertical></v-divider>
     <v-btn 
       nuxt
-      :to="{ path: `/project/${toolbarProject.id}/results` }"
+      exact
+      :to="`/project/${toolbarProject.id}/results`"
       class="ma-0" 
       flat 
       :icon="!lgAndUp" 
@@ -82,37 +102,15 @@
       <span class="hidden-md-and-down">results</span>
       <v-icon >poll</v-icon>
     </v-btn>
-    <v-divider vertical></v-divider>
-    <ddailies :projectid="toolbarProject.id" >
-      <v-btn 
-       class="ma-0" 
-        flat 
-        :icon="!lgAndUp"  
-        color="info" 
-        slot="customactivator">
-        <span class="hidden-md-and-down">project dailes</span>
-        <v-icon >supervised_user_circle</v-icon>
-      </v-btn>
-    </ddailies>
-    <v-divider vertical></v-divider>
-    <v-btn 
-      class="ma-0" 
-      flat 
-      :icon="!lgAndUp" 
-      color="accent" 
-      disabled >
-      <span class="hidden-md-and-down">contributions</span>
-      <v-icon >update</v-icon>
-    </v-btn>
   </v-toolbar>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { dproject, darchive, dblock, dinvite, dtask, ddailies } from '@/components/dialog'
+import { dproject, darchive, dblock, dinvite, dtask } from '@/components/dialog'
 export default {
   name: 'toolbarproject',
-  components: { dproject, dtask, dinvite, darchive, dblock, ddailies },
+  components: { dproject, dtask, dinvite, darchive, dblock },
   props: {
     projectid: { required: true, type: [String, Number] }
   },

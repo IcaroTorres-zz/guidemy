@@ -31,6 +31,14 @@
           </v-form>
         </v-flex>
         <v-flex class="pa-0 text-xs-center" style="max-width: 32px;">
+          <v-tooltip top v-if="block.tasks.length === 0">
+            <dblockdel :blockid="block.id" slot="activator">
+              <v-btn small flat icon slot="customactivator">
+                <v-icon>close</v-icon>
+              </v-btn>
+            </dblockdel>
+            <span>remove block</span>
+          </v-tooltip>
           <v-menu
             v-model="menu"
             :close-on-content-click="false"
@@ -55,6 +63,7 @@
                   <template slot="item" slot-scope="data" >
                     <v-list-tile-content :class="data.item">
                       <v-list-tile-title></v-list-tile-title>
+                      </v-list-tile-content>
                     </v-list-tile-content>
                   </template>
                 </v-autocomplete>
@@ -118,12 +127,12 @@
 <script lang="js">
 import taskcards from '@/components/taskcards'
 import dragarea from '@/components/dragarea'
-import { dtask } from '@/components/dialog'
+import { dtask, dblockdel } from '@/components/dialog'
 import { colors } from '@/helpers'
 import { mapState } from 'vuex'
 export default {
   name: 'taskblock',
-  components: {taskcards, dtask, dragarea},
+  components: {taskcards, dtask, dragarea, dblockdel},
   props: {
     blockid: { required: true, type: [String, Number] }
   },

@@ -1,7 +1,15 @@
 <template>
-  <v-card class="elevation-10">
-    <v-card-title class="layout column justify-center">
-      <div class="display-3 primary--text text-xs-center">Welcome Back</div>
+  <v-card tile class="elevation-10">
+    <v-card-text class="layout column justify-center">
+      <div class="text-xs-center hidden-md-and-up">
+        <img src="../assets/logo1-alpha.png" alt="Guideme" height="60px">
+        <h1 class="headline primary--text">{{apptitle}}</h1>
+        <div class="body-2 grey--text">Agile Tracker.</div>
+      </div>
+      <div class="display-1 primary--text text-xs-center">Sign <u>in</u></div>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-text class="layout justify-center">
       <div class="caption text-xs-center">
         <b>Sign In</b> below to continue managing your projects.
         <hr class="primary my-1">
@@ -15,7 +23,7 @@
       >
         {{appError.message}}
       </v-alert>
-    </v-card-title>
+    </v-card-text>
     <v-layout row wrap justify-center>
       <v-form 
         v-model="valid" 

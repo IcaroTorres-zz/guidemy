@@ -71,51 +71,12 @@
                   </dtaskdone>
                   <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
                 </v-tooltip>
-                <dtaskdel :taskid="task.id">
-                  <v-icon small color="error" v-if="canRemove(task)" slot="customactivator">delete</v-icon>
+                <dtaskdel :taskid="task.id" v-if="canRemove(task)">
+                  <v-icon small color="error" slot="customactivator">delete</v-icon>
                 </dtaskdel>
               </v-list-tile-action>
             </v-list-tile>
           </ul>
-          <!-- </v-list> -->
-          <!-- <v-layout row wrap align-center justify-center>
-            <v-menu 
-              top 
-              left 
-              offset-y
-              v-model="visionMap[task.id]">
-              <v-icon
-                slot="activator"        
-                @click.stop="openTaskMenu(task.id)"
-              >more_vert
-              </v-icon>
-              <v-list dense>
-                <v-list-tile v-for="block in taskMenuOptions(task)" :key="block.id" @click="moveTask({tid: task.id, bid: block.id})">
-                  <v-list-tile-title :class="`${block.color}--text`">{{ block.text }}</v-list-tile-title>
-                </v-list-tile>
-              </v-list>
-            </v-menu>
-            <v-flex class="pa-0 task-title">
-              <div class="body-1">{{task.title}} aoisdj9qiwndpuiqnfpiu qnfipu nq fipuqnw fpqi unfp qinf pqwfn qpfinq wpfjqnp</div>
-              <div v-if="task.status === 1" :class="ratecolor(task) +'--text'" style="font-size: 11px; line-height: 8px;">done on: {{task.finished | locale}}</div>
-            </v-flex>
-            <v-flex xs1 class="py-0 pl-0 pr-1 text-xs-right">
-              <v-layout column>
-                <v-tooltip top>
-                  <dtaskdone :taskid="task.id" @task-finished="update($event)" slot="activator">
-                    <v-icon small :color="task.status === 1 ? 'warning' : 'success'" slot="customactivator">
-                      {{task.status === 1 ? 'settings_backup_restore' : 'check_circle'}}
-                    </v-icon>
-                  </dtaskdone>
-                  <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
-                </v-tooltip>
-                <dtaskdel :taskid="task.id" @task-deleted="update($event)">
-                  <v-icon small color="error" v-if="canRemove(task)" slot="customactivator">delete</v-icon>
-                </dtaskdel>
-              </v-layout>
-            </v-flex>
-          </v-layout> -->
-        <!-- </v-flex> -->
 
       </div>
       <v-card tile flat :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
@@ -266,7 +227,7 @@ export default {
     canRemove (task) {
       const block = this.blocks[task.block]
       const taskProject = this.projects[block.project]
-      return task.creator === this.loggedUser || (taskProject || {}).manager === this.loggedUser
+      return task.creator === (this.loggedUser || (taskProject || {}).manager === this.loggedUser) && task.status === 0
     },
     update (val) {
       this.$emit('input', val)

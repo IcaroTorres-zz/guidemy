@@ -33,14 +33,14 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-expand-transition>
-        <v-list v-if="model" class="red lighten-3">
+        <v-list v-if="model" class="primary darken-2">
           <v-list-tile
             v-for="(field, i) in fields"
             :key="i"
           >
             <v-list-tile-content>
-              <v-list-tile-title v-text="field.value"></v-list-tile-title>
               <v-list-tile-sub-title v-text="field.key"></v-list-tile-sub-title>
+              <v-list-tile-title v-text="field.value"></v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
         </v-list>
@@ -60,6 +60,7 @@
   </v-container>
 </template>
 <script>
+  import {mapState, mapGetters} from 'vuex'
   export default {
     data: () => ({
       stringLimit: 200,
@@ -70,6 +71,8 @@
     }),
 
     computed: {
+      ...mapState(['users']),
+      ...mapGetters(['smAndDown']),
       fields () {
         if (!this.model) return []
 
@@ -93,7 +96,7 @@
           return entry
         })
       },
-      generate () {
+      generated () {
         return Object.values(this.users)
       }
     },
@@ -107,7 +110,7 @@
         // Lazily load input items
         new Promise(resolve => {
           resolve(this.generated.filter(user => {
-            console.log(user, 'detailed user')
+            // console.log(user, 'detailed user')
             return user.username.toLowerCase().includes(val) || user.displayName.toLowerCase().includes(val)
           }))
         })
