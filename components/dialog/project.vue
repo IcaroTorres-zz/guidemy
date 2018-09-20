@@ -60,7 +60,10 @@
                   v-model="editing.team"
                   clearable
                   required
-                  :rules="[v => !!v || 'field required']"
+                  :rules="[
+                    v => !!v || 'field required',
+                    v => editing.team.length > 0 || 'at least one member'
+                  ]"
                   dense
                   item-text="username"
                   multiple

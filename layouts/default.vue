@@ -28,7 +28,7 @@
             justify-start
             align-center
           >
-            <v-subheader>{{ item.groupHeading }}</v-subheader>
+            <v-subheader v-html="item.groupHeading"/>
           </v-layout>
 
           <v-list-group
@@ -141,7 +141,7 @@
         <router-link to="/dashboard" v-html="apptitle"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
-
+      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-autocomplete
         class="hidden-sm-and-down"
         hide-details
@@ -167,19 +167,19 @@
       <v-spacer></v-spacer>
       
       <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat small nuxt :to="{ name: 'detailedsearch' }">
-          <v-icon small>info</v-icon>
+        <v-btn flat small nuxt :to="{ name: 'dashboard' }">
+          <v-icon >dashboard</v-icon>
+          <span class="hidden-sm-and-down">dashboard</span>
+        </v-btn>
+        <v-btn flat small nuxt :to="{ name: 'archived' }">
+          <v-icon>archive</v-icon>
+          <span class="hidden-sm-and-down">archived</span>
         </v-btn>
         <v-btn flat small nuxt :to="{ name: 'dailymeetings' }">
           <v-icon>supervised_user_circle</v-icon>
           <span class="hidden-sm-and-down">my dailies</span>
         </v-btn>
-        <v-btn flat small nuxt :to="{ name: 'dashboard' }">
-          <v-icon >dashboard</v-icon>
-          <span class="hidden-sm-and-down">dashboard</span>
-        </v-btn>
       </v-toolbar-items>
-      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-tooltip bottom>
         <v-badge slot="activator" color="red" overlap>
           <span slot="badge">{{notifications.filter(n => n.status === 0).length}}</span>
@@ -242,31 +242,7 @@
     components: { dproject, dtask },
     data: (vm) => ({
       visibleSnack: false,
-      sidebarVisible: true,
-      items: [
-        { groupHeading: 'User' },
-        { icon: 'portrait', text: 'Profile settings', soon: '( future feature )' },
-        { icon: 'arrow_back', text: 'LogOut', action: vm.logUserOut },
-        { groupHeading: 'Management' },
-        { icon: 'supervised_user_circle', text: 'Dailies', action: () => vm.$router.push('/dailymeetings') },
-        {
-          heading: 'Manage project activities and handle tasks',
-          icon: 'table_chart',
-          'icon-alt': 'dashboard',
-          text: 'Projects',
-          model: false,
-          children: [
-            { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
-            { icon: 'view_stream', text: 'Dashboard', action: () => vm.$router.push('/dashboard') },
-            { icon: 'archive', text: 'Archived', action: () => vm.$router.push('/archived') }
-          ]
-        },
-        { groupHeading: 'General settings' },
-        { icon: 'settings', text: 'Settings', soon: '( future feature )' },
-        { groupHeading: 'Help us to evolve' },
-        { icon: 'chat_bubble', text: 'Send feedback', soon: '( future feature )' },
-        { icon: 'help', text: 'Help', soon: '( future feature )' }
-      ]
+      sidebarVisible: true
     }),
     watch: {
       sidebarVisible (val) {
@@ -326,6 +302,33 @@
       miniText () { return this.mini ? '' : 'Shrink navigation' },
       notifications () {
         return this.$store.getters.userNotifications(this.loggedUser)
+      },
+      items () {
+        return [
+          { groupHeading: `<small>signined as </small><span class="subheading pl-2 info--text"> ${this.loggedUserObj.username}</span>` },
+          { groupHeading: 'User' },
+          { icon: 'portrait', text: 'Profile settings', soon: '( future feature )' },
+          { icon: 'arrow_back', text: 'LogOut', action: this.logUserOut },
+          { groupHeading: 'Management' },
+          { icon: 'supervised_user_circle', text: 'Dailies', action: () => this.$router.push('/dailymeetings') },
+          {
+            heading: 'Manage project activities and handle tasks',
+            icon: 'table_chart',
+            'icon-alt': 'dashboard',
+            text: 'Projects',
+            model: false,
+            children: [
+              { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
+              { icon: 'view_stream', text: 'Dashboard', action: () => this.$router.push('/dashboard') },
+              { icon: 'archive', text: 'Archived', action: () => this.$router.push('/archived') }
+            ]
+          },
+          { groupHeading: 'General settings' },
+          { icon: 'settings', text: 'Settings', soon: '( future feature )' },
+          { groupHeading: 'Help us to evolve' },
+          { icon: 'chat_bubble', text: 'Send feedback', soon: '( future feature )' },
+          { icon: 'help', text: 'Help', soon: '( future feature )' }
+        ]
       }
     },
     methods: {

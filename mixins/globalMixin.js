@@ -29,7 +29,6 @@ export default {
       return new Date(b.created).getTime() - new Date(a.created).getTime()
     },
     stringToDateddmmYYYY (dateString) {
-      // console.warn('datestring got', dateString)
       return dateString instanceof Date
         ? dateString.toLocaleDateString('pt-BR')
         : (dateString || '').replace(/(\d{4})-(\d{2})-(\d{2})/, (str, y, m, d) => [d, m, y].join('/'))
