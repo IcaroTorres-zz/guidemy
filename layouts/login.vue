@@ -150,7 +150,7 @@
           <v-flex xs12 sm10 md8 class="hidden-sm-and-down">
             <v-layout row justify-space-between align-center>
               <v-layout row align-center>
-                <img src="../assets/logo2-alpha.png" alt="Guideme" height="25" class="pr-1">
+                <img src="../assets/logo2.png" alt="Guideme" height="25" class="pr-1">
                 Guideme by
                 <em><a class="white--text" href="https://github.com/icarotorres" target="_blank"> Ícaro Torres</a></em>.
               </v-layout>
@@ -161,7 +161,7 @@
             </v-layout>
           </v-flex>
           <v-layout row justify-center align-center class="hidden-md-and-up">
-            <img src="../assets/logo2-alpha.png" alt="Guideme" height="25" class="pr-1">
+            <img src="../assets/logo2.png" alt="Guideme" height="25" class="pr-1">
             Guideme by
             <em><a class="white--text" href="https://github.com/icarotorres" target="_blank"> Ícaro Torres</a></em>.
             More at my

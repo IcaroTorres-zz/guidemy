@@ -189,7 +189,7 @@ export default {
     assigned () { return this.selectedWorker ? this.users[this.selectedWorker] : this.loggedUserObj },
     predailes () {
       const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
-      return (this.projectDailies(this.project.id)[uid] || []).sort(this.sortByStart)
+      return (this.projectDailies(this.project.id)[uid] || []).sort(this.sortByStart())
     },
     dailies () {
       // const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser

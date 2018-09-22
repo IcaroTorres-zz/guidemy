@@ -63,7 +63,6 @@
                   <template slot="item" slot-scope="data" >
                     <v-list-tile-content :class="data.item">
                       <v-list-tile-title></v-list-tile-title>
-                      </v-list-tile-content>
                     </v-list-tile-content>
                   </template>
                 </v-autocomplete>
@@ -126,13 +125,12 @@
 
 <script lang="js">
 import taskcards from '@/components/taskcards'
-import dragarea from '@/components/dragarea'
 import { dtask, dblockdel } from '@/components/dialog'
 import { colors } from '@/helpers'
 import { mapState } from 'vuex'
 export default {
   name: 'taskblock',
-  components: {taskcards, dtask, dragarea, dblockdel},
+  components: {taskcards, dtask, dblockdel},
   props: {
     blockid: { required: true, type: [String, Number] }
   },

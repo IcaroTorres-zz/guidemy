@@ -165,10 +165,12 @@ export default {
         this.$store.dispatch('saveTask', this.editing)
           .then(() => {
             this.$emit('task-saved')
-            this.editing = new Task({
-              creator: this.loggedUserObj.id,
-              block: this.blockid
-            })
+            if (!this.taskid) {
+              this.editing = new Task({
+                creator: this.loggedUserObj.id,
+                block: this.blockid
+              })
+            }
             this.dialog = false
           })
       }

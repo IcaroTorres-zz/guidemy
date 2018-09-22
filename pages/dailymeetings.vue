@@ -210,7 +210,7 @@ export default {
     openProject () { return this.selectedProject ? this.projects[this.selectedProject] : this.myProjects[0] },
     predailies () {
       return (this.projectDailies(this.selectedProject)[this.loggedUser] || [])
-        .sort(this.sortByStart)
+        .sort(this.sortByStart())
     },
     dailies () {
       let dailyList = this.predailies

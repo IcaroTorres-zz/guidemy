@@ -69,7 +69,6 @@
                   multiple
                   :item-value="item => item.id"
                 >
-                  <!-- :item-value="item => item" -->
                   <template slot="item" slot-scope="data"  class="pa-0">
                     <template v-if="typeof data.item !== 'object'">
                       <v-list-tile-content v-text="data.item"></v-list-tile-content>
@@ -135,7 +134,7 @@ export default {
         this.$store.dispatch('saveProject', this.editing)
           .then(() => {
             this.$emit('project-created')
-            this.editing = new Project({creator: this.loggedUser})
+            if (!this.project) this.editing = new Project({creator: this.loggedUser})
             this.dialog = false
           })
       }

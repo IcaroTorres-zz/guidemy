@@ -32,7 +32,7 @@ export const mutations = {
   saveProject (state, payload) {
     Vue.set(state.projects, payload.id, { ...payload })
     // console.log(payload, state.users)
-    payload.team.forEach(uid => {
+    payload.team.concat([payload.manager]).forEach(uid => {
       Vue.set(state.users[uid],
         'projects',
         uniq(state.users[uid].projects, payload.id)

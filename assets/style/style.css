@@ -316,11 +316,17 @@ text.highcharts-credits {
   font: normal normal 20px;
   outline: none;
 }
-pre {
-  word-wrap: break-word !important;
-  white-space: pre-wrap;
+pre {                       /* specify width  */
   max-width: 100%;
+	white-space: pre-wrap !important;                 /* CSS3 browsers  */
+	white-space: -moz-pre-wrap !important; /* 1999+ Mozilla  */
+	white-space: -pre-wrap !important;                /* Opera 4 thru 6 */
+	white-space: -o-pre-wrap !important;              /* Opera 7 and up */
+	word-wrap: break-word !important;                 /* IE 5.5+ and up */
+  /* overflow-x: auto; */                /* Firefox 2 only */
+  width: 99%;		       /* only if needed */
 }
+
 
 .no-padding div.v-expansion-panel__header,
 .no-padding div.v-list__tile {

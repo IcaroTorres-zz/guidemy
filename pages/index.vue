@@ -50,11 +50,11 @@
         <v-btn color="success" block type="submit" :disabled="!valid">Sign in</v-btn>
       </v-form>
     </v-layout>
-    <hr class="primary my-1" v-show="!appLoading">
+    <hr class="primary my-1" v-show="!isLoading">
     <v-progress-linear
       color="info"
       height="2"
-      v-show="!!appLoading"  
+      v-show="!!isLoading"  
       :indeterminate="true"/>
     <v-card-actions>
       <em>Not Registered yet?</em>
@@ -74,7 +74,8 @@ export default {
     newUser: {
       emailOrUsername: '',
       password: ''
-    }
+    },
+    isLoading: false
   }),
   computed: mapState([
     'appLoading',
@@ -86,6 +87,7 @@ export default {
       'clearError'
     ]),
     signin () {
+      this.isLoading = true
       if (this.valid) {
         const emailOrUsername = this.newUser.emailOrUsername.toLowerCase()
         // const emailPattern = new RegExp(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/)
@@ -124,6 +126,7 @@ export default {
             this.setError(error.message || error)
           })
       }
+      this.isLoading = false
     }
   }
 }

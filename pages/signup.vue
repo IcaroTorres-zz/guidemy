@@ -116,9 +116,9 @@ export default {
       displayName: '',
       email: '',
       password: '',
-      confirmPassword: '',
-      isLoading: false
+      confirmPassword: ''
     },
+    isLoading: false,
     usernameRules: [
       v => !!v || 'Name is required',
       v => (!!v && v.length <= 15) || 'Name must be less than 10 characters'

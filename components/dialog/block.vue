@@ -81,7 +81,9 @@ export default {
         this.$store.dispatch('saveBlock', this.editing)
           .then((data) => {
             this.$emit('block-created')
-            this.editing = new Block({project: this.project.id})
+            if (!this.block) {
+              this.editing = new Block({project: this.project.id})
+            }
             this.dialog = false
           })
       }

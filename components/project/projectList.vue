@@ -88,8 +88,7 @@ export default {
     ...mapGetters(['loggedUserObj', 'xsOnly']),
     sortButtonText () { return this.descending ? 'older first' : 'recent first' },
     listedProjects () {
-      const projects = this.items.sort(this.sortByStart)
-      return this.descending ? projects : projects.reverse()
+      return this.items.sort(this.sortByStart(this.descending))
     }
   },
   methods: {

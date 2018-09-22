@@ -228,7 +228,7 @@ export default {
     predailes () {
       const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser
       return (this.projectDailies(this.project.id)[uid] || [])
-        .sort(this.sortByStart)
+        .sort(this.sortByStart())
     },
     dailies () {
       // const uid = this.loggedUser === this.project.manager ? this.selectedWorker : this.loggedUser

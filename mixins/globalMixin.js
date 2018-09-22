@@ -25,8 +25,12 @@ export default {
     }
   },
   methods: {
-    sortByStart (a, b) {
-      return new Date(b.created).getTime() - new Date(a.created).getTime()
+    sortByStart (order) {
+      return (a, b) => {
+        return !order
+          ? new Date(b.created).getTime() - new Date(a.created).getTime()
+          : new Date(b.created).getTime() + new Date(a.created).getTime()
+      }
     },
     stringToDateddmmYYYY (dateString) {
       return dateString instanceof Date

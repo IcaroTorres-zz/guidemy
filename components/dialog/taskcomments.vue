@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" width="800px" scrollable>
+  <v-dialog v-model="dialog" width="800px">
     <template slot="activator" @click.stop="dialog = !dialog">
       <slot name="customactivator" />
     </template>
@@ -11,127 +11,125 @@
       </v-card-title>
       <div class="px-3 py-2">
         Description: 
-        <div class="grey--text text-xs-justify">{{computedTask.description}} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Fuga voluptas sit eveniet doloremque ea enim quaerat quibusdam nihil obcaecati. Maxime quasi explicabo earum in necessitatibus beatae hic. Dolores, fugiat dignissimos.</div>
+        <div class="grey--text text-xs-justify">{{computedTask.description}}</div>
       </div>
-      <v-divider></v-divider>
-      <v-card-text height="800">
-        <v-container grid-list-sm class="pa-0">
-          <template v-for="comment in comments" >
-          <v-layout
-            row
-            align-content-start
-            :key="comment.id"
-            v-if="comment.by === loggedUser"
-          >
-            <v-avatar  size="48px" color="grey lighten-4 mt-2 mr-2">
-              <img :src="useravatar(comment.by)" alt="avatar">
-            </v-avatar>
-            <v-flex>
-              <a class="primary--text subheading">{{username(comment.by)}}</a>
-              <pre>{{comment.text}}</pre>
-              <v-layout>
-                <div class="caption grey--text px-1">
-                  posted: {{comment.date | postFormat}}
-                </div>
-                <v-icon small class="px-1">thumb_up</v-icon>
-                <v-icon small class="px-1">thumb_down</v-icon>
-                <v-icon small class="px-1">chat_bubble_outline</v-icon>
-
-                <v-bottom-sheet
-                  v-model="sheet"
-                  inset
-                  hide-overlay
-                >
-                  <v-icon
-                    small
-                    class="px-1 error--text"
-                    slot="activator"
-                  >delete</v-icon>
-                  <v-card color="error" flat>
-                    <v-card-actions>
-                      <div class="title">
-                        Confirm to delete comment ?
-                      </div>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        flat
-                        @click="sheet = false"
-                      >cancel</v-btn>
-                      <v-btn
-                        flat
-                        @click="onDeleteComment(comment.id)">Confirm</v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-bottom-sheet>             
-                
-                <v-spacer/>
-              </v-layout>
-              <v-divider style="margin-right: 56px"/>
-            </v-flex>
-          </v-layout>
+      <v-divider/>
+      <v-form 
+        v-model="valid" 
+        ref="newcomment"
+        @submit.prevent="post">
+        <v-card-actions>
           
-          <v-layout
-            row
-            align-content-start 
-            :key="comment.id"
-            v-if="comment.by !== loggedUser"
-          >
-            <v-flex>
-              <div class="primary--text text-xs-right subheading">
-                <a>{{username(comment.by)}}</a>
-              </div>
-              <pre class="text-xs-right">{{comment.text}}</pre>
-              <v-layout>
-                <v-spacer/>
-                <v-icon small class="px-1">thumb_up</v-icon>
-                <v-icon small class="px-1">thumb_down</v-icon>
-                <v-icon small class="px-1">chat_bubble_outline</v-icon>
-                <v-icon small class="px-1">star_border</v-icon>
-                <div class="caption grey--text px-1">
-                  posted: {{comment.date | postFormat}}
+          <!-- <v-flex> -->
+            <v-textarea
+              required
+              :rules="[v => !!v || 'type your comment']"
+              class="px-2"
+              autofocus
+              flat
+              row-height="16"
+              rows="2"
+              auto-grow
+              placeholder="Leave your comment"
+              append-icon="send"
+              @click:append="post"
+              v-model.trim="comment.text"
+            >
+              <template slot="prepend-inner">
+                <v-avatar
+                  class="mb-2"
+                  :key="loggedUser"
+                  size="48px"
+                  color="grey lighten-4"
+                >
+                  <img :src="loggedUserObj.picture" alt="avatar">
+                </v-avatar>
+              </template>
+            </v-textarea>
+          <!-- </v-flex> -->
+        </v-card-actions>
+      </v-form>
+      <v-divider v-show="comments.length > 0"/>
+      <v-card-text v-show="comments.length > 0">
+        <v-container fluid grid-list-sm class="pa-0">
+          <template v-for="comment in comments" >
+            <v-list>
+
+            </v-list>
+            <v-layout
+              row
+              align-content-start
+              :key="comment.id"
+              v-if="comment.by === loggedUser"
+            >
+              <v-avatar  size="48px" color="grey lighten-4 mt-2 mr-2">
+                <img :src="useravatar(comment.by)" alt="avatar">
+              </v-avatar>
+              <v-flex>
+                <v-subheader class="pa-0" style="max-height: 24px">
+                  <a class="primary--text subheading">{{username(comment.by)}}</a>
+                  <v-spacer/>
+                  <span class="caption grey--text pl-1">
+                    {{comment.date | postFormat}}
+                  </span>
+                  <v-bottom-sheet
+                    v-model="sheet"
+                    inset
+                    hide-overlay
+                  >
+                    <v-icon
+                      small
+                      class="error--text"
+                      slot="activator"
+                      @click.stop="toggleSheet(comment.id)"
+                    >delete</v-icon>
+                    <v-card color="error" flat>
+                      <v-card-actions>
+                        <div class="subheading">
+                          Remove comment?
+                        </div>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          flat
+                          @click="sheet = false"
+                        >cancel</v-btn>
+                        <v-btn
+                          flat
+                          @click.stop="onDeleteComment(deletingComment)">Confirm</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-bottom-sheet>
+                </v-subheader>
+                <div style="position: relative; width: 100%; overflow: hidden;">
+                  <pre>{{comment.text}}</pre>
                 </div>
-              </v-layout>
-              <v-divider style="margin-left: 56px"/>
-            </v-flex>
-            <v-avatar size="48px" color="grey lighten-4 mt-2 ml-2">
-              <img :src="useravatar(comment.by)" alt="avatar">
-            </v-avatar>
-          </v-layout>
+                <v-divider/>
+              </v-flex>
+            </v-layout>
+            <v-layout
+              row
+              align-content-start 
+              :key="comment.id"
+              v-if="comment.by !== loggedUser"
+            >
+              <v-flex>
+                <div class="primary--text text-xs-right subheading">
+                  <span class="caption grey--text pl-1">
+                    {{comment.date | postFormat}}
+                  </span>
+                  <a>{{username(comment.by)}}</a>
+                </div>
+                <pre class="text-xs-right">{{comment.text}}</pre>
+                <v-divider/>
+                <!-- <v-divider style="margin-left: 56px"/> -->
+              </v-flex>
+              <v-avatar size="48px" color="grey lighten-4 mt-2 ml-2">
+                <img :src="useravatar(comment.by)" alt="avatar">
+              </v-avatar>
+            </v-layout>
           </template>
         </v-container>
       </v-card-text>
-      <v-divider></v-divider>
-      <v-form 
-        v-model="valid" 
-        ref="newcomment" 
-        @submit.prevent="post"
-        @keydown.prevent.enter>
-        <v-card-actions class="pl-4">
-          <v-avatar
-            size="48px"
-            color="grey lighten-4"
-          >
-            <img :src="loggedUserObj.picture" alt="avatar">
-          </v-avatar>
-          <v-flex>
-              <v-textarea
-                required
-                :rules="[v => !!v || 'type your comment']"
-                class="px-2"
-                autofocus
-                flat
-                row-height="16"
-                rows="2"
-                auto-grow
-                placeholder="Leave your comment"
-                v-model="comment.text"
-              ></v-textarea>
-          </v-flex>
-          <v-btn flat icon class="pr-2" color="primary" type="submit">
-            <v-icon >send</v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-form>
     </v-card>
   </v-dialog>
 </template>
@@ -148,8 +146,8 @@ export default {
     return {
       valid: false,
       dialog: false,
-      sheet: false,
-      comment: undefined
+      comment: undefined,
+      deletingComment: undefined
     }
   },
   created () {
@@ -161,15 +159,19 @@ export default {
   computed: {
     ...mapState(['tasks', 'loggedUser']),
     ...mapGetters(['useravatar', 'username', 'loggedUserObj']),
+    sheet: {
+      get () { return !!this.deletingComment },
+      set (val) { if (!val) this.deletingComment = val }
+    },
     computedTask () { return this.tasks[this.taskid] },
     comments () {
       return this.$store.getters.taskComments(this.computedTask)
-        .sort(this.sortByStart)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     }
   },
   methods: {
     post () {
-      if (this.valid && this.$refs.newcomment.validate()) {
+      if (this.valid && this.comment.text && this.$refs.newcomment.validate()) {
         this.$store.dispatch('postComment', new Comment({
           ...this.comment,
           date: new Date()
@@ -181,6 +183,9 @@ export default {
     onDeleteComment (cid) {
       this.$store.dispatch('deleteComment', cid)
       this.sheet = false
+    },
+    toggleSheet (cid) {
+      this.deletingComment = cid
     }
   }
 }
