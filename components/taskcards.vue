@@ -63,17 +63,20 @@
               </v-list-tile-content>
 
               <v-list-tile-action class="task-action-block-right">
-                <v-tooltip top>
+                <v-tooltip top v-if="canInteract(task)">
                   <dtaskdone :taskid="task.id" slot="activator">
-                    <v-icon small :color="task.status === 1 ? 'warning' : 'success'" slot="customactivator">
+                    <v-icon :color="task.status === 0 ? 'success' : ''" slot="customactivator">
                       {{task.status === 1 ? 'settings_backup_restore' : 'check_circle'}}
                     </v-icon>
                   </dtaskdone>
                   <span>{{task.status === 1 ? 're-open' : 'finish'}}</span>
                 </v-tooltip>
-                <dtaskdel :taskid="task.id" v-if="canRemove(task)">
-                  <v-icon small color="error" slot="customactivator">delete</v-icon>
-                </dtaskdel>
+                <v-tooltip bottom v-if="canRemove(task)">
+                  <dtaskdel :taskid="task.id" slot="activator">
+                    <v-icon color="error" slot="customactivator">delete</v-icon>
+                  </dtaskdel>
+                  <span>remove task</span>
+                </v-tooltip>
               </v-list-tile-action>
             </v-list-tile>
           </ul>
@@ -198,13 +201,6 @@ export default {
         ? 'error'
         : this.blocks[task.block].color
     },
-    rating (task) {
-      let max = this.daysBetween(new Date(task.created), new Date(task.end))
-      return Math.min(this.daysBetween(
-        task.created,
-        (task.status === 0 ? new Date() : task.finished)
-      ), max)
-    },
     overdue (task) {
       let today = new Date()
       let end = new Date(task.end)
@@ -217,17 +213,28 @@ export default {
           ? Math.abs(this.daysBetween(today, end))
           : undefined
     },
-    ratecolor (task) {
-      let max = this.daysBetween(task.created, task.end)
-      return this.temperColorInvert(max, this.rating(task))
-    },
     slidemax (task) {
-      return this.daysBetween(new Date(task.created), new Date(task.end))
+      return this.daysBetween(task.created, task.end)
+    },
+    rating (task) {
+      return this.daysBetween(task.created, task.status === 1 && task.finished ? task.finished : new Date())
+      // return Math.min(this.daysBetween(
+      //   task.created,
+      //   (task.status === 0 ? new Date() : task.finished)
+      // ), max)slidemax
+    },
+    ratecolor (task) {
+      return this.temperColorInvert(this.slidemax(task), this.rating(task))
     },
     canRemove (task) {
       const block = this.blocks[task.block]
       const taskProject = this.projects[block.project]
-      return task.creator === (this.loggedUser || (taskProject || {}).manager === this.loggedUser) && task.status === 0
+      return (task.creator === this.loggedUser || (taskProject || {}).manager === this.loggedUser) && task.status === 0
+    },
+    canInteract (task) {
+      const block = this.blocks[task.block]
+      const taskProject = this.projects[block.project]
+      return (task.creator === this.loggedUser || (taskProject || {}).manager === this.loggedUser || task.assigned === this.loggedUser)
     },
     update (val) {
       this.$emit('input', val)
@@ -237,7 +244,7 @@ export default {
 </script>
 <style scoped>
 .task-delayed {
-  background-color: rgba(255, 0, 0, 0.3) !important;
+  background-color: rgba(255, 0, 0, 0.2) !important;
 }
 .no-padding div.v-expansion-panel__header,
 .no-padding div.v-list__tile {
