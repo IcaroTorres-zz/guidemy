@@ -55,7 +55,7 @@
                   <v-layout row wrap justify-center align-center>
                     <template v-for="(column, i) in promoColumns">
                       <v-flex xs12 sm4 :key="column.title"
-                      :class="{'left-border': i !== 0 && !xsOnly, 'top-border': !smAndUp && i !== 0}">
+                      :class="{'left-border': i !== 0, 'top-border': xsOnly && i !== 0}">
                         <v-card :color="column.color" class="elevation-20">
                           <v-card-text class="text-xs-center">
                             <v-icon medium v-html="column.icon"/>
@@ -64,8 +64,6 @@
                           <v-card-text v-text="column.text" class="grey--text caption"/>
                         </v-card>
                       </v-flex>
-                      <!-- <v-divider vertical class="hidden-xs-only" :key="i" v-if="i !== promoColumns.length - 1"></v-divider> -->
-                      <!-- <v-divider class="hidden-sm-and-up" :key="i" v-if="i !== promoColumns.length - 1"></v-divider> -->
                     </template>
                   </v-layout>
                 </v-container>
@@ -216,7 +214,8 @@ export default {
 .left-border {
   border-left: .75px solid #555;
 }
-.top-border {
+.left-border.top-border {
+  border-left: none;
   border-top: .75px solid #555;
 }
 .v-toolbar {
