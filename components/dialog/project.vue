@@ -25,9 +25,10 @@
                 <v-autocomplete
                   prepend-icon="account_box"
                   label="manager"
-                  :items="Object.values(users)"
-                  v-model="editing.manager" 
-                  clearable
+                  :items="managerOptions"
+                  v-model="editing.manager"
+                  :clearable="!!project"
+                  :disabled="!project"
                   dense
                   required
                   :menu-props="{'closeOnClick':true, 'closeOnContentClick': true}"
@@ -110,6 +111,7 @@
 <script>
 import {Project} from '@/models'
 import { mapState, mapGetters } from 'vuex'
+import {uniq} from '@/helpers'
 export default {
   name: 'dialogproject',
   props: {
@@ -122,11 +124,14 @@ export default {
     }
   },
   created () {
-    this.editing = new Project({...this.project, creator: this.loggedUser})
+    this.editing = new Project({creator: this.loggedUser, manager: this.loggedUser, ...this.project})
   },
   computed: {
     ...mapState(['loggedUser', 'users']),
-    ...mapGetters(['useravatar'])
+    ...mapGetters(['useravatar']),
+    managerOptions () {
+      return uniq(this.loggedUser, this.editing.team).map(uid => this.users[uid])
+    }
   },
   methods: {
     saveProject () {
@@ -134,7 +139,7 @@ export default {
         this.$store.dispatch('saveProject', this.editing)
           .then(() => {
             this.$emit('project-created')
-            if (!this.project) this.editing = new Project({creator: this.loggedUser})
+            if (!this.project) this.editing = new Project({creator: this.loggedUser, manager: this.loggedUser})
             this.dialog = false
           })
       }
