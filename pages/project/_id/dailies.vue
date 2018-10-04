@@ -67,14 +67,13 @@
           <v-layout row wrap align-start class="px-2 pt-2">
             <v-flex xs12 v-for="n in 3" :key="n" class="pa-0 ma-0" v-if="open">
               <v-textarea
-                color="black"
                 box
                 placeholder="Question was not responded"
                 rows="2"
                 row-height="16"
-                :background-color="dailyColor(newDaily) + ' darken-2'"
+                :color="dailyColor(newDaily)"
                 :append-icon="icons[n-1]"
-                class="text-xs-right black--text"
+                class="text-xs-right warning--text"
                 :hint="`Answer for question r${n}`"
                 persistent-hint
                 :label="questions[n-1]"

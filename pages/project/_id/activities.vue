@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="rel">
     <template v-if="project.blocks.length === 0 && project.status === 0">
       <dblock
         :project="project"
@@ -45,7 +45,6 @@
       v-if="project.status === 0"
       row
       align-content-start
-      style="position: relative;"
     >
       <dblock
         :project="project"
@@ -65,6 +64,7 @@
         style="margin-right: 0; margin-left: 44px;"
       >            
         <taskblock
+          style="position: sticky; top: 0px;"
           v-for="blockid in  project.blocks" :key="blockid"
           :blockid="blockid"/>
       </v-layout>
