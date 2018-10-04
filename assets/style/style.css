@@ -1,4 +1,12 @@
-
+.v-content {
+  overflow: hidden;
+  max-height: 100vh;
+}
+.v-content__wrap {
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative !important;
+}
 a {
   text-decoration:
   none;
@@ -22,10 +30,9 @@ a {
   max-width: 100%; */
   text-overflow: ellipsis;
 }
-.project-block-container,
 .project-block {
   margin: 0 auto;
-  max-height: 450px;
+  max-height: 1280px;
   width: 300px;
   min-width: 300px;
   overflow-y: auto;
@@ -34,8 +41,11 @@ a {
 .project-block-container {
   /* min-width: 500px; */
   /* max-width: 650px; */
-  max-height: 700px;
+  margin: 0 auto;
+  /* max-height: 700px; */
   width: 300px;
+  position: sticky;
+  top: 64px;
 }
 /* .project-block.singleview {
   margin: 0 auto;
@@ -348,4 +358,8 @@ pre {                       /* specify width  */
     right: -8px;
     top: -10px;
     /* transform: tanslateY(-100%); */
+  }
+
+  .rel {
+    position: relative !important;
   }
