@@ -1,5 +1,7 @@
 <template>
-  <v-app :dark="lightOut">
+  <v-app :dark="lightOut"
+    class="hide-overflow"
+    style="position: relative;">
     <v-navigation-drawer
       clipped
       v-model="sidebarVisible"
@@ -135,7 +137,12 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar clipped-left color="primary" app fixed flat :style="{ 'z-index': '5' }">
+    <v-toolbar 
+      clipped-left 
+      color="primary" 
+      app
+      flat
+      :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
         <v-toolbar-side-icon @click.native="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
         <router-link to="/dashboard" v-html="apptitle"
@@ -193,14 +200,14 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
-    <v-progress-linear
+    <!-- <v-progress-linear
       color="info"
       height="3"
       v-if="!!appLoading"
-      :indeterminate="true"/>
+      :indeterminate="true"/> -->
     <v-content>
       <!-- <h1 class="display-1 text-xs-center">{{routeLabel}}</h1> -->
-      <v-container align-center>
+      <v-container fluid align-center style="position: relative;">
         <nuxt/>
       </v-container>
     </v-content>
