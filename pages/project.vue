@@ -1,9 +1,10 @@
 <template>
   <div>
+    <projectToolbar :projectid="project.id" style="position: sticky; top: 0px; z-index: 3"/>
+    <projectToolbar :projectid="project.id" style="position: sticky; top: 56px; z-index: 3"/>
     <v-layout row justify-center align-center>
       <v-flex xs12 class="pa-0">
         <v-card class="transparent" flat>
-          <projectToolbar :projectid="project.id"/>
           <v-card-text>
             <v-layout
               row wrap
@@ -40,7 +41,9 @@
         </v-card>
       </v-flex>
     </v-layout>
-    <nuxt-child :key="$route.params.id" v-if="project.status === 0"/>
+    <div v-if="project.status === 0" style="position: sticky !important; top: 0px;">
+      <nuxt-child :key="$route.params.id" />
+    </div>
     <v-layout row v-else>
       <h2 class="text-xs-center primary--text subheading">This project is <b class="error--text">Archived</b>.
       To enable all features, unarchieve it on Project Toolbar "unarchive" button.
