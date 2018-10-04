@@ -4,10 +4,10 @@
       <v-flex class="title primary--text py-2">
         {{loggedUserObj.username}} <v-icon flat>chevron_right</v-icon> {{label || ''}}
       </v-flex>
-      <v-btn class="hidden-sm-and-down" small color="primary" @click="printJSONState">
+      <!-- <v-btn class="hidden-sm-and-down" small flat @click="printJSONState">
         <v-icon>print</v-icon>log json state
-      </v-btn>
-      <v-btn class="hidden-sm-and-down" small color="primary" @click="descending = !descending">
+      </v-btn> -->
+      <v-btn class="hidden-sm-and-down" small flat @click="descending = !descending">
         <v-icon>sort</v-icon>{{sortButtonText}}
       </v-btn>
     </v-layout>
@@ -21,7 +21,7 @@
           <v-list-tile-action>
             <v-tooltip top>
               <template slot="activator">
-                <v-btn icon flat :color=" project.status === 0 ? 'info' : 'warning'" :to="`/project/${project.id}/activities`" nuxt>
+                <v-btn icon flat :color=" project.status === 0 ? 'info' : 'error'" :to="`/project/${project.id}/activities`" nuxt>
                   <v-icon>launch</v-icon>
                 </v-btn>
               </template>
@@ -31,7 +31,7 @@
           <v-list-tile-content>
             <v-list-tile-title>
               <nuxt-link
-                :class="{'info--text': project.status === 0, 'warning--text': project.status === 1, 'body-2': true}"
+                :class="{'info--text': project.status === 0, 'error--text': project.status === 1, 'body-2': true}"
                 :to="`/project/${project.id}/activities`">
                 {{project.title}}
               </nuxt-link>
@@ -52,7 +52,7 @@
           <v-list-tile-action class="layout column align-center justify-center">
             <v-tooltip left>
               <darchive :project="project" slot="activator">
-                <v-btn icon flat :color="project.status === 0 ? 'error' : 'info'" slot="customactivator"><v-icon>{{project.status === 0 ? 'archive' : 'publish'}}</v-icon></v-btn>
+                <v-btn icon flat :color="project.status === 0 ? 'error' : 'info'" slot="customactivator"><v-icon>{{project.status === 0 ? 'archive' : 'unarchive'}}</v-icon></v-btn>
               </darchive>
               <span>{{project.status === 0 ? 'archive project' : 'unarchive project'}}</span>
             </v-tooltip>

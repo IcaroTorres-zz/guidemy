@@ -13,7 +13,7 @@
           :icon="!lgAndUp"
           :color="toolbarProject.status === 0 ? 'error' : 'info'" 
           slot="customactivator">
-          <v-icon>{{toolbarProject.status === 0 ? 'archive' : 'publish'}}</v-icon>
+          <v-icon>{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</v-icon>
           <span class="hidden-md-and-down">{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</span>
         </v-btn>
       </darchive>
@@ -45,8 +45,8 @@
         flat 
         :icon="!lgAndUp"  
         disabled>
-        <v-icon>archive</v-icon>
-        <span class="hidden-md-and-down">archive</span>
+        <v-icon>{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</v-icon>
+        <span class="hidden-md-and-down">{{toolbarProject.status === 0 ? 'archive' : 'unarchive'}}</span>
       </v-btn>
       <v-divider vertical></v-divider>
       <v-btn 
