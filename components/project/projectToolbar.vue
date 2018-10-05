@@ -3,6 +3,7 @@
   card
   dense
   flat
+  style="position: sticky; top: 0px; z-index: 3"
   :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut, 'project--toolbar': true}"
   >
     <template v-if="toolbarProject.manager === loggedUser">
