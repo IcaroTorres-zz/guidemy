@@ -141,6 +141,7 @@
       clipped-left 
       color="primary" 
       app
+      fixed
       flat
       :style="{ 'z-index': '5' }">
       <v-toolbar-title style="width: 300px" class="ml-0">
@@ -207,7 +208,7 @@
       :indeterminate="true"/> -->
     <v-content>
       <!-- <h1 class="display-1 text-xs-center">{{routeLabel}}</h1> -->
-      <v-container fluid align-center style="position: relative;">
+      <v-container fluid align-center class="guidemy-container pt-0">
         <nuxt/>
       </v-container>
     </v-content>
@@ -355,3 +356,14 @@
   }
 </script>
 <style src="@/assets/style/style.css"></style>
+<style scoped>
+/* .v-content{
+  overflow:hidden ;
+} */
+.guidemy-container {
+  height: calc(100vh - 64px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: relative;
+}
+</style>
