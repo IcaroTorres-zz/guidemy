@@ -1,17 +1,26 @@
 <template>
   <v-app dark>
-    <v-toolbar prominent fixed flat class="transparent hidden-sm-and-down">
+    <v-toolbar prominent flat class="hidden-sm-and-down transparent flex sm10 md8" style="margin: 0 auto;">
       <v-toolbar-title>{{apptitle}}</v-toolbar-title>
       <v-spacer></v-spacer>
-        <v-btn flat color="secondary">user guide</v-btn>
-        <v-btn flat color="secondary">Objetives</v-btn>
-        <v-btn flat color="secondary">About Us</v-btn>
+      <v-tooltip bottom>
+        <v-btn disabled flat slot="activator">user guide</v-btn>
+        <span>available soon</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <v-btn disabled flat slot="activator">Objetives</v-btn>
+        <span>available soon</span>
+      </v-tooltip>
+      <v-tooltip bottom>
+        <v-btn disabled flat slot="activator">About Us</v-btn>
+        <span>available soon</span>
+      </v-tooltip>
     </v-toolbar>
     <v-content>
       <section>
         <v-parallax
           :src="require('@/assets/hero.jpeg')"
-          style="min-height: 80vh; height: auto;"
+          style="height: auto; min-height: 550px;"
           >
           <v-layout
             row
@@ -19,7 +28,7 @@
             align-center
             justify-center
             fill-height
-            style="min-height: 80vh; height: auto;"
+            style="height: auto; min-height: 550px;"
           >
             <div class="text-xs-center hidden-sm-and-down" >
               <img src="../assets/logo1-alpha.png" alt="Guideme" height="150px">
