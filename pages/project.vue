@@ -3,7 +3,7 @@
     <projectToolbar :projectid="project.id"/>
     <!-- <v-layout row wrap justify-center align-center> -->
       <!-- <v-flex xs12 class="pa-0"> -->
-        <v-card class="transparent" flat :height="expand ? 'auto' : 100" style="overflow: hidden;">
+        <v-card class="transparent" flat>
           <v-card-text>
             <v-layout
               row wrap
@@ -19,10 +19,10 @@
                 <nuxt-link
                   :to="{ name: 'project-id', params: {id: project.id} }"
                   :class="{'title': !mdAndUp, 'headline': mdAndUp, 'info--text pt-2': true}" v-text="project.title" />
-                <div>Manager: 
+                <div v-show="expand">Manager: 
                   <a class="info--text">@{{username(project.manager)}}</a>
                 </div>
-                <p class="pb-0 mr-2">Team:
+                <p class="pb-0 mr-2" v-show="expand">Team:
                   <nuxt-link 
                     :to="{ name: 'user', params: {user: username(coworker)}}" 
                     class="pr-2" 
@@ -30,16 +30,16 @@
                     :key="coworker">@{{username(coworker)}}
                   </nuxt-link>
                 </p>
-                <div>Created: 
+                <div v-show="expand">Created: 
                   <span class="text-xs-justify primary--text">{{project.created | locale}}</span>
                 </div>
-                <v-divider class="my-2"></v-divider>
-                <div>Description:</div>
-                <p class="caption text-xs-justify primary--text mr-2">{{project.description}}</p>
+                <v-divider class="my-2" v-show="expand"></v-divider>
+                <div v-show="expand">Description:</div>
+                <p class="caption text-xs-justify primary--text mr-2" v-show="expand">{{project.description}}</p>
               </v-flex>
               <!-- <v-divider vertical class="hidden-sm-and-down"></v-divider> -->
               <v-flex md4 class="hidden-sm-and-down px-0" style="border-left: .75px solid #555">
-                <projectPieChart :projectid="project.id"/>
+                <projectPieChart :projectid="project.id" :hidechart="expand"/>
               </v-flex>
             </v-layout>
           </v-card-text>
