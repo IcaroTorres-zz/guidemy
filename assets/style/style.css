@@ -24,6 +24,7 @@ a {
 .project-block {
   margin: 0 auto;
   max-height: calc(100vh - 380px);
+  min-height: 300px;
   width: 300px;
   min-width: 300px;
   overflow-y: auto;
