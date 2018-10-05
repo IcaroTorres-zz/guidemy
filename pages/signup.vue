@@ -28,7 +28,7 @@
       @keydown.prevent.enter>
       <v-card-text>
         <v-layout row wrap justify-space-between align-center>
-          <v-flex xs10 sm5>
+          <v-flex xs12 sm5>
             <v-text-field
               label="User Name"
               name="username"
@@ -39,7 +39,7 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex xs10 sm5>
+          <v-flex xs12 sm5>
             <v-text-field
               label="Your displayed name"
               name="displayname"
@@ -71,14 +71,14 @@
             >
             </v-text-field>
           </v-flex>
-          <v-flex xs10 sm5>
+          <v-flex xs12 sm5>
             <v-text-field
               label="Confirm Password"
               name="confirmPassword"
               v-model.trim="newUser.confirmPassword"
               type="password"
               :rules="[confirmRule]"
-              :error-messages="!confirmRule ? ['password confirmation not matching with password'] : []"
+              :error-messages="!confirmRule ? ['Not matching with password'] : []"
               required
             >
             </v-text-field>
@@ -99,7 +99,7 @@
     <v-card-actions>
       <em>Already using {{apptitle}}?</em>
       <v-spacer></v-spacer>
-      <v-btn color="primary" flat nuxt to="/">Sign in</v-btn>
+      <v-btn color="primary" small nuxt to="/">Sign in</v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -124,7 +124,8 @@ export default {
       v => (!!v && v.length <= 15) || 'Name must be less than 10 characters'
     ],
     displayNameRules: [
-      v => (v && v.length <= 25) || 'Required and less than 25 characters'
+      v => !!v || 'Display name Required',
+      v => (!!v && v.length <= 25) || 'Less than 25 characters'
     ],
     emailRules: [
       v => !!v || 'E-mail is required',

@@ -25,7 +25,7 @@
       </v-alert>
     </v-card-text>
     <v-layout row wrap justify-center>
-      <v-form 
+      <v-form class="flex px-2"
         v-model="valid" 
         @submit.prevent="signin"
         @keydown.prevent.enter>
@@ -35,18 +35,14 @@
           v-model="newUser.emailOrUsername"
           type="text"
           required
-          :rules="[v => !!v || 'Field is required']"
-        >
-        </v-text-field>
+          :rules="[v => !!v || 'Field is required']"/>
         <v-text-field class="my-0"
           label="Password"
           name="password"
           v-model="newUser.password"
           type="password"
           required
-          :rules="[v => !!v || 'Field is required']"
-        >
-        </v-text-field>
+          :rules="[v => !!v || 'Field is required']"/>
         <v-btn color="success" block type="submit" :disabled="!valid">Sign in</v-btn>
       </v-form>
     </v-layout>
@@ -59,7 +55,7 @@
     <v-card-actions>
       <em>Not Registered yet?</em>
       <v-spacer></v-spacer>
-      <v-btn color="primary" small flat nuxt to="/signup">Sign up</v-btn>
+      <v-btn color="primary" small nuxt to="/signup">Sign up</v-btn>
     </v-card-actions>
   </v-card>
 </template>
