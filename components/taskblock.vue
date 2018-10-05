@@ -74,8 +74,7 @@
     </v-card>
     <v-card
       :class="`transparent project-block scroller scroller__${block.color}`"
-      flat
-      style="position: relative;"
+      flat style="position: relative;"
     >
       <taskcards :value="blocktasks"/>
     </v-card>
