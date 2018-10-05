@@ -1,19 +1,24 @@
 <template>
   <div>
-    <projectToolbar :projectid="project.id" style="position: sticky; top: 0px; z-index: 3"/>
-    <projectToolbar :projectid="project.id" style="position: sticky; top: 56px; z-index: 3"/>
-    <v-layout row justify-center align-center>
-      <v-flex xs12 class="pa-0">
-        <v-card class="transparent" flat>
+    <projectToolbar :projectid="project.id"/>
+    <!-- <v-layout row wrap justify-center align-center> -->
+      <!-- <v-flex xs12 class="pa-0"> -->
+        <v-card class="transparent" flat :height="expand ? 'auto' : 100" style="overflow: hidden;">
           <v-card-text>
             <v-layout
               row wrap
               justify-space-between
             >
-              <v-flex xs12 sm12 md8>
+              <v-flex xs12 sm12 md8 class="px-0">
+                <v-tooltip bottom>
+                  <v-btn icon small @click="expand = !expand" slot="activator" class="ma-0">
+                    <v-icon>{{expand ? 'expand_less' : 'expand_more'}}</v-icon>
+                  </v-btn>
+                  <span>{{expand ? 'hide details' : 'view details'}}</span>
+                </v-tooltip>
                 <nuxt-link
                   :to="{ name: 'project-id', params: {id: project.id} }"
-                  :class="{'title': !mdAndUp, 'display-1': mdAndUp, 'info--text': true}" v-text="project.title" />
+                  :class="{'title': !mdAndUp, 'headline': mdAndUp, 'info--text pt-2': true}" v-text="project.title" />
                 <div>Manager: 
                   <a class="info--text">@{{username(project.manager)}}</a>
                 </div>
@@ -33,22 +38,26 @@
                 <p class="caption text-xs-justify primary--text mr-2">{{project.description}}</p>
               </v-flex>
               <!-- <v-divider vertical class="hidden-sm-and-down"></v-divider> -->
-              <v-flex md4 class="hidden-sm-and-down" style="border-left: .75px solid #555">
+              <v-flex md4 class="hidden-sm-and-down px-0" style="border-left: .75px solid #555">
                 <projectPieChart :projectid="project.id"/>
               </v-flex>
             </v-layout>
           </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
-    <div v-if="project.status === 0" style="position: sticky !important; top: 0px;">
-      <nuxt-child :key="$route.params.id" />
-    </div>
+      <!-- </v-flex> -->
+    <!-- </v-layout> -->
+    <nuxt-child :key="$route.params.id"  v-if="project.status === 0"/>
     <v-layout row v-else>
       <h2 class="text-xs-center primary--text subheading">This project is <b class="error--text">Archived</b>.
       To enable all features, unarchieve it on Project Toolbar "unarchive" button.
       </h2>
     </v-layout>
+    <!-- <nuxt-child :key="$route.params.id"  v-if="project.status === 0" style="position: sticky; top: 64px; display: contents"/>
+    <v-layout row v-else>
+      <h2 class="text-xs-center primary--text subheading">This project is <b class="error--text">Archived</b>.
+      To enable all features, unarchieve it on Project Toolbar "unarchive" button.
+      </h2>
+    </v-layout> -->
   </div>
 </template>
 
@@ -59,6 +68,9 @@ export default {
   validate ({ params, store }) {
     return !!store.state.projects[params.id] // Must be a valid project id
   },
+  data: () => ({
+    expand: true
+  }),
   components: {
     projectPieChart,
     projectToolbar
@@ -70,6 +82,7 @@ export default {
   }
 }
 </script>
+<style scoped>
 
-<style>
 </style>
+
