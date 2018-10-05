@@ -19,7 +19,7 @@
         <small>done</small>
       </div>
     </v-layout>
-    <div
+    <div v-show="hidechart"
       :id="`${chartProject.id}-piechart`"
       :ref="`${chartProject.id}-piechart`"
       v-if="mdAndUp"></div>
@@ -42,7 +42,8 @@ export default {
     projectid: {
       type: [String, Number],
       required: true
-    }
+    },
+    hidechart: Boolean
   },
   data: () => ({
     piechart: undefined
