@@ -3,13 +3,39 @@
     class="hide-overflow"
     style="position: relative;">
     <v-navigation-drawer
-      clipped
       v-model="sidebarVisible"
       :mini-variant.sync="mini"
       fixed floating
       app
+      style="z-index: 6"
     >
-      <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}">
+      <!-- <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}"> -->
+      
+      <v-layout v-if="!mini">
+        <v-img
+          height="150px"
+          :src="signedImage"
+        >
+          <v-layout column align-center justify-content-start fill-height class="white--text">
+            <v-list dense class="pa-0" style="width: 100%; margin-bottom: -15px;">
+              <v-list-tile @click.stop.prevent="toggleMini">
+                <v-list-tile-content>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-icon class="white--text">{{miniIcon}}</v-icon>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list>
+            <small>signed as</small>
+            <v-avatar size="64px">
+              <img :src="loggedUserObj.picture" alt="">
+            </v-avatar>
+            <div class="title info--text"> {{this.loggedUserObj.username}}</div>
+          </v-layout>
+          <!-- </v-container> -->
+        </v-img>
+      </v-layout>
+      <v-list dense class="pa-0" v-else>
         <v-list-tile @click.stop.prevent="toggleMini">
           <v-list-tile-action>
             <v-icon>{{miniIcon}}</v-icon>
@@ -138,8 +164,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-toolbar 
-      clipped-left 
-      color="primary" 
+      color="transparent" 
       app
       fixed
       flat
@@ -151,9 +176,11 @@
       </v-toolbar-title>
       <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-autocomplete
+        style="opacity: .5"
         class="hidden-sm-and-down"
         hide-details
         solo-inverted
+        flat
         prepend-inner-icon="search"
         :menu-props="{'closeOnClick':true, 'closeOnContentClick': true}"
         label="search users"
@@ -298,6 +325,11 @@
         'users',
         'snack'
       ]),
+      signedImage () {
+        return this.lightOut
+          ? 'https://images.unsplash.com/photo-1536267743923-0249225165d8?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f6f0367366b35aadc9e0f2ae541db74d&auto=format&fit=crop&w=1350&q=80'
+          : 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0aa88cd9eb66029e5134a759d301d549&auto=format&fit=crop&w=500&q=60'
+      },
       routeLabel () {
         let params = this.$route.params
         let suffix = ''
@@ -313,7 +345,7 @@
       },
       items () {
         return [
-          { groupHeading: `<small>signined as </small><span class="subheading pl-2 info--text"> ${this.loggedUserObj.username}</span>` },
+          // { groupHeading: `<small>signined as </small><span class="subheading pl-2 info--text"> ${this.loggedUserObj.username}</span>` },
           { groupHeading: 'User' },
           { icon: 'portrait', text: 'Profile settings', soon: '( future feature )' },
           { icon: 'arrow_back', text: 'LogOut', action: this.logUserOut },
