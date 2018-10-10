@@ -4,7 +4,7 @@
     <v-expansion-panel-content
       v-for="(task, index) in value"
       :key="task.id"
-      hide-actions :class="{'task-delayed': isDelayed(task), 'mt-1': index !== 0}">
+      hide-actions :class="{'task-delayed': isDelayed(task),'task': true, 'mt-1': index !== 0}">
       <div slot="header" row :class="{'mt-1': index !== 0, 'pa-0': true }">
           <v-progress-linear
             style="left: 0; right:0; top: 0;position: absolute; transform: translateY(-14px)"
@@ -243,8 +243,18 @@ export default {
 }
 </script>
 <style scoped>
+.task {
+  background: url(/assets/md-bgs/bg-001.jpg) center center no-repeat;
+  background-size: cover; 
+}
 .task-delayed {
-  background-color: rgba(255, 0, 0, 0.2) !important;
+    background:
+    linear-gradient(
+      rgba(255, 0, 0, 0.2), 
+      rgba(255, 0, 0, 0.2)
+    ),
+    url(/assets/md-bgs/bg-001.jpg) center center no-repeat;
+  background-size: cover;
 }
 .no-padding div.v-expansion-panel__header,
 .no-padding div.v-list__tile {

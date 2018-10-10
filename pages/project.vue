@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="project-area">
     <projectToolbar :projectid="project.id"/>
     <!-- <v-layout row wrap justify-center align-center> -->
       <!-- <v-flex xs12 class="pa-0"> -->
@@ -83,6 +83,12 @@ export default {
 }
 </script>
 <style scoped>
-
+.project-area {
+   /* background: url(/assets/md-bgs/bg-041.jpg) center center fixed no-repeat; */
+   /* background-attachment: fixed; */
+   background-size: auto;
+   /* background-position: 50% 50%; */
+   /* background-repeat: no-repeat;  */
+}
 </style>
 
