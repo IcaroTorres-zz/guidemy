@@ -29,12 +29,17 @@
         <v-flex xs6 sm4 md3 lg2 v-for="project in listedProjects" :key="project.id">
           <v-card>
             <v-img
-            height="220px"
             :src="projectBackgrounds"
             >
-              <v-layout column align-content-start justify-space-around fill-height class="ma-0 px-2">
-                <nuxt-link :class="{'info--text': project.status === 0, 'error--text': project.status !== 0, 'headline': !xsOnly, 'subheading': xsOnly, 'text-xs-center': true}"
-                    :to="`/project/${project.id}/activities`" nuxt v-text="project.title"/>
+              <v-layout column align-content-start justify-space-around fill-height class="ma-0 pa-2">
+                <nuxt-link :class="{
+                  'info--text': project.status === 0, 
+                  'error--text': project.status !== 0, 
+                  'headline': !xsOnly, 
+                  'subheading': xsOnly, 
+                  'text-xs-center mb-3': true
+                }" :to="`/project/${project.id}/activities`" nuxt v-text="project.title"/>
+
               <!-- </v-container> -->
             
             <!-- <v-card-title style="height:170px">
@@ -48,31 +53,17 @@
               </v-container>
             </v-card-title> -->
             <!-- <v-card-text > -->
-              <div>
-                <div>manager: <nuxt-link :to="{name: 'user', params: {user: users[project.manager].username}}">@{{users[project.manager].username}}</nuxt-link></div>
-                <div>team: <nuxt-link
-                  class="primary--text"
-                  v-for="uid in project.team"
-                  :key="uid"
-                  :to="{name: 'user', params: {user: users[uid].username}}">
-                    @{{users[uid].username}}
-                  </nuxt-link>
-                </div>
-              </div>
-                <!-- <v-list two-line>
-                  <v-list-tile-sub-title>
-                    manager: <nuxt-link :to="{name: 'user', params: {user: users[project.manager].username}}">@{{users[project.manager].username}}</nuxt-link>
-                  </v-list-tile-sub-title>
-                  <v-list-tile-sub-title>
-                    team: <nuxt-link
+                <div>
+                  <div>manager: <nuxt-link :to="{name: 'user', params: {user: users[project.manager].username}}">@{{users[project.manager].username}}</nuxt-link></div>
+                  <div>team: <nuxt-link
                     class="primary--text"
                     v-for="uid in project.team"
                     :key="uid"
                     :to="{name: 'user', params: {user: users[uid].username}}">
                       @{{users[uid].username}}
                     </nuxt-link>
-                  </v-list-tile-sub-title>
-                </v-list> -->
+                  </div>
+                </div>
               </v-layout>
             </v-img>
             <!-- </v-card-text> -->
@@ -175,8 +166,11 @@ export default {
     },
     projectBackgrounds () {
       return this.lightOut
-        ? 'https://images.unsplash.com/photo-1534840556615-11adf8f86873?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=4a5e5cdb7836402367e823a122361507&auto=format&fit=crop&w=1600&q=80'
-        : 'https://images.unsplash.com/photo-1510070009289-b5bc34383727?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c1afc832add43ca17b634e2f15ff0ab9&auto=format&fit=crop&w=1350&q=80'
+        // ? 'https://images.unsplash.com/photo-1515787366009-7cbdd2dc587b?ixlib=rb-0.3.5&s=77349d7bef75686378be6dbc0c12bae0&auto=format&fit=crop&w=1350&q=80'
+        ? 'https://img00.deviantart.net/9b1b/i/2011/060/2/b/black_desktop_wallpaper_by_ficus86-d3aq7nb.jpg'
+        : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTSGMiEVfXb_3BgbfNvNxv_toTEICUTXJhNg0QRASbOtTQ5_aI'
+        // : 'http://coffecase.win/77/abc1f/material-design-wallpaper-red-034-by-charlie-henson_material-design-wallpaper-red-by-charlie-henson-devia-on-material-wallpapers-collection-for-free-downl.png'
+        // : 'https://images.unsplash.com/photo-1510070009289-b5bc34383727?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=c1afc832add43ca17b634e2f15ff0ab9&auto=format&fit=crop&w=1350&q=80'
     }
   },
   methods: {
