@@ -7,30 +7,41 @@
       :mini-variant.sync="mini"
       fixed floating
       app
-      style="z-index: 6"
+      style="z-index: 6;"
     >
-      <!-- <v-list dense :class="{'pa-0': true, 'secondary darken-1': lightOut, 'grey lighten-1': !lightOut}"> -->
-      
       <v-layout v-if="!mini">
-        <v-img
-          height="150px"
-          :src="signedImage"
-        >
+        <v-img :src="signedImage" height="220">
           <v-layout column align-center justify-content-start fill-height class="white--text">
-            <v-list dense class="pa-0" style="width: 100%; margin-bottom: -15px;">
-              <v-list-tile @click.stop.prevent="toggleMini">
-                <v-list-tile-content>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-icon class="white--text">{{miniIcon}}</v-icon>
-                </v-list-tile-action>
-              </v-list-tile>
-            </v-list>
+            <v-spacer></v-spacer>
+            <div class="text-xs-center">
+              <router-link to="/dashboard" v-html="apptitle" class="hidden-sm-and-down flat-link white--text headline"/>
+            </div>
             <small>signed as</small>
             <v-avatar size="64px">
               <img :src="loggedUserObj.picture" alt="">
             </v-avatar>
-            <div class="title info--text"> {{this.loggedUserObj.username}}</div>
+            <div class="title info--text"> {{loggedUserObj.username}}</div>
+            <div>
+              Projects: {{userProjects(loggedUser).length}} - Tasks: {{userTasks(loggedUser).length}}
+            </div>
+            <v-list dense class="pa-0" style="width: 100%;">
+              <v-list-tile @click.stop.prevent="toggleMini">
+                <v-list-tile-action>
+                  <v-tooltip bottom>
+                    <v-icon slot="activator" class="white--text" @click.stop="toggleLight">invert_colors</v-icon>
+                    <span>Turn lights</span>
+                  </v-tooltip>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                </v-list-tile-content>
+                <v-list-tile-action>
+                  <v-tooltip bottom>
+                    <v-icon slot="activator" class="white--text">{{miniIcon}}</v-icon>
+                    <span>shrink navigation</span>
+                  </v-tooltip>
+                </v-list-tile-action>
+              </v-list-tile>
+            </v-list>
           </v-layout>
           <!-- </v-container> -->
         </v-img>
@@ -169,15 +180,14 @@
       fixed
       flat
       :style="{ 'z-index': '5' }">
-      <v-toolbar-title style="width: 300px" class="ml-0">
+      <v-toolbar-title>
         <v-toolbar-side-icon @click.native="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
-        <router-link to="/dashboard" v-html="apptitle"
+        <router-link to="/dashboard" v-html="apptitle" v-if="!sidebarVisible"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
-      <v-icon class="pa-2" @click.stop="toggleLight">invert_colors</v-icon>
       <v-autocomplete
         style="opacity: .5"
-        class="hidden-sm-and-down"
+        class="hidden-sm-and-down px-2"
         hide-details
         solo-inverted
         flat
@@ -198,9 +208,12 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-autocomplete>
-
-      <v-spacer></v-spacer>
       
+      <v-tooltip bottom>
+        <v-icon slot="activator" class="pa-2" v-if="!sidebarVisible" @click.stop="toggleLight">invert_colors</v-icon>
+        <span>Turn lights</span>
+      </v-tooltip>
+      <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-xs-only">
         <v-btn flat small nuxt :to="{ name: 'dashboard' }">
           <v-icon >dashboard</v-icon>
@@ -222,7 +235,7 @@
         </v-badge>
         <span>Unreaded notifications</span>
       </v-tooltip>
-      <v-btn icon large>
+      <v-btn icon large v-if="!sidebarVisible">
         <v-avatar size="46px">
           <img :src="loggedUserObj.picture" :alt="loggedUserObj.username">
         </v-avatar>
@@ -314,7 +327,7 @@
       }
     },
     computed: {
-      ...mapGetters(['loggedUserObj', 'lgAndUp', 'useravatar']),
+      ...mapGetters(['loggedUserObj', 'lgAndUp', 'useravatar', 'userProjects', 'userTasks']),
       ...mapState([
         'sidebar',
         'mini',
@@ -327,7 +340,8 @@
       ]),
       signedImage () {
         return this.lightOut
-          ? 'https://images.unsplash.com/photo-1536267743923-0249225165d8?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f6f0367366b35aadc9e0f2ae541db74d&auto=format&fit=crop&w=1350&q=80'
+          // ? 'https://images.unsplash.com/photo-1536267743923-0249225165d8?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=f6f0367366b35aadc9e0f2ae541db74d&auto=format&fit=crop&w=1350&q=80'
+          ? 'http://coffecase.win/77/abc1f/material-design-wallpaper-red-034-by-charlie-henson_material-design-wallpaper-red-by-charlie-henson-devia-on-material-wallpapers-collection-for-free-downl.png'
           : 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0aa88cd9eb66029e5134a759d301d549&auto=format&fit=crop&w=500&q=60'
       },
       routeLabel () {
