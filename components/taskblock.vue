@@ -1,7 +1,7 @@
 <template>
   <v-flex class="mr-2 project-block-container">
-    <v-card light :class=" block.color + ' block-card'">
-      <v-card-actions>
+    <v-card light :class=" block.color + ' block-card'" >
+      <v-card-actions style="position: sticky; top: 0px; z-index: 2;">
         <v-flex class="pa-0">
           <v-form @submit.prevent="updateBlockText" v-model="valid">
             <v-text-field

@@ -244,17 +244,17 @@ export default {
 </script>
 <style scoped>
 .task {
-  background: url(/assets/md-bgs/bg-001.jpg) center center no-repeat;
-  background-size: cover; 
+  /* background: url(/assets/md-bgs/bg-001.jpg) center center no-repeat;
+  background-size: cover;  */
 }
 .task-delayed {
     background:
     linear-gradient(
       rgba(255, 0, 0, 0.2), 
       rgba(255, 0, 0, 0.2)
-    ),
-    url(/assets/md-bgs/bg-001.jpg) center center no-repeat;
-  background-size: cover;
+    );
+    /* url(/assets/md-bgs/bg-001.jpg) center center no-repeat; */
+  /* background-size: cover; */
 }
 .no-padding div.v-expansion-panel__header,
 .no-padding div.v-list__tile {

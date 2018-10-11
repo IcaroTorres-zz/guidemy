@@ -146,13 +146,9 @@ export default {
   background-size: auto;
 }
 .member-result.light {
-  background: url(https://images.unsplash.com/photo-1520588831435-1529e6d7cf5e?ixlib=rb-0.3.5&s=7b9b8daa4ec154bb3d599ddeb16fffec&auto=format&fit=crop&w=984&q=80) 50% 50% no-repeat;
   background: url(https://spayce.me/wp-content/uploads/2018/02/4k-wallpaper-android-material-design-wallpaper-full.jpg) 25% 15% no-repeat;
-  background: url(https://wallpaper-house.com/data/out/7/wallpaper2you_166304.png) 100% 0% no-repeat;
-  background: url(http://coffecase.win/77/48fda/material-design-android-6-0-marshmallow-material-design-android-6-0-marshmallow_x-material-design-android-marshmallow-on-material-wallpap.jpg) 45% 100% no-repeat;
-  background: url(https://besthqwallpapers.com/img/original/33662/4k-material-design-lines-geometry-triangles.jpg) 25% 0% no-repeat;
-  background: url(http://getwallpapers.com/wallpaper/full/a/3/3/432019.jpg) 25% 0% no-repeat;
-  /* background-size:300%; */
-  background-size:cover;
+  background-size:300%;
+  /* background-size:cover; */
+  filter: grayscale(.35)
 }
 </style>
