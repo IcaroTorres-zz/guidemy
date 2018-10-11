@@ -23,8 +23,8 @@ a {
 }
 .project-block {
   margin: 0 auto;
-  max-height: calc(100vh - 380px);
-  min-height: 300px;
+  height: calc(100vh - 296px);
+  /* min-height: 300px; */
   width: 300px;
   min-width: 300px;
   overflow-y: auto;
@@ -34,6 +34,8 @@ a {
   /* min-width: 500px; */
   /* max-width: 650px; */
   margin: 0 auto;
+  position: sticky !important;
+  top: 0px;
   /* max-height: 700px; */
   width: 300px;
 }
