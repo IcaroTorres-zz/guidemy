@@ -84,9 +84,9 @@ export default {
 </script>
 <style scoped>
 .project-area {
-   /* background: url(/assets/md-bgs/bg-041.jpg) center center fixed no-repeat; */
+   /* background: url(https://images.unsplash.com/photo-1501876991173-f9c47cd28268?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=11822fe6ab2de36ee07cd74486dbdaf4&auto=format&fit=crop&w=1306&q=80) center center fixed no-repeat; */
    /* background-attachment: fixed; */
-   background-size: auto;
+   background-size: cover;
    /* background-position: 50% 50%; */
    /* background-repeat: no-repeat;  */
 }

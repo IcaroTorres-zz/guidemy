@@ -1,12 +1,15 @@
 <template>
   <v-card class="elevation-5">
     <projectToolbar :projectid="selectedProject"/>
-    <v-card-text>
-      <v-layout row wrap align-center>     
-        <v-flex xs12 sm6 class="pa-2">
-          <v-select 
+    <v-card-text style="position: sticky; top: 48px; z-index: 2;" :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
+      <v-layout  row wrap align-center justify-space-between>     
+        <v-flex xs12 sm6>
+          <v-select
             dense
             hide-details
+            solo-inverted
+            flat
+            style="opacity: .5;"
             v-model="selectedProject"
             :items="myProjects"
             item-value="id"
@@ -33,8 +36,8 @@
             <v-divider slot="prepend-item" class="my-1"></v-divider>
           </v-select>
         </v-flex>
-        <v-flex xs12 sm6 class="caption text-xs-center py-2">
-          <v-layout row justify-space-around align-center>
+        <v-flex xs12 sm4 md3  :class="{'caption text-xs-center': true, 'mt-2': xsOnly}">
+          <v-layout row justify-space-between align-center>
             <div><span :class="`${resultColor}--text title`"> {{myResults.participation}}%</span><br> Participation</div>
             <div><span :class="`${resultColor}--text title`"> {{myResults.attended}}</span><br> Attended</div>
             <div><span :class="`${resultColor}--text title`"> {{myResults.missed}}</span><br> Missed</div>
@@ -42,9 +45,10 @@
           </v-layout>
         </v-flex>
       </v-layout>
-      <v-divider></v-divider>
-      <div>Description: </div>
-      <p class="grey--text text-xs-justify">{{openProject.description}}</p>
+    </v-card-text>
+    <v-card-text>
+      <div >Description: </div>
+      <div class="grey--text text-xs-justify">{{openProject.description}}</div>
     </v-card-text>
     <v-divider/>
     <v-container fluid class="pa-4 new-daily-container" v-if="newDaily && newDaily.status === 0">
@@ -69,14 +73,13 @@
           <v-layout row wrap align-start class="px-2 pt-2">
             <v-flex xs12 v-for="n in 3" :key="n" class="pa-0 ma-0" v-if="open">
               <v-textarea
-                color="black"
-                box flat
+                box
                 placeholder="Question was not responded"
                 rows="2"
                 row-height="16"
-                :background-color="dailyColor(newDaily) + ' darken-2'"
+                :color="dailyColor(newDaily)"
                 :append-icon="icons[n-1]"
-                class="text-xs-right"
+                class="text-xs-right warning--text"
                 :hint="`Answer for question r${n}`"
                 persistent-hint
                 :label="questions[n-1]"
@@ -90,7 +93,7 @@
     </v-container>
     <v-divider></v-divider>
     <v-card-text height="900">
-      <v-container grid-list-xl class="py-1">
+      <v-container fluid grid-list-xl class="py-1">
         <v-layout row wrap>
           <v-flex xs12 class="followline-decorated">
             <template v-for="(daily, didx) in dailies">
@@ -197,7 +200,8 @@ export default {
   computed: {
     ...mapState([
       'loggedUser',
-      'projects'
+      'projects',
+      'lightOut'
     ]),
     ...mapGetters([
       'loggedUserObj',
@@ -205,7 +209,8 @@ export default {
       'useravatar',
       'myProjects',
       'projectDailies',
-      'temperColor'
+      'temperColor',
+      'xsOnly'
     ]),
     openProject () { return this.selectedProject ? this.projects[this.selectedProject] : this.myProjects[0] },
     predailies () {
