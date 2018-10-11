@@ -14,7 +14,7 @@
           <v-layout column align-center justify-content-start fill-height class="white--text">
             <v-spacer></v-spacer>
             <div class="text-xs-center">
-              <router-link to="/dashboard" v-html="apptitle" class="hidden-sm-and-down flat-link white--text headline"/>
+              <router-link to="/dashboard" v-html="apptitle" class="flat-link white--text headline"/>
             </div>
             <small>signed as</small>
             <v-avatar size="64px">
@@ -182,7 +182,7 @@
       :style="{ 'z-index': '5' }">
       <v-toolbar-title>
         <v-toolbar-side-icon @click.native="sidebarVisible = !sidebarVisible"></v-toolbar-side-icon>
-        <router-link to="/dashboard" v-html="apptitle" v-if="!sidebarVisible"
+        <router-link to="/dashboard" v-html="apptitle" v-if="(sidebarVisible && mini) || !sidebarVisible"
           :class="{'hidden-sm-and-down flat-link': true, 'secondary--text': !lightOut, 'white--text': lightOut, 'headline': true}"/>
       </v-toolbar-title>
       <v-autocomplete
@@ -214,20 +214,22 @@
         <span>Turn lights</span>
       </v-tooltip>
       <v-spacer></v-spacer>
-      <v-toolbar-items class="hidden-xs-only">
-        <v-btn flat small nuxt :to="{ name: 'dashboard' }">
+      <!-- <v-toolbar-items class="hidden-xs-only"> -->
+      <!-- <template class="hidden-xs-only"> -->
+        <v-btn :icon="smAndDown" flat nuxt :to="{ name: 'dashboard' }">
           <v-icon >dashboard</v-icon>
           <span class="hidden-sm-and-down">dashboard</span>
         </v-btn>
-        <v-btn flat small nuxt :to="{ name: 'archived' }">
+        <v-btn :icon="smAndDown" flat nuxt :to="{ name: 'archived' }">
           <v-icon>archive</v-icon>
           <span class="hidden-sm-and-down">archived</span>
         </v-btn>
-        <v-btn flat small nuxt :to="{ name: 'dailymeetings' }">
+        <v-btn :icon="smAndDown" flat nuxt :to="{ name: 'dailymeetings' }">
           <v-icon>supervised_user_circle</v-icon>
           <span class="hidden-sm-and-down">my dailies</span>
         </v-btn>
-      </v-toolbar-items>
+      <!-- </template> -->
+      <!-- </v-toolbar-items> -->
       <v-tooltip bottom>
         <v-badge slot="activator" color="red" overlap>
           <span slot="badge">{{notifications.filter(n => n.status === 0).length}}</span>
@@ -241,13 +243,7 @@
         </v-avatar>
       </v-btn>
     </v-toolbar>
-    <!-- <v-progress-linear
-      color="info"
-      height="3"
-      v-if="!!appLoading"
-      :indeterminate="true"/> -->
     <v-content>
-      <!-- <h1 class="display-1 text-xs-center">{{routeLabel}}</h1> -->
       <v-container fluid align-center class="guidemy-container pt-0">
         <nuxt/>
       </v-container>
@@ -327,7 +323,7 @@
       }
     },
     computed: {
-      ...mapGetters(['loggedUserObj', 'lgAndUp', 'useravatar', 'userProjects', 'userTasks']),
+      ...mapGetters(['loggedUserObj', 'lgAndUp', 'smAndDown', 'useravatar', 'userProjects', 'userTasks']),
       ...mapState([
         'sidebar',
         'mini',
@@ -368,12 +364,12 @@
           {
             heading: 'Manage project activities and handle tasks',
             icon: 'table_chart',
-            'icon-alt': 'dashboard',
+            'icon-alt': 'view_stream',
             text: 'Projects',
             model: false,
             children: [
               { icon: 'add', text: 'Create Project', slot: 'customactivator', component: 'dproject' },
-              { icon: 'view_stream', text: 'Dashboard', action: () => this.$router.push('/dashboard') },
+              { icon: 'dashboard', text: 'Dashboard', action: () => this.$router.push('/dashboard') },
               { icon: 'archive', text: 'Archived', action: () => this.$router.push('/archived') }
             ]
           },

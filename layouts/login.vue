@@ -62,18 +62,12 @@
               <v-flex xs12>
                 <v-container grid-list-xl>
                   <v-layout row wrap justify-center align-center>
-                    <template v-for="(column, i) in promoColumns">
-                      <v-flex xs12 sm4 :key="column.title"
+                    <v-flex xs12 sm4 :key="column.title" v-for="(column, i) in promoColumns"
                       :class="{'left-border': i !== 0, 'top-border': xsOnly && i !== 0}">
-                        <v-card :color="column.color" class="elevation-20">
-                          <v-card-text class="text-xs-center">
-                            <v-icon medium v-html="column.icon"/>
-                          </v-card-text>
-                          <v-card-title class="layout justify-center title pa-0" v-text="column.title"/>
-                          <v-card-text v-text="column.text" class="grey--text caption"/>
-                        </v-card>
-                      </v-flex>
-                    </template>
+                      <v-card class="elevation-20 text-xs-center" :img="column.image" height="220">
+                        <v-layout fill-height align-center justify-center class="display-1 black--text" v-text="column.title"/>
+                      </v-card>
+                    </v-flex>
                   </v-layout>
                 </v-container>
               </v-flex>
@@ -185,28 +179,16 @@ export default {
   data: () => ({
     promoColumns: [
       {
-        color: 'secondary',
-        title: 'Ease Usage',
-        icon: 'color_lens',
-        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+        title: 'User centered',
+        image: 'https://images.unsplash.com/photo-1532102235608-dc8fc689c9ab?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=344665e7ec2cff87b2ea6185c807e173&auto=format&fit=crop&w=1350&q=80'
       },
       {
-        color: 'transparent',
-        title: 'Fast Feedbacks',
-        icon: 'flash_on',
-        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+        title: 'Contextual',
+        image: 'https://images.unsplash.com/photo-1510070112810-d4e9a46d9e91?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=0aa88cd9eb66029e5134a759d301d549&auto=format&fit=crop&w=1350&q=80'
       },
       {
-        color: 'secondary darken-1',
-        title: 'Better Guidance',
-        icon: 'build',
-        text: `Cras facilisis mi vitae nunc lobortis pharetra. Nulla volutpat tincidunt ornare. 
-              Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
-              Nullam in aliquet odio. Aliquam eu est vitae tellus bibendum tincidunt. Suspendisse potenti.`
+        title: 'Better work',
+        image: 'https://images.unsplash.com/photo-1520588831435-1529e6d7cf5e?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=fd3d7c35892bd8c7c9e757865a764d4c&auto=format&fit=crop&w=984&q=80'
       }
     ]
   }),
