@@ -1,12 +1,15 @@
 <template>
   <v-card >
-    <v-container grid-list-xl>
+    <!-- <v-container fluid grid-list-xl> -->
+    <v-card-text style="position: sticky; top: 46px; z-index: 2;" :class="{'secondary darken-1':lightOut, 'grey lighten-3': !lightOut}">
       <v-layout row wrap justify-space-between align-center>
-      
         <v-flex xs12 sm6 v-if="isManager">
-          <v-select 
+          <v-select
             dense
             hide-details
+            solo-inverted
+            flat
+            style="opacity: .5;"
             v-model="selectedWorker"
             :items="team"
             item-value="id"
@@ -38,8 +41,8 @@
             <v-divider slot="prepend-item" class="my-1"></v-divider>
           </v-select>
         </v-flex>
-        <v-flex xs12 :sm6="isManager" :sm12="!isManager" class="caption text-xs-center">
-          <v-layout row justify-space-around align-center>
+        <v-flex xs12 :sm4="isManager" :md3="isManager" :sm12="!isManager" :class="{'caption text-xs-center': true, 'mt-2': xsOnly}">
+          <v-layout row justify-space-between align-center>
             <div><span :class="`${resultColor}--text title`"> {{coworkerResults.participation}}%</span><br> Participation</div>
             <div><span :class="`${resultColor}--text title`"> {{coworkerResults.attended}}</span><br> Attended</div>
             <div><span :class="`${resultColor}--text title`"> {{coworkerResults.missed}}</span><br> Missed</div>
@@ -47,9 +50,10 @@
           </v-layout>
         </v-flex>
       </v-layout>
-    </v-container>
+    </v-card-text>
+    <!-- </v-container> -->
     <v-divider/>
-    <v-container grid-list-xl class="px-4 pt-4 pb-2 new-daily-container" v-if="newDaily">
+    <v-container fluid grid-list-xl class="px-4 pt-4 pb-2 new-daily-container" v-if="newDaily">
       <v-layout row justify-center align-content-start >
         <v-flex>
           <v-layout row align-center>
@@ -87,7 +91,7 @@
     </v-container>
     <v-divider></v-divider>
     <v-card-text height="900">
-      <v-container grid-list-xl class="py-1">
+      <v-container fluid grid-list-xl class="py-1">
         <v-layout row wrap>
           <v-flex xs12 class="followline-decorated">
             <template v-for="(daily, didx) in dailies">
@@ -173,14 +177,15 @@ export default {
     this.selectedWorker = this.project.team[0]
   },
   computed: {
-    ...mapState(['projects', 'users', 'loggedUser']),
+    ...mapState(['projects', 'users', 'loggedUser', 'lightOut']),
     ...mapGetters([
       'temperColor',
       'username',
       'useravatar',
       'projectDailies',
       'loggedUserObj',
-      'mdAndUp'
+      'mdAndUp',
+      'xsOnly'
     ]),
     project () { return this.projects[this.$route.params.id] },
     manager () { return this.users[this.project.manager] },
