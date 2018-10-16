@@ -1,9 +1,12 @@
 <template>
   <v-flex class="mr-2 project-block-container">
     <v-card light :class=" block.color + ' block-card'" >
-      <v-card-actions style="position: sticky; top: 0px; z-index: 2;">
+      <v-card-actions style="position: relative;">
+        <v-layout row align-center justify-center>
+          <v-card :color="color" v-for="color in colorOptions" :key="color" hover @click="chooseColor(color)" height="15" />
+        </v-layout>
         <v-flex class="pa-0">
-          <v-form @submit.prevent="updateBlockText" v-model="valid">
+          <v-form @submit.prevent="updateBlockText" ref="blocktext" v-model="valid">
             <v-text-field
               class="pa-0"
               full-width
@@ -12,11 +15,11 @@
               :hide-details="valid"
               required
               :rules="[v => !!v || 'block text required']"
-              :color="isEditing ? 'black' : block.color"
-              :readonly="!isEditing"
-              :label="isEditing ? 'Editing' : ''"
+              @change="updateBlockText"
             >
-              <v-slide-x-transition
+              <!-- :label="isEditing ? 'Editing' : ''" -->
+              <!-- :color="isEditing ? 'black' : block.color" -->
+              <!-- <v-slide-x-transition
                 slot="prepend-inner"
                 mode="out-in"
               >
@@ -26,7 +29,7 @@
                   :key="`icon-${isEditing}`"
                   @click="updateBlockText"
                   v-text="isEditing ? 'save' : 'edit'"/>
-              </v-slide-x-transition>
+              </v-slide-x-transition> -->
             </v-text-field>
           </v-form>
         </v-flex>
@@ -39,7 +42,12 @@
             </dblockdel>
             <span>remove block</span>
           </v-tooltip>
-          <v-menu
+          <v-icon
+            small
+            @click="showcolors = !showcolors"
+            :color="showcolors ? 'white' : 'black'"
+            v-text="'format_color_fill'"/>
+          <!-- <v-menu
             v-model="menu"
             :close-on-content-click="false"
           >
@@ -68,7 +76,7 @@
                 </v-autocomplete>
               </v-card-actions>
             </v-card>
-          </v-menu>
+          </v-menu> -->
         </v-flex>
       </v-card-actions>
     </v-card>
@@ -137,8 +145,12 @@ export default {
     blocktext: '',
     valid: false,
     menu: false,
+    showcolors: false,
     isEditing: false,
-    newcolor: ''
+    newcolor: '',
+    colorOptions: [
+      'primary', 'secondary', 'accent', 'info', 'warning', 'error', 'success'
+    ]
   }),
   created () {
     this.blocktext = this.block.text
@@ -165,19 +177,12 @@ export default {
       this.$emit('block-update', this.block)
     },
     updateBlockText () {
-      if (!this.valid) return false
-      if (this.isEditing) {
-        // console.log('trying to update text')
+      if (!this.valid) {
+        this.blocktext = this.block.text
+      } else {
         this.$store.dispatch('updateBlockText', {
           ...this.block, text: this.blocktext
-        })
-          .then(response => {
-            // console.log(response)
-            this.isEditing = !this.isEditing
-          })
-          .catch(error => this.setError(error))
-      } else {
-        this.isEditing = !this.isEditing
+        }).catch(error => this.setError(error))
       }
     },
     updateBlockColor () {
@@ -193,6 +198,16 @@ export default {
           })
           .catch(error => this.setError(error))
       }
+    },
+    chooseColor (color) {
+      this.$store.dispatch('updateBlockColor', {
+        ...this.block, color: color
+      })
+        .then(response => {
+          // console.log(response, 'new block value')
+          this.showcolors = false
+        })
+        .catch(error => this.setError(error))
     },
     updatePosition (int) {
       this.$store.dispatch('updateBlockPosition', {
