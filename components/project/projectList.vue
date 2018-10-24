@@ -28,9 +28,7 @@
       <v-layout row wrap align-content-start justify-start>
         <v-flex xs6 sm4 md3 lg2 v-for="project in listedProjects" :key="project.id">
           <v-card>
-            <v-img
-            :src="projectBackgrounds"
-            >
+            <!-- <v-img :src="projectBackgrounds"> -->
               <v-layout column align-content-start justify-space-around fill-height class="ma-0 pa-2">
                 <nuxt-link :class="{
                   'info--text': project.status === 0, 
@@ -65,7 +63,7 @@
                   </div>
                 </div>
               </v-layout>
-            </v-img>
+            <!-- </v-img> -->
             <!-- </v-card-text> -->
             <v-divider></v-divider>
             <v-card-actions>
