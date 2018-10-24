@@ -81,7 +81,9 @@ export const getters = {
     .reduce((projectTasklist, p) => p.blocks
       .map(bid => state.blocks[bid])
       .reduce((tasklist, b) => b.tasks
-        .map(tid => state.tasks[tid]).concat(tasklist)
+        .map(tid => state.tasks[tid])
+        .filter(t => t.assigned === uid)
+        .concat(tasklist)
         , []).concat(projectTasklist)
       , []),
   myProjects: state => state.loggedUser ? state.users[state.loggedUser].projects.map(pid => state.projects[pid]).filter(p => p.status === 0) : [],
