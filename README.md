@@ -1,3 +1,4 @@
+> Agile project management prototype, developed as my undergraduate thesis, to improve Agile Methodologies applied on Higher Education Projects at Federal University of Sergipe (UFS) Computing Department (DCOMP) and IT graduations of the region.
 # guideme
 
 > A project management tool for one-person / micro-teams projects (mainly Academy researchs) 
